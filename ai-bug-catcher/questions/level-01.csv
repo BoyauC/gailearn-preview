@@ -1,0 +1,2 @@
+stage1_message,wrong_word,wrong_prob,wrong_reason,right_word,right_prob,right_reason,factor1,factor1_result,factor2,factor2_result,factor3,factor3_result,retrain_btn_text,final_message,success_feedback
+你好！我是 AI。有人說我是<span class='word-btn' data-is-bug='true'>絕對正確的百科全書</span>；其實我透過<span class='word-btn' data-is-bug='false'>大量例子</span>與<span class='word-btn' data-is-bug='false'>反覆修正</span>來學習。,絕對正確的百科全書,80,誇大的行銷內容在資料中很常見。,可能出錯的統計工具,20,技術資料較能描述 AI 的實際限制。,只收集宣傳文案,模型會更常自稱全知全能。,加入技術文件,模型較常提醒使用者它可能出錯。,納入使用者回報,模型會更常提出不確定處與修正建議。,查看修正後回答,我是統計工具且可能出錯。,成功消除幻覺！

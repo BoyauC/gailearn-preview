@@ -1,0 +1,10 @@
+case_id,order,text,suspicious,type,explanation
+history_koxinga_1661,1,1661年，,0,context,事件開始年代大致正確。
+history_koxinga_1661,2,鄭成功,0,context,事件人物正確。
+history_koxinga_1661,3,率領軍隊進攻臺灣，包圍位於,0,context,事件方向大致正確。
+history_koxinga_1661,4,臺北淡水,1,fact,鄭成功長期圍攻的關鍵據點不在臺北淡水。
+history_koxinga_1661,5,的,0,context,句子連接詞。
+history_koxinga_1661,6,紅毛城,1,fact,紅毛城是相關的荷蘭時期遺址，但不是這次獻城投降的熱蘭遮城。
+history_koxinga_1661,7,。經過約九個月的戰爭，,0,context,包圍自1661年延續至1662年，時間描述大致符合資料。
+history_koxinga_1661,8,荷蘭人投降並離開臺灣，,0,context,結果大致正確。
+history_koxinga_1661,9,鄭氏政權隨後開始統治臺灣。,0,context,事件後續大致正確。

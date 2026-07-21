@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="透過互動預測理解 AI 如何依上下文與機率選擇下一個詞。">
+  <meta name="theme-color" content="#e6e8dd">
+  <title>AI提供的，會是真的嗎？｜AI的預測與學習</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a class="brand" href="#" data-action="home" aria-label="回到遊戲首頁">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>AI的預測與學習</span>
+    </a>
+    <div class="header-status">
+      <span id="case-counter">案例載入中</span>
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>教學模擬</span>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1">
+    <section class="screen loading-screen" aria-labelledby="loading-title">
+      <div class="loader-orbit" aria-hidden="true"><span></span></div>
+      <p class="eyebrow">正在讀取案例資料</p>
+      <h1 id="loading-title">建立預測路徑……</h1>
+    </section>
+  </main>
+
+  <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p class="fatal">這個遊戲需要啟用 JavaScript 才能進行。</p></noscript>
+  <script src="js/game.js" defer></script>
+</body>
+</html>

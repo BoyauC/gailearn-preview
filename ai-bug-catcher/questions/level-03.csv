@@ -1,0 +1,2 @@
+stage1_message,wrong_word,wrong_prob,wrong_reason,right_word,right_prob,right_reason,factor1,factor1_result,factor2,factor2_result,factor3,factor3_result,retrain_btn_text,final_message,success_feedback
+談到阿里山山脈時，<span class='word-btn' data-is-bug='true'>阿里山是山脈最高峰</span>並不正確；<span class='word-btn' data-is-bug='false'>大塔山是最高峰</span>是較可靠的說法，而<span class='word-btn' data-is-bug='false'>阿里山是知名景點</span>也沒有問題。,阿里山是山脈最高峰,95,旅遊遊記常用阿里山泛稱整個景區。,大塔山是最高峰,5,地理資料記錄了明確的山峰名稱。,偏重旅遊遊記,模型會把景點俗稱誤當成地理事實。,加入地理資料庫,模型較能區分景區與山峰。,只收集熱門搜尋,模型更容易重複最多人使用的說法。,查看修正後回答,大塔山是阿里山山脈的最高峰。,成功消除了把俗稱當事實的幻覺！
