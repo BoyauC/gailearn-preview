@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <!-- [orientation check] 確保平板正確縮放，禁止使用者手動縮放以防止誤觸 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI 應用配對</title>
+    <style>
+        /* ====== 基本設定與童趣風格 CSS ====== */
+        :root {
+            --primary: #FF9AA2;
+            --secondary: #FFB7B2;
+            --accent: #FFDAC1;
+            --basket-per: #E2F0CB;
+            --basket-rec: #B5EAD7;
+            --basket-cre: #C7CEEA;
+            --text-dark: #555555;
+        }
+
+        /* [single-screen] html/body 鎖定在視口高度內，禁止捲動 */
+        html, body {
+            height: 100%;
+            /* 使用 dvh 讓高度在行動裝置上排除瀏覽器 UI 列 */
+            height: 100dvh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "微軟正黑體", "Noto Sans", "Noto Sans CJK TC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+            background-color: #fcfcfc;
+            color: var(--text-dark);
+            /* [single-screen] 禁止整頁拖曳捲動 */
+            overscroll-behavior: none;
+            /* [single-screen] 以 flex column 撐滿整個高度 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ====== [orientation check] 直式提示遮罩 ====== */
+        #orientation-overlay {
+            display: none; /* 預設隱藏，JS 與 media query 控制顯示 */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #orientation-overlay .rotate-icon {
+            font-size: 72px;
+            /* [orientation check] 旋轉動畫提示使用者 */
+            animation: rotate-hint 2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes rotate-hint {
+            0%   { transform: rotate(0deg); }
+            30%  { transform: rotate(90deg); }
+            70%  { transform: rotate(90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        #orientation-overlay p {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            /* [single-screen] 縮減 padding，讓主要遊戲區域獲得更多空間 */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex-shrink: 0; /* 不壓縮 header */
+        }
+        
+        h1 { margin: 0; font-size: 22px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .stats { font-size: 18px; font-weight: bold; }
+
+        /* [single-screen] game-board 撐滿剩餘空間，overflow hidden 防捲動 */
+        #game-board {
+            display: flex;
+            flex: 1;
+            max-width: 960px;
+            min-width: 320px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px 15px;
+            gap: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            align-self: stretch;
+        }
+
+        #cards-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ====== 卡片設計 ====== */
+        .card {
+            width: clamp(120px, 24vw, 200px);
+            height: clamp(90px, 18vw, 150px);
+            background-color: white;
+            border: 4px solid var(--accent);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            /* [touch support] touch-action: none 防止觸控時觸發瀏覽器預設捲動行為 */
+            touch-action: none;
+            user-select: none;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            transition: width 0.3s, height 0.3s, margin 0.3s, transform 0.2s ease-out;
+        }
+        
+        /* 懸停時輕微放大 1.2 倍 */
+        .card:hover {
+            transform: scale(1.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .card.dragging {
+            cursor: grabbing;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            z-index: 1000;
+            /* 拖曳時放大 1.5 倍 */
+            transform: scale(1.5);
+        }
+
+        /* 放入籃子後的卡片樣式 */
+        .card.placed {
+            width: 55px;
+            height: 42px;
+            cursor: default;
+            box-shadow: none;
+            margin: 4px;
+        }
+
+        .card.placed .card-name {
+            font-size: 11px;
+            padding: 2px 4px;
+        }
+
+        .card-name {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .result-icon {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 28px;
+            background: white;
+            border-radius: 50%;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* ====== 籃子區設計 ====== */
+        #baskets-area {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .basket {
+            min-height: 85px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 4px dashed #ccc;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .basket-title {
+            font-size: 15px;
+            font-weight: bold;
+            width: 90px;
+            text-align: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .basket-content {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 60px;
+            max-height: 60px;
+            border-left: 2px solid rgba(0,0,0,0.1);
+            padding-left: 10px;
+            overflow: hidden;
+        }
+
+        .basket[data-category="perception"]    { background-color: var(--basket-per); border-color: #9FC17D; }
+        .basket[data-category="recommendation"]{ background-color: var(--basket-rec); border-color: #69C9A1; }
+        .basket[data-category="creation"]      { background-color: var(--basket-cre); border-color: #8C99D2; }
+
+        /* ====== 控制區與訊息 ====== */
+        #controls-area {
+            text-align: center;
+            padding: 8px 0 12px;
+            flex-shrink: 0; /* [flex] 保留空間，不被遊戲區擠壓 */
+        }
+
+        #feedback-msg {
+            font-size: 22px;
+            font-weight: bold;
+            color: #D32F2F;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 36px;
+            font-size: 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #D67A81;
+            transition: transform 0.1s;
+            /* [touch support] 按鈕本身允許點擊，不攔截 */
+            touch-action: auto;
+        }
+        button:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        /* ====== 結果彈窗 ====== */
+        #result-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 20px;
+            max-width: 580px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: clamp(200px, 95dvh, 95vh);
+            overflow-y: auto;
+            /* [responsive] 確保內容在小螢幕上可捲動 */
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-content h2 { color: var(--primary); font-size: 28px; margin-top: 0; }
+        
+        .notes-box {
+            margin: 15px 0;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .notes-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            /* [responsive] 圖片在小平板上的最大寬度限制 */
+            max-height: 60dvh;
+        }
+
+        /* ====== 響應式：手機直式保留但加強限制 ====== */
+        @media (max-width: 768px) {
+            /* 手機直式時遮罩由 JS + media query 控制，此處保留原始 layout 邏輯 */
+            #game-board { flex-direction: column; }
+            #cards-area { flex-direction: row; justify-content: space-around; flex-wrap: wrap; }
+            .basket { flex-direction: column; align-items: flex-start; }
+            .basket-title { width: 100%; text-align: left; margin-bottom: 8px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px; }
+            .basket-content { border-left: none; padding-left: 0; width: 100%; }
+            /* [responsive] 小螢幕上卡片採用相對單位，確保不會溢出 */
+            .card { width: clamp(70px, 20vw, 120px); height: clamp(53px, 15vw, 90px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- [orientation check] 直式時顯示的提示遮罩，橫式時自動隱藏 -->
+    <div id="orientation-overlay">
+        <div class="rotate-icon">📱</div>
+        <p>請將裝置旋轉為<br>橫式（landscape）<br>以開始遊戲 🎮</p>
+    </div>
+
+    <header>
+        <h1>🤖 AI 應用配對遊戲</h1>
+        <div class="stats">
+            關卡: <span id="level-display">1 / 2</span> | 
+            得分: <span id="score-display"></span>
+        </div>
+    </header>
+
+    <main id="game-board" role="region" aria-label="AI 配對遊戲區域">
+        <div id="cards-area"></div>
+        
+        <div id="baskets-area">
+            <div class="basket" data-category="perception">
+                <div class="basket-title">👁️ 感知型</div>
+                <div class="basket-content"></div>
+            </div>
+            <div class="basket" data-category="recommendation">
+                <div class="basket-title">🧭 建議分析型</div>
+                <div class="basket-content"></div>
+            </div>
+            <div class="basket" data-category="creation">
+                <div class="basket-title">🎨 創作型</div>
+                <div class="basket-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="controls-area">
+        <div id="feedback-msg"></div>
+        <button id="next-btn" style="display: none;">過關！進入下一關</button>
+    </div>
+
+    <div id="result-modal">
+        <div class="modal-content">
+            <h2>🎉 這就是AI的類型囉！</h2>
+            <p style="font-size: 22px; font-weight: bold;">總得分：<span id="final-score"></span></p>
+            
+            <div class="notes-box">
+                <img src="Assets/Images/Whatis.png" alt="知識小筆記">
+            </div>
+            
+            <button onclick="location.reload()">再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        /* ====== 遊戲資料設定 (依據 CSV 檔案清單) ====== */
+        const level1Pool = [
+            { id: 'c1-1',   name: 'AI寫詩',   category: 'creation',       img: 'Assets/Images/C1-1.png' },
+            { id: 'c1-2',   name: 'AI寫故事', category: 'creation',       img: 'Assets/Images/C1-2.png' },
+            { id: 'sen1-1', name: '智慧音箱', category: 'perception',     img: 'Assets/Images/Sen1-1.png' },
+            { id: 'sen1-2', name: '臉部辨識', category: 'perception',     img: 'Assets/Images/Sen1-2.png' },
+            { id: 'sug1-1', name: '健康建議', category: 'recommendation', img: 'Assets/Images/Sug1-1.png' },
+            { id: 'sug1-2', name: '影片建議', category: 'recommendation', img: 'Assets/Images/Sug1-2.png' }
+        ];
+
+        const level2Pool = [
+            { id: 'sen2-1', name: '行車守護', category: 'perception',     img: 'Assets/Images/Sen2-1.png' },
+            { id: 'sug2-1', name: '導航建議', category: 'recommendation', img: 'Assets/Images/Sug2-1.png' },
+            { id: 'c2-1',   name: 'AI-e度',  category: 'creation',       img: 'Assets/Images/C2-1.png' }
+        ];
+
+        /* ====== 狀態變數 ====== */
+        let currentLevel = 0;
+        let score = 0;
+        let currentActiveCardsCount = 0;
+        
+        // [touch support] 拖曳狀態（統一給 Pointer Events 使用）
+        let draggedElement = null;
+        let startX = 0, startY = 0;
+        // [z-index fix] 拖曳開始前記錄卡片的原始父元素，以便取消時歸回
+        let dragOriginParent = null;
+
+        /* ====== [orientation check] 直式／橫式偵測邏輯 ====== */
+        const overlay = document.getElementById('orientation-overlay');
+
+        /**
+         * 判斷目前裝置是否為「行動裝置或平板」
+         * 優先使用 maxTouchPoints（更可靠），User-Agent 作備援
+         */
+        function isMobileOrTablet() {
+            // 方法1（推薦）：根據觸控點數判斷
+            if (navigator.maxTouchPoints > 2) {
+                return true; // 平板通常支援 5+ 觸控點
+            }
+            
+            // 方法2：視窗寬度判斷
+            if (window.innerWidth < 1024) {
+                return true;
+            }
+            
+            // 方法3（備援）：User-Agent 檢查
+            const userAgent = navigator.userAgent.toLowerCase();
+            return /mobi|android|iphone|ipod|tablet|kindle|silk/i.test(userAgent);
+        }
+
+        /**
+         * 判斷目前方向並控制遮罩
+         * portrait = 直式 → 顯示遮罩
+         * landscape = 橫式 → 隱藏遮罩
+         */
+        function checkOrientation() {
+            if (!isMobileOrTablet()) {
+                // PC 瀏覽器：永遠不顯示遮罩
+                overlay.style.display = 'none';
+                return;
+            }
+
+            const isPortrait = window.matchMedia('(orientation: portrait)').matches;
+
+            if (isPortrait) {
+                // [orientation check] 直式：顯示遮罩，阻止遊戲操作
+                overlay.style.display = 'flex';
+            } else {
+                // [orientation check] 橫式：隱藏遮罩，恢復正常
+                overlay.style.display = 'none';
+            }
+        }
+
+        // [orientation check] 監聽方向變更事件（現代瀏覽器優先使用 screen.orientation）
+        if (screen.orientation && screen.orientation.addEventListener) {
+            screen.orientation.addEventListener('change', checkOrientation);
+        }
+        // [orientation check] 同時監聽 resize 作為備援（部分舊版瀏覽器需要）
+        window.addEventListener('resize', checkOrientation);
+        // 頁面載入時立即檢查一次
+        checkOrientation();
+
+        /* ====== 初始化遊戲 ====== */
+        function initLevel() {
+            const cardsArea = document.getElementById('cards-area');
+            cardsArea.innerHTML = ''; 
+            
+            document.querySelectorAll('.basket-content').forEach(content => content.innerHTML = '');
+
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback-msg').style.display = 'none';
+            document.getElementById('level-display').innerText = `${currentLevel + 1} / 2`;
+
+            let currentCards = [];
+            if (currentLevel === 0) {
+                const creationCards       = level1Pool.filter(c => c.category === 'creation');
+                const perceptionCards     = level1Pool.filter(c => c.category === 'perception');
+                const recommendationCards = level1Pool.filter(c => c.category === 'recommendation');
+                
+                const selectedCards = [
+                    creationCards[Math.floor(Math.random() * creationCards.length)],
+                    perceptionCards[Math.floor(Math.random() * perceptionCards.length)],
+                    recommendationCards[Math.floor(Math.random() * recommendationCards.length)]
+                ];
+                currentCards = selectedCards.sort(() => Math.random() - 0.5);
+            } else {
+                currentCards = [...level2Pool].sort(() => Math.random() - 0.5);
+            }
+
+            currentActiveCardsCount = currentCards.length;
+
+            currentCards.forEach(cardData => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.category = cardData.category;
+                card.style.backgroundImage = `url('${cardData.img}')`;
+                
+                const icon = document.createElement('div');
+                icon.classList.add('result-icon');
+                card.appendChild(icon);
+
+                // [touch support] 使用 Pointer Events 統一處理滑鼠與觸控
+                card.addEventListener('pointerdown', onPointerDown);
+                
+                cardsArea.appendChild(card);
+            });
+        }
+
+        function updateScore() {
+            document.getElementById('score-display').innerText = '⭐'.repeat(score);
+        }
+
+        /* ====== [touch support] 拖曳邏輯（Pointer Events 同時支援滑鼠與觸控） ====== */
+
+        /**
+         * Pointer Events 說明：
+         * - pointerdown  → 對應 mousedown / touchstart
+         * - pointermove  → 對應 mousemove  / touchmove
+         * - pointerup    → 對應 mouseup    / touchend
+         * setPointerCapture() 確保即使手指/游標移出元素仍能持續接收事件，
+         * 等同於原本 touch 實作中 touchmove 需要在 document 層監聽的效果。
+         */
+        function onPointerDown(e) {
+            // [touch support] 若遮罩顯示中（直式）則忽略所有操作
+            if (overlay.style.display === 'flex') return;
+
+            draggedElement = e.currentTarget;
+
+            // [z-index fix] 記錄原始父元素，取消拖曳時可正確歸回
+            dragOriginParent = draggedElement.parentElement;
+
+            // [z-index fix] 取得卡片目前在視口中的絕對位置
+            const rect = draggedElement.getBoundingClientRect();
+
+            // [z-index fix] 將卡片移到 body，脫離原本的 stacking context，
+            // 確保拖曳時永遠渲染在籃子（#baskets-area）之上
+            document.body.appendChild(draggedElement);
+            draggedElement.style.position = 'fixed';
+            draggedElement.style.left     = rect.left + 'px';
+            draggedElement.style.top      = rect.top  + 'px';
+            draggedElement.style.width    = rect.width  + 'px';
+            draggedElement.style.height   = rect.height + 'px';
+            draggedElement.style.margin   = '0';
+            // [touch fix] 設置變換原點為左上角，防止 scale 時位置亂跳
+            draggedElement.style.transformOrigin = '0 0';
+
+            // [touch support] setPointerCapture 在 appendChild 後呼叫
+            draggedElement.setPointerCapture(e.pointerId);
+
+            startX = e.clientX;
+            startY = e.clientY;
+
+            draggedElement.classList.add('dragging');
+            draggedElement.style.transition = 'none';
+
+            draggedElement.addEventListener('pointermove', onPointerMove);
+            draggedElement.addEventListener('pointerup',   onPointerUp);
+            draggedElement.addEventListener('pointercancel', onPointerCancel);
+        }
+
+        function onPointerMove(e) {
+            if (!draggedElement) return;
+            // [z-index fix] transform 在 fixed 元素上同樣有效，維持相對位移邏輯不變
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            // 合併 translate 和 scale，保持拖曳中的放大效果（1.5 倍）
+            draggedElement.style.transform = `translate(${dx}px, ${dy}px) scale(1.5)`;
+        }
+
+        function onPointerUp(e) {
+            if (!draggedElement) return;
+            
+            draggedElement.removeEventListener('pointermove',   onPointerMove);
+            draggedElement.removeEventListener('pointerup',     onPointerUp);
+            draggedElement.removeEventListener('pointercancel', onPointerCancel);
+            draggedElement.releasePointerCapture(e.pointerId);
+            draggedElement.classList.remove('dragging');
+
+            // [touch support] 暫時隱藏被拖曳元素，才能正確偵測其下方的目標元素
+            draggedElement.style.visibility = 'hidden';
+            const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+            draggedElement.style.visibility = 'visible';
+            const basketBelow = elementBelow ? elementBelow.closest('.basket') : null;
+
+            // [z-index fix] 歸還 fixed 定位相關樣式，讓卡片回到正常文件流
+            draggedElement.style.position = '';
+            draggedElement.style.left     = '';
+            draggedElement.style.top      = '';
+            draggedElement.style.width    = '';
+            draggedElement.style.height   = '';
+            draggedElement.style.margin   = '';
+            // 不重設 transform，讓卡片保持放大狀態
+
+            if (basketBelow) {
+                basketBelow.querySelector('.basket-content').appendChild(draggedElement);
+                draggedElement.classList.add('placed');
+                // 放入籃子後移除拖曳能力
+                draggedElement.removeEventListener('pointerdown', onPointerDown);
+                // 放入籃子後才恢復原比例
+                draggedElement.style.transform = 'none';
+            } else {
+                // [z-index fix] 歸回原始父元素（cards-area），而非固定寫死
+                dragOriginParent.appendChild(draggedElement);
+                draggedElement.classList.remove('placed');
+                // 放回原處時也恢復原比例
+                draggedElement.style.transform = 'none';
+            }
+
+            draggedElement = null;
+            dragOriginParent = null;
+            checkLevelComplete();
+        }
+
+        /**
+         * [touch support] 處理 pointercancel（觸控被系統中斷時）
+         * 將卡片歸回原區，避免卡片消失
+         */
+        function onPointerCancel(e) {
+            if (!draggedElement) return;
+
+            draggedElement.removeEventListener('pointermove',   onPointerMove);
+            draggedElement.removeEventListener('pointerup',     onPointerUp);
+            draggedElement.removeEventListener('pointercancel', onPointerCancel);
+            draggedElement.releasePointerCapture(e.pointerId);
+            draggedElement.classList.remove('dragging');
+
+            // [z-index fix] 重設 fixed 定位相關樣式
+            draggedElement.style.position = '';
+            draggedElement.style.left     = '';
+            draggedElement.style.top      = '';
+            draggedElement.style.width    = '';
+            draggedElement.style.height   = '';
+            draggedElement.style.margin   = '';
+            draggedElement.style.transform = 'none';
+
+            // 歸回原始父元素
+            dragOriginParent.appendChild(draggedElement);
+            draggedElement.classList.remove('placed');
+            draggedElement = null;
+            dragOriginParent = null;
+        }
+
+        /* ====== 檢查與結算邏輯 ====== */
+        function checkLevelComplete() {
+            const placedCards = document.querySelectorAll('.basket-content .card');
+            if (placedCards.length === currentActiveCardsCount) {
+                verifyAnswers(placedCards);
+            }
+        }
+
+        function verifyAnswers(placedCards) {
+            let correctCount = 0;
+
+            placedCards.forEach(card => {
+                const basket     = card.closest('.basket');
+                const resultIcon = card.querySelector('.result-icon');
+                resultIcon.style.display = 'block';
+
+                if (card.dataset.category === basket.dataset.category) {
+                    card.style.borderColor = '#4CAF50'; 
+                    resultIcon.innerText   = '✅';
+                    correctCount++;
+                    score++;
+                } else {
+                    card.style.borderColor = '#F44336';
+                    resultIcon.innerText   = '❌';
+                }
+            });
+
+            updateScore();
+
+            const feedback = document.getElementById('feedback-msg');
+            feedback.innerText    = `本關完成！你答對了 ${correctCount} 題 🎉`;
+            feedback.style.color  = correctCount === currentActiveCardsCount ? '#4CAF50' : '#D32F2F';
+            feedback.style.display = 'block';
+            
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.style.display = 'inline-block';
+            
+            // 根據關卡設定按鈕文字
+            if (currentLevel === 0) {
+                nextBtn.innerText = '進入下一關';
+            } else if (currentLevel === 1) {
+                nextBtn.innerText = '得分計算';
+            }
+        }
+
+        /* ====== 按鈕事件 ====== */
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentLevel++;
+            if (currentLevel < 2) {
+                initLevel();
+            } else {
+                document.getElementById('final-score').innerText = '⭐'.repeat(score);
+                document.getElementById('result-modal').style.display = 'flex';
+            }
+        });
+
+        // 啟動遊戲
+        initLevel();
+        updateScore();
+    </script>
+</body>
+</html>

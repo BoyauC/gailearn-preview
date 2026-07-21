@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <!-- [orientation check] 確保平板正確縮放，禁止使用者手動縮放以防止誤觸 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CH1・認識 AI 的不同類型</title>
+    
+    <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0GVBHS5B6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H0GVBHS5B6');
+  </script>
+               
+    <style>
+        /* ====== 基本設定與童趣風格 CSS ====== */
+        :root {
+            --primary: #FF9AA2;
+            --secondary: #FFB7B2;
+            --accent: #FFDAC1;
+            --basket-per: #E2F0CB;
+            --basket-rec: #B5EAD7;
+            --basket-cre: #C7CEEA;
+            --text-dark: #555555;
+        }
+
+        /* [single-screen] html/body 鎖定在視口高度內，禁止捲動 */
+        html, body {
+            height: 100%;
+            /* 使用 dvh 讓高度在行動裝置上排除瀏覽器 UI 列 */
+            height: 100dvh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "微軟正黑體", "Noto Sans", "Noto Sans CJK TC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+            background-color: #fcfcfc;
+            color: var(--text-dark);
+            /* [single-screen] 禁止整頁拖曳捲動 */
+            overscroll-behavior: none;
+            /* [ios-fix] 防止 body 層級的捲動干擾 Pointer Events 拖曳（iPad Safari） */
+            touch-action: none;
+            /* [single-screen] 以 flex column 撐滿整個高度 */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ====== [orientation check] 直式提示遮罩 ====== */
+        #orientation-overlay {
+            display: none; /* 預設隱藏，JS 與 media query 控制顯示 */
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #orientation-overlay .rotate-icon {
+            font-size: 72px;
+            /* [orientation check] 旋轉動畫提示使用者 */
+            animation: rotate-hint 2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes rotate-hint {
+            0%   { transform: rotate(0deg); }
+            30%  { transform: rotate(90deg); }
+            70%  { transform: rotate(90deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        #orientation-overlay p {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            /* [single-screen] 縮減 padding，讓主要遊戲區域獲得更多空間 */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex-shrink: 0; /* 不壓縮 header */
+        }
+        
+        h1 { margin: 0; font-size: 22px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .stats { font-size: 18px; font-weight: bold; }
+
+        /* [single-screen] game-board 撐滿剩餘空間，overflow hidden 防捲動 */
+        #game-board {
+            display: flex;
+            flex: 1;
+            max-width: 960px;
+            min-width: 320px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px 15px;
+            gap: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            align-self: stretch;
+        }
+
+        #cards-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ====== 卡片設計 ====== */
+        .card {
+            width: clamp(120px, 24vw, 200px);
+            height: clamp(90px, 18vw, 150px);
+            background-color: white;
+            border: 4px solid var(--accent);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            /* [touch support] touch-action: none 防止觸控時觸發瀏覽器預設捲動行為 */
+            touch-action: none;
+            user-select: none;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            transition: width 0.3s, height 0.3s, margin 0.3s, transform 0.2s ease-out;
+        }
+        
+        /* 懸停時輕微放大 1.2 倍（僅限有真實 hover 的裝置，如滑鼠）
+           [ios-fix] touch 裝置不套用 hover transform，避免 iOS「黏住」hover
+           狀態導致 getBoundingClientRect 取得縮放後座標，拖曳時位置跳動 */
+        @media (hover: hover) {
+            .card:hover {
+                transform: scale(1.2);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            }
+        }
+        
+        .card.dragging {
+            cursor: grabbing;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            z-index: 1000;
+            /* scale 由 JS 依裝置類型決定：PC 放大 1.5 倍，平板/手機不放大 */
+        }
+
+        /* 放入籃子後的卡片樣式 */
+        .card.placed {
+            width: 55px;
+            height: 42px;
+            cursor: default;
+            box-shadow: none;
+            margin: 4px;
+        }
+
+        .card.placed .card-name {
+            font-size: 11px;
+            padding: 2px 4px;
+        }
+
+        .card-name {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .result-icon {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 28px;
+            background: white;
+            border-radius: 50%;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* ====== 籃子區設計 ====== */
+        #baskets-area {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .basket {
+            min-height: 85px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 4px dashed #ccc;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .basket.drop-target {
+            border-style: solid;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.55), 0 8px 18px rgba(0,0,0,0.12);
+            transform: scale(1.01);
+        }
+
+        .basket-title {
+            font-size: 15px;
+            font-weight: bold;
+            width: 90px;
+            text-align: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .basket-content {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 60px;
+            max-height: 60px;
+            border-left: 2px solid rgba(0,0,0,0.1);
+            padding-left: 10px;
+            overflow: hidden;
+        }
+
+        .basket[data-category="perception"]    { background-color: var(--basket-per); border-color: #9FC17D; }
+        .basket[data-category="recommendation"]{ background-color: var(--basket-rec); border-color: #69C9A1; }
+        .basket[data-category="creation"]      { background-color: var(--basket-cre); border-color: #8C99D2; }
+
+        /* ====== 控制區與訊息 ====== */
+        #controls-area {
+            text-align: center;
+            padding: 8px 0 12px;
+            flex-shrink: 0; /* [flex] 保留空間，不被遊戲區擠壓 */
+        }
+
+        #feedback-msg {
+            font-size: 22px;
+            font-weight: bold;
+            color: #D32F2F;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 36px;
+            font-size: 22px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #D67A81;
+            transition: transform 0.1s;
+            /* [touch support] 按鈕本身允許點擊，不攔截 */
+            touch-action: auto;
+        }
+        button:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        /* ====== 結果彈窗 ====== */
+        #result-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 20px;
+            max-width: 580px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: clamp(200px, 95dvh, 95vh);
+            overflow-y: auto;
+            /* [responsive] 確保內容在小螢幕上可捲動 */
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-content h2 { color: var(--primary); font-size: 28px; margin-top: 0; }
+        
+        .notes-box {
+            margin: 15px 0;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .notes-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            /* [responsive] 圖片在小平板上的最大寬度限制 */
+            max-height: 60dvh;
+        }
+
+        /* ====== 手機版（device-phone class 由 JS 寫入 html 元素）====== *
+           手機直式：可捲動版面，卡片與籃子上下排列，不限制在單一畫面
+           手機橫式：JS 顯示遮罩提示旋轉回直式                            */
+
+        /* 手機：解除固定高度，允許垂直捲動 */
+        html.device-phone,
+        html.device-phone body {
+            height: auto;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        html.device-phone body {
+            overscroll-behavior-y: auto;
+            touch-action: auto; /* 覆蓋 body 的 touch-action:none，讓頁面可捲動 */
+        }
+
+        /* 手機：版面改為上下排列，內容可超出視口高度由 scroll 處理 */
+        html.device-phone #game-board {
+            flex-direction: column;
+            overflow: visible;
+            height: auto;
+            gap: 10px;
+            padding: 10px 15px 24px;
+        }
+        html.device-phone #cards-area {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow: visible;
+            height: auto;
+            gap: 10px;
+            padding: 8px 0;
+        }
+        html.device-phone #baskets-area {
+            overflow: visible;
+            height: auto;
+            flex: none;
+            gap: 10px;
+        }
+        html.device-phone .card {
+            width: clamp(100px, 42vw, 160px);
+            height: clamp(75px, 32vw, 120px);
+            touch-action: none; /* 觸碰卡片時仍阻止 scroll，確保拖曳有效 */
+        }
+        html.device-phone .basket {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        html.device-phone .basket-title {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 8px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            padding-bottom: 5px;
+        }
+        html.device-phone .basket-content {
+            border-left: none;
+            padding-left: 0;
+            width: 100%;
+        }
+
+        /* ====== 遊戲說明頁（開始畫面） ======
+           點擊「開始」前覆蓋整個畫面。z-index 低於 orientation-overlay，
+           所以裝置方向錯誤時仍會優先顯示旋轉提示。                     */
+        #screen-start {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #FFDAC1 0%, #FFB7B2 60%, #FF9AA2 100%);
+            z-index: 5000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            box-sizing: border-box;
+            animation: fadeInStart 0.35s ease both;
+        }
+        #screen-start.hidden { display: none; }
+
+        @keyframes fadeInStart {
+            from { opacity: 0; transform: scale(0.98); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .start-card {
+            background: white;
+            border-radius: 24px;
+            padding: clamp(20px, 3vw, 32px) clamp(18px, 3vw, 30px);
+            max-width: 560px;
+            width: 100%;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .start-title {
+            color: var(--primary);
+            font-size: clamp(22px, 4.5vw, 30px);
+            margin: 0 0 6px;
+            text-shadow: 2px 2px 0 rgba(255,154,162,0.25);
+            font-weight: 800;
+        }
+
+        .start-subtitle {
+            color: var(--text-dark);
+            font-size: clamp(13px, 2.2vw, 16px);
+            margin: 0 0 18px;
+            font-weight: 600;
+        }
+
+        .start-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .start-legend-item {
+            display: grid;
+            grid-template-columns: 56px 1fr;
+            gap: 12px;
+            align-items: center;
+            text-align: left;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 3px dashed #ccc;
+        }
+
+        .start-legend-item[data-cat="perception"]    { background-color: var(--basket-per); border-color: #9FC17D; }
+        .start-legend-item[data-cat="recommendation"]{ background-color: var(--basket-rec); border-color: #69C9A1; }
+        .start-legend-item[data-cat="creation"]      { background-color: var(--basket-cre); border-color: #8C99D2; }
+
+        .start-legend-icon {
+            font-size: 32px;
+            text-align: center;
+            line-height: 1;
+        }
+        .start-legend-item strong {
+            display: block;
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+        .start-legend-item p {
+            margin: 0;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.55;
+        }
+
+        .start-note {
+            background: #FFF6E6;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #666;
+            margin: 0 0 18px;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        #start-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            font-size: clamp(20px, 3.2vw, 26px);
+            letter-spacing: 0.4em;
+            text-indent: 0.4em;
+            border-radius: 32px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #D67A81;
+            font-weight: bold;
+            font-family: inherit;
+            touch-action: auto;
+            min-width: 60%;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        #start-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #D67A81;
+        }
+
+        /* 手機版：說明頁從頂部開始捲動，避免內容被裁切 */
+        html.device-phone #screen-start {
+            align-items: flex-start;
+            padding: 14px;
+        }
+        html.device-phone .start-legend-item {
+            grid-template-columns: 48px 1fr;
+        }
+        html.device-phone .start-legend-icon {
+            font-size: 26px;
+        }
+
+        /* ====== 桌機／平板共用優化：放大左側卡片、縮小右側分類框 ====== */
+        html.device-pc #game-board,
+        html.device-tablet #game-board {
+            max-width: 1280px;
+            padding: 12px 20px;
+            gap: 16px;
+        }
+        html.device-pc #cards-area,
+        html.device-tablet #cards-area {
+            flex: 1.45;
+            gap: 10px;
+            justify-content: space-evenly;
+        }
+        html.device-pc #baskets-area,
+        html.device-tablet #baskets-area {
+            flex: 0.72;
+            gap: 10px;
+        }
+        html.device-tablet #game-board {
+            max-width: none;
+            padding: 8px 28px 6px;
+            gap: 8px;
+        }
+        html.device-tablet #cards-area {
+            flex: 1 1 auto;
+            gap: clamp(8px, 1.2dvh, 12px);
+            justify-content: center;
+        }
+        html.device-tablet #baskets-area {
+            flex: 0 0 clamp(360px, 36vw, 460px);
+            gap: clamp(8px, 1.6dvh, 14px);
+            justify-content: center;
+        }
+        html.device-pc .card {
+            width: clamp(240px, 31vw, 330px);
+            height: clamp(180px, 23vw, 248px);
+        }
+        html.device-tablet .card {
+            height: clamp(200px, calc((100% - 28px) / 3), 300px);
+            aspect-ratio: 4 / 3;
+            width: auto;
+        }
+        html.device-pc .basket,
+        html.device-tablet .basket {
+            min-height: 72px;
+            padding: 8px 10px;
+            border-width: 3px;
+            border-radius: 18px;
+        }
+        html.device-pc .basket-title,
+        html.device-tablet .basket-title {
+            width: 78px;
+            margin-right: 8px;
+            font-size: 13px;
+        }
+        html.device-pc .basket-content,
+        html.device-tablet .basket-content {
+            min-height: 50px;
+            max-height: 50px;
+            gap: 6px;
+            padding-left: 8px;
+        }
+        html.device-pc .card.placed,
+        html.device-tablet .card.placed {
+            width: 50px;
+            height: 38px;
+            margin: 3px;
+        }
+        html.device-pc .result-icon,
+        html.device-tablet .result-icon {
+            font-size: 24px;
+            bottom: -8px;
+            right: -8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ① 遊戲說明頁（仿 CH6 三色燈遊戲開始頁設計）：點選「開始」後才進入遊戲 -->
+    <section id="screen-start" aria-labelledby="start-title">
+        <div class="start-card">
+            <h1 id="start-title" class="start-title">🤖 認識 AI 的不同類型</h1>
+            <p class="start-subtitle">將圖片卡拖曳到對應的籃子裡，挑戰兩個關卡！</p>
+
+            <div class="start-legend">
+                <div class="start-legend-item" data-cat="perception">
+                    <span class="start-legend-icon" aria-hidden="true">👁️</span>
+                    <div>
+                        <strong>感知型</strong>
+                        <p>用視覺、聽覺等感官接收並理解資訊，例如智慧音箱、臉部辨識。</p>
+                    </div>
+                </div>
+                <div class="start-legend-item" data-cat="recommendation">
+                    <span class="start-legend-icon" aria-hidden="true">🧐</span>
+                    <div>
+                        <strong>建議分析型</strong>
+                        <p>分析資料後給出建議或預測，例如健康建議、影片推薦、導航建議。</p>
+                    </div>
+                </div>
+                <div class="start-legend-item" data-cat="creation">
+                    <span class="start-legend-icon" aria-hidden="true">🎨</span>
+                    <div>
+                        <strong>創作型</strong>
+                        <p>產生全新的內容，例如 AI 寫詩、寫故事、產生圖像。</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="start-note">
+                📌 玩法：把每張卡片拖到正確的籃子，全部放完會自動評分。<br>
+                答錯也沒關係 — 錯誤是學習的一部分哦！
+            </p>
+
+            <button type="button" id="start-btn">開 始</button>
+        </div>
+    </section>
+
+    <!-- [orientation check] 直式時顯示的提示遮罩，橫式時自動隱藏 -->
+    <div id="orientation-overlay">
+        <div class="rotate-icon">📱</div>
+        <p>請將裝置旋轉為<br>橫式（landscape）<br>以開始遊戲 🎮</p>
+    </div>
+
+    <header>
+        <h1>認識 AI 的不同類型</h1>
+        <div class="stats">
+            關卡: <span id="level-display">1 / 2</span> | 
+            得分: <span id="score-display"></span>
+        </div>
+    </header>
+
+    <main id="game-board" role="region" aria-label="AI 配對遊戲區域">
+        <div id="cards-area"></div>
+        
+        <div id="baskets-area">
+            <div class="basket" data-category="perception">
+                <div class="basket-title">👁️ 感知型</div>
+                <div class="basket-content"></div>
+            </div>
+            <div class="basket" data-category="recommendation">
+                <div class="basket-title">🧐 建議分析型</div>
+                <div class="basket-content"></div>
+            </div>
+            <div class="basket" data-category="creation">
+                <div class="basket-title">🎨 創作型</div>
+                <div class="basket-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="controls-area">
+        <div id="feedback-msg"></div>
+        <button id="next-btn" style="display: none;">過關！進入下一關</button>
+    </div>
+
+    <div id="result-modal">
+        <div class="modal-content">
+            <h2>🎉 這就是AI的類型囉！</h2>
+            <p style="font-size: 22px; font-weight: bold;">總得分：<span id="final-score"></span></p>
+            
+            <div class="notes-box">
+                <img src="Assets/Images/Whatis.webp" alt="知識小筆記">
+            </div>
+            
+            <button onclick="location.reload()">再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        /* ====== 遊戲資料設定 (依據 CSV 檔案清單) ====== */
+        const level1Pool = [
+            { id: 'c1-1',   name: 'AI寫詩',   category: 'creation',       img: 'Assets/Images/C1-1.webp' },
+            { id: 'c1-2',   name: 'AI寫故事', category: 'creation',       img: 'Assets/Images/C1-2.webp' },
+            { id: 'sen1-1', name: '智慧音箱', category: 'perception',     img: 'Assets/Images/Sen1-1.webp' },
+            { id: 'sen1-2', name: '臉部辨識', category: 'perception',     img: 'Assets/Images/Sen1-2.webp' },
+            { id: 'sug1-1', name: '健康建議', category: 'recommendation', img: 'Assets/Images/Sug1-1.webp' },
+            { id: 'sug1-2', name: '影片建議', category: 'recommendation', img: 'Assets/Images/Sug1-2.webp' }
+        ];
+
+        const level2Pool = [
+            { id: 'sen2-1', name: '行車守護', category: 'perception',     img: 'Assets/Images/Sen2-1.webp' },
+            { id: 'sug2-1', name: '導航建議', category: 'recommendation', img: 'Assets/Images/Sug2-1.webp' },
+            { id: 'c2-1',   name: 'AI-e度',  category: 'creation',       img: 'Assets/Images/C2-1.webp' }
+        ];
+
+        /* ====== 裝置類型偵測（最優先執行，CSS class 決定版面） ======
+           pc     → 無觸控（滑鼠），單螢幕，hover + 拖曳放大 1.5x
+           tablet → 觸控，短邊 ≥ 600px（iPad 等），單螢幕橫式，拖曳不放大
+           phone  → 觸控，短邊 < 600px（iPhone 等），直式可捲動，拖曳不放大  */
+        const DEVICE = (() => {
+            if (navigator.maxTouchPoints === 0) return 'pc';
+            return Math.min(screen.width, screen.height) >= 600 ? 'tablet' : 'phone';
+        })();
+        document.documentElement.classList.add('device-' + DEVICE);
+
+        /* ====== 狀態變數 ====== */
+        let currentLevel = 0;
+        let score = 0;
+        let currentActiveCardsCount = 0;
+        
+        // [touch support] 拖曳狀態（統一給 Pointer Events 使用）
+        let draggedElement = null;
+        let dragClone = null;
+        let hoveredBasket = null;
+        let startX = 0, startY = 0;
+        let dragOriginParent = null;
+
+        // [android-fix] autoscroll 狀態（rAF 迴圈，避免在 pointermove 內直接呼叫 scrollBy）
+        let autoScrollRAF = null;
+        let autoScrollDir = 0;
+
+        function _tickAutoScroll() {
+            if (autoScrollDir !== 0 && dragClone) {
+                window.scrollBy(0, autoScrollDir * 8);
+                autoScrollRAF = requestAnimationFrame(_tickAutoScroll);
+            } else {
+                autoScrollRAF = null;
+            }
+        }
+        function _startAutoScroll(dir) {
+            if (autoScrollDir === dir) return;
+            autoScrollDir = dir;
+            if (!autoScrollRAF) autoScrollRAF = requestAnimationFrame(_tickAutoScroll);
+        }
+        function _stopAutoScroll() {
+            autoScrollDir = 0;
+            if (autoScrollRAF) { cancelAnimationFrame(autoScrollRAF); autoScrollRAF = null; }
+        }
+
+        function setHoveredBasket(nextBasket) {
+            if (hoveredBasket === nextBasket) return;
+            if (hoveredBasket) hoveredBasket.classList.remove('drop-target');
+            hoveredBasket = nextBasket;
+            if (hoveredBasket) hoveredBasket.classList.add('drop-target');
+        }
+
+        function cancelCurrentDrag(pointerId = null) {
+            if (!draggedElement || !dragClone) return;
+
+            _stopAutoScroll();
+            if (DEVICE === 'phone') document.body.style.touchAction = '';
+
+            draggedElement.removeEventListener('pointermove',   onPointerMove);
+            draggedElement.removeEventListener('pointerup',     onPointerUp);
+            draggedElement.removeEventListener('pointercancel', onPointerCancel);
+
+            if (pointerId !== null) {
+                try { draggedElement.releasePointerCapture(pointerId); } catch (_) {}
+            }
+
+            if (dragClone.parentNode) {
+                dragClone.parentNode.removeChild(dragClone);
+            }
+            dragClone = null;
+
+            draggedElement.style.opacity    = '1';
+            draggedElement.style.transition = '';
+            draggedElement.classList.remove('dragging');
+            setHoveredBasket(null);
+            draggedElement   = null;
+            dragOriginParent = null;
+        }
+
+        function onGlobalPointerDown(e) {
+            if (!draggedElement || !dragClone) return;
+            if (e.pointerType === 'touch' && !e.isPrimary) {
+                e.preventDefault();
+                cancelCurrentDrag();
+            }
+        }
+
+        /* ====== [orientation check] 直式／橫式偵測邏輯 ====== */
+        const overlay = document.getElementById('orientation-overlay');
+
+        /**
+         * 依裝置類型控制旋轉提示遮罩：
+         *   PC     → 永遠不顯示
+         *   tablet → 直式顯示（要求旋轉為橫式）
+         *   phone  → 橫式顯示（要求旋轉回直式）
+         */
+        const overlayMsg = overlay.querySelector('p');
+        function checkOrientation() {
+            if (DEVICE === 'pc') {
+                overlay.style.display = 'none';
+                return;
+            }
+            if (DEVICE === 'phone') {
+                // 手機偏好直式（scrollable 版面）；橫式太矮，提示旋轉回直式
+                if (window.matchMedia('(orientation: landscape)').matches) {
+                    overlayMsg.innerHTML = '請將裝置旋轉為<br>直式（portrait）<br>以開始遊戲 🎮';
+                    overlay.style.display = 'flex';
+                } else {
+                    overlay.style.display = 'none';
+                }
+                return;
+            }
+            // tablet：要求橫式
+            if (window.matchMedia('(orientation: portrait)').matches) {
+                overlayMsg.innerHTML = '請將裝置旋轉為<br>橫式（landscape）<br>以開始遊戲 🎮';
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+
+        // [orientation check] 監聽方向變更事件（現代瀏覽器優先使用 screen.orientation）
+        if (screen.orientation && screen.orientation.addEventListener) {
+            screen.orientation.addEventListener('change', checkOrientation);
+        }
+        // [orientation check] 同時監聽 resize 作為備援（部分舊版瀏覽器需要）
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('pointerdown', onGlobalPointerDown, { capture: true });
+        // 頁面載入時立即檢查一次
+        checkOrientation();
+
+        /* ====== 初始化遊戲 ====== */
+        function initLevel() {
+            const cardsArea = document.getElementById('cards-area');
+            cardsArea.innerHTML = ''; 
+            
+            document.querySelectorAll('.basket-content').forEach(content => content.innerHTML = '');
+
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback-msg').style.display = 'none';
+            document.getElementById('level-display').innerText = `${currentLevel + 1} / 2`;
+
+            let currentCards = [];
+            if (currentLevel === 0) {
+                const creationCards       = level1Pool.filter(c => c.category === 'creation');
+                const perceptionCards     = level1Pool.filter(c => c.category === 'perception');
+                const recommendationCards = level1Pool.filter(c => c.category === 'recommendation');
+                
+                const selectedCards = [
+                    creationCards[Math.floor(Math.random() * creationCards.length)],
+                    perceptionCards[Math.floor(Math.random() * perceptionCards.length)],
+                    recommendationCards[Math.floor(Math.random() * recommendationCards.length)]
+                ];
+                currentCards = selectedCards.sort(() => Math.random() - 0.5);
+            } else {
+                currentCards = [...level2Pool].sort(() => Math.random() - 0.5);
+            }
+
+            currentActiveCardsCount = currentCards.length;
+
+            currentCards.forEach(cardData => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.category = cardData.category;
+                card.style.backgroundImage = `url('${cardData.img}')`;
+                
+                const icon = document.createElement('div');
+                icon.classList.add('result-icon');
+                card.appendChild(icon);
+
+                // [touch support] 使用 Pointer Events 統一處理滑鼠與觸控
+                card.addEventListener('pointerdown', onPointerDown);
+                
+                cardsArea.appendChild(card);
+            });
+        }
+
+        function updateScore() {
+            document.getElementById('score-display').innerText = '⭐'.repeat(score);
+        }
+
+        /* ====== [touch support] 拖曳邏輯（幽靈替身方式，解決 iOS 第三張卡跳動問題） ======
+           原始元素留在 DOM 原位並持有 pointer capture；
+           視覺拖曳由 clone 負責，clone 設 pointer-events:none 可直接穿透偵測籃子，
+           避免 DOM re-parent 導致 iOS Safari 使 pointerId 失效。               */
+
+        function onPointerDown(e) {
+            if (overlay.style.display === 'flex') return;
+            e.preventDefault();
+
+            draggedElement = e.currentTarget;
+
+            // 清除殘留 hover transform，確保 getBoundingClientRect 取得實際座標
+            draggedElement.style.transform = 'none';
+            draggedElement.style.transition = 'none';
+
+            const rect = draggedElement.getBoundingClientRect();
+
+            // 原始元素留在原地持有 capture，不做 DOM 移動（避免 iOS pointerId 失效）
+            draggedElement.setPointerCapture(e.pointerId);
+
+            // 建立幽靈替身負責視覺拖曳
+            dragClone = draggedElement.cloneNode(true);
+            dragClone.style.position       = 'fixed';
+            dragClone.style.left           = rect.left + 'px';
+            dragClone.style.top            = rect.top  + 'px';
+            dragClone.style.width          = rect.width  + 'px';
+            dragClone.style.height         = rect.height + 'px';
+            dragClone.style.margin         = '0';
+            dragClone.style.transformOrigin = '0 0';
+            dragClone.style.pointerEvents  = 'none'; // 穿透替身直接偵測籃子
+            dragClone.style.zIndex         = '1000';
+            dragClone.style.willChange     = 'transform'; // [android-fix] GPU 合成層，避免高解析/高刷新率卡頓
+            dragClone.classList.add('dragging');
+            document.body.appendChild(dragClone);
+
+            // [android-fix] 拖曳期間鎖定 body touch-action，
+            // 防止 Android Chrome 把觸控搶走當成頁面捲動（導致 pointercancel）
+            if (DEVICE === 'phone') document.body.style.touchAction = 'none';
+
+            // 原始元素隱藏（opacity 保留佔位，避免 Flexbox 重新排版）
+            draggedElement.style.opacity = '0';
+
+            startX = e.clientX;
+            startY = e.clientY;
+
+            draggedElement.addEventListener('pointermove',   onPointerMove);
+            draggedElement.addEventListener('pointerup',     onPointerUp);
+            draggedElement.addEventListener('pointercancel', onPointerCancel);
+        }
+
+        function onPointerMove(e) {
+            if (!dragClone) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            // PC 拖曳時放大 1.5 倍；平板適度放大，手機維持原尺寸
+            const scaleStr = DEVICE === 'pc' ? ' scale(1.5)' : (DEVICE === 'tablet' ? ' scale(1.2)' : '');
+            dragClone.style.transform = `translate(${dx}px, ${dy}px)${scaleStr}`;
+            const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+            const basketBelow  = elementBelow ? elementBelow.closest('.basket') : null;
+            setHoveredBasket(basketBelow);
+            dragClone.style.opacity = basketBelow ? '0.58' : '1';
+
+            // [android-fix] 手機：拖曳到視口邊緣時觸發 rAF autoscroll（不直接呼叫 scrollBy）
+            if (DEVICE === 'phone') {
+                const EDGE = 80;
+                const vh = window.innerHeight;
+                if      (e.clientY > vh - EDGE) _startAutoScroll(1);
+                else if (e.clientY < EDGE)       _startAutoScroll(-1);
+                else                             _stopAutoScroll();
+            }
+        }
+
+        function onPointerUp(e) {
+            if (!draggedElement || !dragClone) return;
+
+            _stopAutoScroll();
+            if (DEVICE === 'phone') document.body.style.touchAction = ''; // 恢復可捲動
+
+            draggedElement.removeEventListener('pointermove',   onPointerMove);
+            draggedElement.removeEventListener('pointerup',     onPointerUp);
+            draggedElement.removeEventListener('pointercancel', onPointerCancel);
+            draggedElement.releasePointerCapture(e.pointerId);
+
+            // 替身有 pointer-events:none，elementFromPoint 直接穿透找到籃子
+            const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+            const basketBelow  = elementBelow ? elementBelow.closest('.basket') : null;
+
+            document.body.removeChild(dragClone);
+            dragClone = null;
+
+            draggedElement.style.opacity    = '1';
+            draggedElement.style.transition = '';
+            draggedElement.classList.remove('dragging');
+            setHoveredBasket(null);
+
+            if (basketBelow) {
+                basketBelow.querySelector('.basket-content').appendChild(draggedElement);
+                draggedElement.classList.add('placed');
+                draggedElement.removeEventListener('pointerdown', onPointerDown);
+            }
+
+            draggedElement    = null;
+            dragOriginParent  = null;
+            checkLevelComplete();
+        }
+
+        function onPointerCancel(e) {
+            if (!draggedElement || !dragClone) return;
+
+            _stopAutoScroll();
+            if (DEVICE === 'phone') document.body.style.touchAction = ''; // 恢復可捲動
+
+            draggedElement.removeEventListener('pointermove',   onPointerMove);
+            draggedElement.removeEventListener('pointerup',     onPointerUp);
+            draggedElement.removeEventListener('pointercancel', onPointerCancel);
+            draggedElement.releasePointerCapture(e.pointerId);
+
+            document.body.removeChild(dragClone);
+            dragClone = null;
+
+            draggedElement.style.opacity    = '1';
+            draggedElement.style.transition = '';
+            draggedElement.classList.remove('dragging');
+            setHoveredBasket(null);
+            draggedElement    = null;
+            dragOriginParent  = null;
+        }
+
+        /* ====== 檢查與結算邏輯 ====== */
+        function checkLevelComplete() {
+            const placedCards = document.querySelectorAll('.basket-content .card');
+            if (placedCards.length === currentActiveCardsCount) {
+                verifyAnswers(placedCards);
+            }
+        }
+
+        function verifyAnswers(placedCards) {
+            let correctCount = 0;
+
+            placedCards.forEach(card => {
+                const basket     = card.closest('.basket');
+                const resultIcon = card.querySelector('.result-icon');
+                resultIcon.style.display = 'block';
+
+                if (card.dataset.category === basket.dataset.category) {
+                    card.style.borderColor = '#4CAF50'; 
+                    resultIcon.innerText   = '✅';
+                    correctCount++;
+                    score++;
+                } else {
+                    card.style.borderColor = '#F44336';
+                    resultIcon.innerText   = '❌';
+                }
+            });
+
+            updateScore();
+
+            const feedback = document.getElementById('feedback-msg');
+            feedback.innerText    = `本關完成！你答對了 ${correctCount} 題 🎉`;
+            if (correctCount === currentActiveCardsCount) {
+                feedback.innerText = `本關完成！你答對了 ${correctCount} 題 🎉`;
+            } else {
+                feedback.innerText = `本關完成！你答對了 ${correctCount} 題，再加油 💪`;
+            }
+            feedback.style.color  = correctCount === currentActiveCardsCount ? '#4CAF50' : '#D32F2F';
+            feedback.style.display = 'block';
+            
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.style.display = 'inline-block';
+            
+            // 根據關卡設定按鈕文字
+            if (currentLevel === 0) {
+                nextBtn.innerText = '進入下一關';
+            } else if (currentLevel === 1) {
+                nextBtn.innerText = '得分計算';
+            }
+        }
+
+        /* ====== 按鈕事件 ====== */
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentLevel++;
+            if (currentLevel < 2) {
+                initLevel();
+            } else {
+                document.getElementById('final-score').innerText = '⭐'.repeat(score);
+                document.getElementById('result-modal').style.display = 'flex';
+            }
+        });
+
+        // 啟動遊戲：等使用者按下「開始」鈕後才執行 initLevel()，
+        // 在此之前由 #screen-start 說明頁覆蓋整個畫面。遊戲邏輯本身未變動。
+        (function setupStartScreen() {
+            const startScreen = document.getElementById('screen-start');
+            const startBtn = document.getElementById('start-btn');
+            if (!startScreen || !startBtn) {
+                // 萬一說明頁元素缺失，仍照舊啟動遊戲
+                initLevel();
+                updateScore();
+                return;
+            }
+            const beginGame = () => {
+                startScreen.classList.add('hidden');
+                initLevel();
+                updateScore();
+            };
+            startBtn.addEventListener('click', beginGame, { once: true });
+        })();
+    </script>
+</body>
+</html>

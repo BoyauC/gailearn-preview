@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI 應用配對</title>
+    <style>
+        /* ====== 基本設定與童趣風格 CSS ====== */
+        :root {
+            --primary: #FF9AA2;
+            --secondary: #FFB7B2;
+            --accent: #FFDAC1;
+            --basket-per: #E2F0CB;
+            --basket-rec: #B5EAD7;
+            --basket-cre: #C7CEEA;
+            --text-dark: #555555;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "微軟正黑體", "Noto Sans", "Noto Sans CJK TC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+            background-color: #fcfcfc;
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            overscroll-behavior: none;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        h1 { margin: 0; font-size: 24px; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+        .stats { font-size: 20px; font-weight: bold; }
+
+        #game-board {
+            display: flex;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 15px;
+            gap: 20px;
+        }
+
+        #cards-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        /* 卡片設計 */
+        .card {
+            width: 300px;
+            height: 225px;
+            background-color: white;
+            border: 4px solid var(--accent);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            touch-action: none;
+            user-select: none;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            transition: width 0.3s, height 0.3s, margin 0.3s;
+        }
+        
+        .card.dragging {
+            cursor: grabbing;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        /* 放入籃子後的卡片樣式 */
+        .card.placed {
+            width: 60px;
+            height: 45px;
+            cursor: default;
+            box-shadow: none;
+            margin: 5px;
+        }
+
+        .card.placed .card-name {
+            font-size: 12px;
+            padding: 2px 5px;
+        }
+
+        .card-name {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .result-icon {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            font-size: 28px;
+            background: white;
+            border-radius: 50%;
+            display: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 籃子區設計 */
+        #baskets-area {
+            flex: 0.8;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .basket {
+            min-height: 100px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 4px dashed #ccc;
+            transition: all 0.3s;
+        }
+
+        .basket-title {
+            font-size: 16px;
+            font-weight: bold;
+            width: 100px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .basket-content {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 80px;
+            border-left: 2px solid rgba(0,0,0,0.1);
+            padding-left: 10px;
+        }
+
+        .basket[data-category="perception"] { background-color: var(--basket-per); border-color: #9FC17D; }
+        .basket[data-category="recommendation"] { background-color: var(--basket-rec); border-color: #69C9A1; }
+        .basket[data-category="creation"] { background-color: var(--basket-cre); border-color: #8C99D2; }
+
+        /* 控制區與訊息 */
+        #controls-area {
+            text-align: center;
+            margin-top: 10px;
+            padding-bottom: 30px;
+        }
+
+        #feedback-msg {
+            font-size: 24px;
+            font-weight: bold;
+            color: #D32F2F;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #D67A81;
+            transition: transform 0.1s;
+        }
+        button:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+
+        /* 結果彈窗 */
+        #result-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { color: var(--primary); font-size: 32px; margin-top: 0; }
+        
+        .notes-box {
+            margin: 20px 0;
+        }
+        .notes-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            #game-board { flex-direction: column; }
+            #cards-area { flex-direction: row; justify-content: space-around; flex-wrap: wrap; min-height: auto; }
+            .basket { flex-direction: column; align-items: flex-start; }
+            .basket-title { width: 100%; text-align: left; margin-bottom: 10px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 5px; }
+            .basket-content { border-left: none; padding-left: 0; width: 100%; }
+            .card { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🤖 AI 應用配對遊戲</h1>
+        <div class="stats">
+            關卡: <span id="level-display">1 / 2</span> | 
+            得分: <span id="score-display"></span>
+        </div>
+    </header>
+
+    <main id="game-board">
+        <div id="cards-area"></div>
+        
+        <div id="baskets-area">
+            <div class="basket" data-category="perception">
+                <div class="basket-title">👁️ 感知型</div>
+                <div class="basket-content"></div>
+            </div>
+            <div class="basket" data-category="recommendation">
+                <div class="basket-title">🧭 建議分析型</div>
+                <div class="basket-content"></div>
+            </div>
+            <div class="basket" data-category="creation">
+                <div class="basket-title">🎨 創作型</div>
+                <div class="basket-content"></div>
+            </div>
+        </div>
+    </main>
+
+    <div id="controls-area">
+        <div id="feedback-msg"></div>
+        <button id="next-btn" style="display: none;">過關！進入下一關</button>
+    </div>
+
+    <div id="result-modal">
+        <div class="modal-content">
+            <h2>🎉 恭喜完成所有挑戰！</h2>
+            <p style="font-size: 24px; font-weight: bold;">總得分：<span id="final-score"></span></p>
+            
+            <div class="notes-box">
+                <img src="Assets/Images/Whatis.png" alt="知識小筆記">
+            </div>
+            
+            <button onclick="location.reload()">再玩一次</button>
+        </div>
+    </div>
+
+    <script>
+        /* ====== 遊戲資料設定 (依據 CSV 檔案清單) ====== */
+        // 第一關的題庫 (共 6 張)
+        const level1Pool = [
+            { id: 'c1-1', name: 'AI寫詩', category: 'creation', img: 'Assets/Images/C1-1.png' },
+            { id: 'c1-2', name: 'AI寫故事', category: 'creation', img: 'Assets/Images/C1-2.png' },
+            { id: 'sen1-1', name: '智慧音箱', category: 'perception', img: 'Assets/Images/Sen1-1.png' },
+            { id: 'sen1-2', name: '臉部辨識', category: 'perception', img: 'Assets/Images/Sen1-2.png' },
+            { id: 'sug1-1', name: '健康建議', category: 'recommendation', img: 'Assets/Images/Sug1-1.png' },
+            { id: 'sug1-2', name: '影片建議', category: 'recommendation', img: 'Assets/Images/Sug1-2.png' }
+        ];
+
+        // 第二關的題庫 (固定 3 張)
+        const level2Pool = [
+            { id: 'sen2-1', name: '行車守護', category: 'perception', img: 'Assets/Images/Sen2-1.png' },
+            { id: 'sug2-1', name: '導航建議', category: 'recommendation', img: 'Assets/Images/Sug2-1.png' },
+            { id: 'c2-1', name: 'AI-e度', category: 'creation', img: 'Assets/Images/C2-1.png' }
+        ];
+
+        /* ====== 狀態變數 ====== */
+        let currentLevel = 0;
+        let score = 0;
+        let currentActiveCardsCount = 0; // 記錄當前關卡應該要有幾張卡片
+        
+        let draggedElement = null;
+        let startX = 0, startY = 0;
+
+        /* ====== 初始化遊戲 ====== */
+        function initLevel() {
+            const cardsArea = document.getElementById('cards-area');
+            cardsArea.innerHTML = ''; 
+            
+            // 清空所有籃子裡的卡片
+            document.querySelectorAll('.basket-content').forEach(content => content.innerHTML = '');
+
+            // 隱藏訊息與按鈕
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('feedback-msg').style.display = 'none';
+            document.getElementById('level-display').innerText = `${currentLevel + 1} / 2`;
+
+            // 準備當前關卡的卡片
+            let currentCards = [];
+            if (currentLevel === 0) {
+                // 第一關：從每個類別中各抽 1 張
+                const creationCards = level1Pool.filter(card => card.category === 'creation');
+                const perceptionCards = level1Pool.filter(card => card.category === 'perception');
+                const recommendationCards = level1Pool.filter(card => card.category === 'recommendation');
+                
+                const selectedCards = [
+                    creationCards[Math.floor(Math.random() * creationCards.length)],
+                    perceptionCards[Math.floor(Math.random() * perceptionCards.length)],
+                    recommendationCards[Math.floor(Math.random() * recommendationCards.length)]
+                ];
+                
+                // 打亂顯示順序
+                currentCards = selectedCards.sort(() => Math.random() - 0.5);
+            } else {
+                // 第二關：直接使用 3 張並打亂顯示順序
+                currentCards = [...level2Pool].sort(() => Math.random() - 0.5);
+            }
+
+            currentActiveCardsCount = currentCards.length;
+
+            // 生成隨機卡片至畫面上
+            currentCards.forEach(cardData => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.category = cardData.category;
+                card.style.backgroundImage = `url('${cardData.img}')`;
+                
+                // 加入對錯圖示的預留區塊
+                const icon = document.createElement('div');
+                icon.classList.add('result-icon');
+                card.appendChild(icon);
+
+                // 綁定拖曳事件
+                card.addEventListener('pointerdown', onPointerDown);
+                
+                cardsArea.appendChild(card);
+            });
+        }
+
+        function updateScore() {
+            document.getElementById('score-display').innerText = '⭐'.repeat(score);
+        }
+
+        /* ====== 拖曳邏輯 ====== */
+        function onPointerDown(e) {
+            draggedElement = e.target;
+            draggedElement.setPointerCapture(e.pointerId);
+            startX = e.clientX;
+            startY = e.clientY;
+
+            draggedElement.classList.add('dragging');
+            draggedElement.style.transition = 'none';
+
+            draggedElement.addEventListener('pointermove', onPointerMove);
+            draggedElement.addEventListener('pointerup', onPointerUp);
+        }
+
+        function onPointerMove(e) {
+            if (!draggedElement) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            draggedElement.style.transform = `translate(${dx}px, ${dy}px)`;
+        }
+
+        function onPointerUp(e) {
+            if (!draggedElement) return;
+            
+            draggedElement.removeEventListener('pointermove', onPointerMove);
+            draggedElement.removeEventListener('pointerup', onPointerUp);
+            draggedElement.releasePointerCapture(e.pointerId);
+            draggedElement.classList.remove('dragging');
+
+            // 偵測放開時底下的元素
+            draggedElement.style.visibility = 'hidden';
+            const elementBelow = document.elementFromPoint(e.clientX, e.clientY);
+            draggedElement.style.visibility = 'visible';
+            const basketBelow = elementBelow ? elementBelow.closest('.basket') : null;
+
+            // 歸零 transform 以配合 appendChild
+            draggedElement.style.transform = 'none';
+
+            if (basketBelow) {
+                // 放進籃子：固定圖片並取消拖曳能力
+                basketBelow.querySelector('.basket-content').appendChild(draggedElement);
+                draggedElement.classList.add('placed');
+                draggedElement.removeEventListener('pointerdown', onPointerDown);
+            } else {
+                // 放錯位置，彈回左側原始區域
+                document.getElementById('cards-area').appendChild(draggedElement);
+                draggedElement.classList.remove('placed');
+            }
+
+            draggedElement = null;
+
+            // 檢查是否全部放置完畢
+            checkLevelComplete();
+        }
+
+        /* ====== 檢查與結算邏輯 ====== */
+        function checkLevelComplete() {
+            // 計算畫面上「已經放入籃子」的卡片總數
+            const placedCards = document.querySelectorAll('.basket-content .card');
+            
+            // 只要放入籃子的數量等於當前關卡應該出的題目數 (3張)，就進行結算
+            if (placedCards.length === currentActiveCardsCount) {
+                verifyAnswers(placedCards);
+            }
+        }
+
+        function verifyAnswers(placedCards) {
+            let correctCount = 0;
+
+            placedCards.forEach(card => {
+                const basket = card.closest('.basket');
+                const resultIcon = card.querySelector('.result-icon');
+                resultIcon.style.display = 'block';
+
+                if (card.dataset.category === basket.dataset.category) {
+                    card.style.borderColor = '#4CAF50'; 
+                    resultIcon.innerText = '✅';
+                    correctCount++;
+                    score++;
+                } else {
+                    card.style.borderColor = '#F44336';
+                    resultIcon.innerText = '❌';
+                }
+            });
+
+            updateScore();
+
+            const feedback = document.getElementById('feedback-msg');
+            feedback.innerText = `本關完成！你答對了 ${correctCount} 題 🎉`;
+            feedback.style.color = correctCount === currentActiveCardsCount ? '#4CAF50' : '#D32F2F';
+            feedback.style.display = 'block';
+            
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        /* ====== 按鈕事件 ====== */
+        document.getElementById('next-btn').addEventListener('click', () => {
+            currentLevel++;
+            if (currentLevel < 2) {
+                initLevel();
+            } else {
+                // 顯示知識小筆記與最終分數
+                document.getElementById('final-score').innerText = '⭐'.repeat(score);
+                document.getElementById('result-modal').style.display = 'flex';
+            }
+        });
+
+        // 啟動遊戲
+        initLevel();
+        updateScore();
+    </script>
+</body>
+</html>

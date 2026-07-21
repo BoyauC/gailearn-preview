@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>RTBF 提示詞拼圖挑戰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Noto Sans TC',sans-serif;background:#F5F3EE;}
+.screen{display:none;width:100%;height:100%;}
+.screen.active{display:flex;}
+
+/* ── HOME ── */
+#home-screen{flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.home-title{font-size:30px;font-weight:700;color:#222;}
+.home-sub{font-size:15px;color:#666;}
+.rtbf-preview{display:flex;gap:10px;}
+.chip{padding:8px 18px;border-radius:8px;font-size:17px;font-weight:700;border-width:2px;border-style:solid;}
+.chip-R{background:#DBEAFE;border-color:#93C5FD;color:#1E40AF;}
+.chip-T{background:#DCFCE7;border-color:#86EFAC;color:#166534;}
+.chip-B{background:#FEF3C7;border-color:#FCD34D;color:#92400E;}
+.chip-F{background:#EDE9FE;border-color:#C4B5FD;color:#5B21B6;}
+
+/* ── INTRO ── */
+#intro-screen{flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px;}
+.intro-tag{font-size:13px;font-weight:700;padding:4px 16px;border-radius:20px;background:#E5E7EB;color:#374151;}
+.intro-bad{font-size:17px;color:#991B1B;background:#FEE2E2;border:1px solid #F87171;border-radius:8px;padding:12px 22px;}
+.intro-goal{font-size:16px;color:#166534;background:#DCFCE7;border:1px solid #86EFAC;border-radius:8px;padding:12px 22px;text-align:center;max-width:560px;line-height:1.7;}
+.intro-hint{font-size:14px;color:#555;max-width:560px;text-align:center;line-height:1.8;white-space:pre-line;}
+
+/* ── GAME ── */
+#game-screen{flex-direction:column;background:#ECEAE4;}
+.game-header{display:grid;grid-template-columns:minmax(140px,auto) 1fr auto;align-items:center;gap:16px;padding:8px 18px;background:#F5F3EE;border-bottom:1px solid #D4D0C8;flex-shrink:0;}
+.game-level-name{font-size:17px;font-weight:700;color:#333;}
+.game-goal{font-size:14px;font-weight:500;color:#444;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#play-area{flex:1;position:relative;overflow:hidden;}
+
+/* Box inside play-area (single coordinate space) */
+#box-container{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:5px;}
+.box-hint{font-size:11px;color:#888;white-space:nowrap;}
+#box-grid{position:relative;background:#D4D0C8;border:2px solid #B8B4AC;border-radius:6px;padding:3px;}
+.box-cell{position:absolute;width:54px;height:54px;background:#EAE7DF;border:1.5px dashed #C4C0B8;border-radius:3px;}
+
+/* ── BLOCKS ── */
+.block{position:absolute;z-index:10;touch-action:none;cursor:grab;user-select:none;}
+.block.dragging{cursor:grabbing;z-index:200;}
+.block-inner{position:relative;}
+.block-cell-div{position:absolute;width:54px;height:54px;border-radius:4px;border-width:2px;border-style:solid;}
+.block-R .block-cell-div{background:#DBEAFE;border-color:#93C5FD;}
+.block-T .block-cell-div{background:#DCFCE7;border-color:#86EFAC;}
+.block-B .block-cell-div{background:#FEF3C7;border-color:#FCD34D;}
+.block-F .block-cell-div{background:#EDE9FE;border-color:#C4B5FD;}
+
+.block.error .block-cell-div{background:#FEE2E2!important;border-color:#F87171!important;animation:shake .45s ease;}
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-5px);}40%{transform:translateX(5px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+
+.block-letter{position:absolute;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;pointer-events:none;}
+.block-R .block-letter{color:#1E40AF;}
+.block-T .block-letter{color:#166534;}
+.block-B .block-letter{color:#92400E;}
+.block-F .block-letter{color:#5B21B6;}
+
+/* Text label below block */
+.block-tag{
+  position:absolute;left:50%;transform:translateX(-50%);
+  background:rgba(255,255,255,0.95);border:1px solid #ddd;border-radius:6px;
+  padding:5px 8px;font-size:11px;line-height:1.5;text-align:center;
+  pointer-events:none;min-width:120px;max-width:210px;word-break:break-all;
+}
+.block-R .block-tag{color:#1E40AF;}
+.block-T .block-tag{color:#166534;}
+.block-B .block-tag{color:#92400E;}
+.block-F .block-tag{color:#5B21B6;}
+.block-tag strong{font-weight:700;}
+
+/* Rotation hint icon on block */
+.block-rotate-hint{
+  position:absolute;top:3px;right:4px;
+  font-size:15px;opacity:0.45;pointer-events:none;line-height:1;
+}
+
+/* Labels panel above box grid */
+#box-labels{display:flex;flex-direction:column;gap:3px;width:100%;margin-bottom:5px;}
+.box-label-item{
+  display:flex;align-items:flex-start;gap:6px;
+  padding:4px 8px;border-radius:6px;font-size:11px;line-height:1.4;
+  border-width:1px;border-style:solid;
+}
+.box-label-key{font-weight:700;flex-shrink:0;font-size:12px;min-width:14px;}
+.box-label-R{background:#DBEAFE;color:#1E40AF;border-color:#93C5FD;}
+.box-label-T{background:#DCFCE7;color:#166534;border-color:#86EFAC;}
+.box-label-B{background:#FEF3C7;color:#92400E;border-color:#FCD34D;}
+.box-label-F{background:#EDE9FE;color:#5B21B6;border-color:#C4B5FD;}
+
+/* ── BUTTONS ── */
+.btn{padding:12px 36px;font-size:17px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+.btn-primary{background:#3B82F6;color:#fff;}
+.btn-primary:active{background:#2563EB;}
+.btn-hint{padding:7px 18px;background:#FEF3C7;border:2px solid #FCD34D;color:#92400E;font-size:14px;font-weight:700;border-radius:8px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;}
+
+/* ── HINT OVERLAY ── */
+#hint-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:1500;}
+#hint-overlay.active{display:flex;}
+.hint-card{background:#fff;border-radius:14px;padding:26px 32px;max-width:460px;width:92%;}
+.hint-title{font-size:18px;font-weight:700;margin-bottom:12px;}
+.hint-body{font-size:15px;color:#444;line-height:2;white-space:pre-line;}
+
+/* ── SUCCESS OVERLAY ── */
+#success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);align-items:center;justify-content:center;z-index:2000;}
+#success-overlay.active{display:flex;}
+.success-card{background:#fff;border-radius:16px;padding:30px 38px;max-width:580px;width:92%;max-height:88vh;overflow-y:auto;}
+.success-title{font-size:22px;font-weight:700;color:#166534;margin-bottom:14px;}
+.s-bad{font-size:13px;color:#991B1B;background:#FEE2E2;border-radius:8px;padding:8px 14px;margin-bottom:14px;}
+.prompt-lines{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.pline{opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s;padding:8px 14px;border-radius:8px;font-size:14px;line-height:1.6;}
+.pline.vis{opacity:1;transform:translateY(0);}
+.pline-R{background:#DBEAFE;color:#1E40AF;}
+.pline-T{background:#DCFCE7;color:#166534;}
+.pline-B{background:#FEF3C7;color:#92400E;}
+.pline-F{background:#EDE9FE;color:#5B21B6;}
+
+/* ── ERROR TOAST ── */
+#err-toast{display:none;position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#FEE2E2;border:2px solid #F87171;color:#991B1B;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:700;z-index:1800;white-space:nowrap;}
+
+/* ── FINAL ── */
+#final-screen{flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:30px;}
+.final-title{font-size:26px;font-weight:700;color:#222;}
+.rtbf-cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.rcard{border-radius:10px;padding:14px 18px;min-width:150px;max-width:190px;border-width:2px;border-style:solid;}
+.rcard-R{background:#DBEAFE;border-color:#93C5FD;color:#1E40AF;}
+.rcard-T{background:#DCFCE7;border-color:#86EFAC;color:#166534;}
+.rcard-B{background:#FEF3C7;border-color:#FCD34D;color:#92400E;}
+.rcard-F{background:#EDE9FE;border-color:#C4B5FD;color:#5B21B6;}
+.rcard-key{font-size:20px;font-weight:700;}
+.rcard-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.rcard-desc{font-size:11px;line-height:1.6;}
+
+@media (max-width:640px){
+  .game-header{grid-template-columns:1fr auto;gap:8px 12px;}
+  .game-goal{grid-column:1 / -1;grid-row:2;font-size:12px;text-align:left;white-space:normal;}
+}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home-screen" class="screen active">
+  <div class="home-title">RTBF 提示詞拼圖挑戰</div>
+  <div class="home-sub">學會組合精準 AI 提示詞的四個關鍵元素</div>
+  <div class="rtbf-preview">
+    <div class="chip chip-R">R 角色</div>
+    <div class="chip chip-T">T 任務</div>
+    <div class="chip chip-B">B 背景</div>
+    <div class="chip chip-F">F 格式</div>
+  </div>
+  <button class="btn btn-primary" onclick="startGame()">開始挑戰</button>
+</div>
+
+<!-- INTRO -->
+<div id="intro-screen" class="screen">
+  <div class="intro-tag" id="intro-tag"></div>
+  <div class="intro-bad" id="intro-bad"></div>
+  <div class="intro-goal" id="intro-goal"></div>
+  <div class="intro-hint" id="intro-hint-txt"></div>
+  <button class="btn btn-primary" onclick="enterGame()">我準備好了 →</button>
+</div>
+
+<!-- GAME -->
+<div id="game-screen" class="screen">
+  <div class="game-header">
+    <div class="game-level-name" id="game-level-name"></div>
+    <div class="game-goal" id="game-goal"></div>
+    <button class="btn-hint" id="hint-btn" onclick="showHint()">💡 提示</button>
+  </div>
+  <div id="play-area">
+    <div id="box-container">
+      <div id="box-labels"></div>
+      <div class="box-hint">↻ 點方塊旋轉選項，填滿箱子且四個選項都正確才過關</div>
+      <div id="box-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HINT OVERLAY -->
+<div id="hint-overlay" onclick="hideHint()">
+  <div class="hint-card" onclick="event.stopPropagation()">
+    <div class="hint-title">💡 本關提示</div>
+    <div class="hint-body" id="hint-body"></div>
+    <br>
+    <button class="btn btn-primary" style="width:100%" onclick="hideHint()">知道了</button>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div id="success-overlay">
+  <div class="success-card">
+    <div class="success-title">🎉 答對了！精準提示詞解鎖！</div>
+    <div class="s-bad" id="s-bad"></div>
+    <div class="prompt-lines" id="prompt-lines"></div>
+    <button class="btn btn-primary" style="width:100%" id="next-btn" onclick="nextLevel()"></button>
+  </div>
+</div>
+
+<!-- ERROR TOAST -->
+<div id="err-toast"></div>
+
+<!-- FINAL -->
+<div id="final-screen" class="screen">
+  <div class="final-title">🏆 恭喜完成四關！</div>
+  <div style="font-size:15px;color:#555;">你已掌握 RTBF 精準提示詞的四個關鍵元素</div>
+  <div class="rtbf-cards">
+    <div class="rcard rcard-R"><div class="rcard-key">R</div><div class="rcard-name">Role 角色</div><div class="rcard-desc">AI 扮演誰<br>我希望 AI 像誰一樣回答我？</div></div>
+    <div class="rcard rcard-T"><div class="rcard-key">T</div><div class="rcard-name">Task 任務</div><div class="rcard-desc">AI 要做什麼<br>我要 AI 幫我「做什麼」？</div></div>
+    <div class="rcard rcard-B"><div class="rcard-key">B</div><div class="rcard-name">Background 背景</div><div class="rcard-desc">你的情況<br>AI 需要知道我哪些「狀況與需求」？</div></div>
+    <div class="rcard rcard-F"><div class="rcard-key">F</div><div class="rcard-name">Format 格式</div><div class="rcard-desc">怎麼呈現<br>我希望答案「長什麼樣子」？</div></div>
+  </div>
+  <button class="btn btn-primary" onclick="restartGame()">再玩一次</button>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────
+   Constants
+───────────────────────────────────────────── */
+const CELL = 54, GAP = 3, STEP = 57;
+const COLS = 5, ROWS = 3;
+
+/* ─────────────────────────────────────────────
+   Shape definitions [row, col] per rotation
+───────────────────────────────────────────── */
+const SHAPES = {
+  R: [
+    [[0,0],[0,1],[0,2],[1,0],[1,2]],   // rot 0: ∩ shape
+    [[0,0],[0,1],[1,1],[2,0],[2,1]],   // rot 1
+    [[0,0],[0,2],[1,0],[1,1],[1,2]],   // rot 2
+    [[0,0],[0,1],[1,0],[2,0],[2,1]]    // rot 3
+  ],
+  T: [
+    [[0,0],[0,1],[0,2],[1,1]],         // rot 0: T shape
+    [[0,0],[1,0],[1,1],[2,0]],         // rot 1
+    [[0,1],[1,0],[1,1],[1,2]],         // rot 2
+    [[0,0],[0,1],[1,0],[2,0]]          // rot 3
+  ],
+  B: [
+    [[0,0],[1,0]],                     // rot 0: vertical
+    [[0,0],[0,1]]                      // rot 1: horizontal
+  ],
+  F: [
+    [[0,0],[0,1],[1,0],[2,0]],         // rot 0: L shape
+    [[0,0],[1,0],[1,1],[1,2]],         // rot 1
+    [[0,1],[1,1],[2,0],[2,1]],         // rot 2
+    [[0,0],[0,1],[0,2],[1,2]]          // rot 3
+  ]
+};
+
+/*
+  DESIGN NOTE: Each level uses a mathematically verified tiling where the
+  four block shapes (at their specific rotation indices) fill the 5×3 grid
+  exactly. The options arrays are ordered so that the correct answer text
+  appears at the required rotation index for each block.
+
+  Level 1 (R=0,T=2,B=0,F=0): easy — only T needs 2 rotations from start
+  Level 2 (R=1,T=0,B=1,F=1): medium — most blocks need 1 rotation
+  Level 3 (R=2,T=0,B=0,F=0): medium — only R needs 2 rotations
+  Level 4 (R=3,T=2,B=1,F=3): hard — all blocks need rotating to specific pos
+  Level 5 (R=1,T=0,B=1,F=1): free play — random topic, no hint
+
+  Verified tilings:
+  Lv1: R rot0@(0,0) T rot2@(1,0) B rot0@(1,4) F rot0@(0,3)
+  Lv2: R rot1@(0,3) T rot0@(0,0) B rot1@(1,2) F rot1@(1,0)
+  Lv3: R rot2@(1,0) T rot0@(0,0) B rot0@(1,4) F rot0@(0,3)
+  Lv4: R rot3@(0,0) T rot2@(1,2) B rot1@(1,1) F rot3@(0,2)
+  Lv5: same verified tiling as Lv2
+*/
+const LEVELS = [
+  {
+    name: '第1關｜🎨 圖像創作',
+    tag: '第 1 關 / 5',
+    bad: '❌ 模糊問法：「幫我畫一個角色」',
+    goal: '✅ 目標：找出最能生成奇幻插畫提示詞的 RTBF 組合',
+    introHint: '操作說明：\n點擊方塊 → 旋轉90度，文字跟著切換\n拖移方塊 → 放入底部箱子\n四個方塊填滿箱子，且每個都顯示正確選項，才算過關！',
+    hint: 'R ＝ 插畫設計師（擅長奇幻風格）\nT ＝ 幫你寫生圖提示詞\nB ＝ 奇幻森林魔法少女，學校美術作業\nF ＝ 分外型、服裝、背景三部分，各兩句',
+    promptLines: [
+      { key:'R', text:'你是一位專業的插畫設計師，擅長奇幻風格' },
+      { key:'T', text:'請幫我寫一段用來生成圖片的提示詞，描述角色的外型和場景' },
+      { key:'B', text:'我想畫一個奇幻森林裡的魔法少女，這是學校美術作業' },
+      { key:'F', text:'用條列方式分成外型、服裝、背景三個部分，各寫兩句描述' }
+    ],
+    // correctIndex: R=0, T=2, B=0, F=0
+    correctIndex: { R:0, T:2, B:0, F:0 },
+    options: {
+      R: [
+        '你是一位專業的插畫設計師，擅長奇幻風格',      // 0 ← correct
+        '你是一位高中美術老師，熟悉各種繪畫技法',
+        '你是一位視覺藝術家，專門設計遊戲角色',
+        '你是一位動畫公司的概念設計師'
+      ],
+      T: [
+        '請幫我分析這幅畫裡面用了哪些顏色和構圖技巧',
+        '請幫我設計一個角色的個性、能力和背景故事',
+        '請幫我寫一段用來生成圖片的提示詞，描述角色的外型和場景', // 2 ← correct
+        '請幫我列出三種不同的畫風，並說明各自的視覺特色'
+      ],
+      B: [
+        '我想畫一個奇幻森林裡的魔法少女，這是學校美術作業', // 0 ← correct
+        '我完全不懂怎麼描述圖片，第一次使用 AI 生圖'
+      ],
+      F: [
+        '用條列方式分成外型、服裝、背景三個部分，各寫兩句描述', // 0 ← correct
+        '先給我整體風格說明，再逐一列出五個視覺細節',
+        '用100字以內描述，讓 AI 生圖工具可以直接使用',
+        '附上顏色代碼與構圖建議，分成前景和背景說明'
+      ]
+    }
+  },
+  {
+    name: '第2關｜🇬🇧 英文練習',
+    tag: '第 2 關 / 5',
+    bad: '❌ 模糊問法：「幫我練英文」',
+    goal: '✅ 目標：組合出最適合英文對話練習的 RTBF 提示詞',
+    introHint: '想想看：\n哪個角色最親切有耐心？\n任務要夠具體（點餐對話）？\n背景說明你是什麼程度？\n格式讓練習中能即時學習？',
+    hint: '哪個角色最親切有耐心？\n任務要夠具體（點餐對話）？\n背景說明你是國一、英文普通？\n格式讓你說錯時能立刻學到正確說法？',
+    promptLines: [
+      { key:'R', text:'你是一位親切有耐心的英文對話練習夥伴' },
+      { key:'T', text:'請用英文和我練習去餐廳點餐的對話，每次只說一句等我回應' },
+      { key:'B', text:'我是國一學生，英文普通，只學過基本句型和日常單字' },
+      { key:'F', text:'每次我說錯了，請用中文輕輕提醒我哪裡錯，再示範正確說法' }
+    ],
+    // correctIndex: R=1, T=0, B=1, F=1
+    correctIndex: { R:1, T:0, B:1, F:1 },
+    options: {
+      R: [
+        '你是一位擅長糾正發音的外籍英文老師',
+        '你是一位親切有耐心的英文對話練習夥伴',         // 1 ← correct
+        '你是一位專門幫學生準備英文考試的補習班老師',
+        '你是一位翻譯專家，精通中英文互譯'
+      ],
+      T: [
+        '請用英文和我練習去餐廳點餐的對話，每次只說一句等我回應', // 0 ← correct
+        '請幫我修改這篇英文自我介紹，指出三個文法錯誤並說明原因',
+        '請幫我解釋現在完成式和過去式的差別，並各給兩個例句',
+        '請幫我寫一封英文感謝信給幫助過我的老師，大約100字'
+      ],
+      B: [
+        '我很害怕說錯英文，需要有人溫柔地幫我糾正',
+        '我是國一學生，英文普通，只學過基本句型和日常單字' // 1 ← correct
+      ],
+      F: [
+        '用中英對照方式呈現，每個句子下面附上中文翻譯',
+        '每次我說錯了，請用中文輕輕提醒我哪裡錯，再示範正確說法', // 1 ← correct
+        '每次對話結束後整理三個我常犯的錯誤',
+        '用表格列出重要句型，左欄中文右欄英文對照'
+      ]
+    }
+  },
+  {
+    name: '第3關｜🔬 科學探索',
+    tag: '第 3 關 / 5',
+    bad: '❌ 模糊問法：「幫我做氣候變遷報告」',
+    goal: '✅ 目標：為國中生的五分鐘報告找到最合適的 RTBF 組合',
+    introHint: '小提示：\nR 要選能讓同學「聽懂」科學的角色\nF 的格式中要包含台灣本地的例子',
+    hint: 'R 要選能讓同學「聽懂」科學的角色\nF 的格式要包含台灣本地的例子',
+    promptLines: [
+      { key:'R', text:'你是一位擅長用生活例子解釋科學的科普老師' },
+      { key:'T', text:'請幫我整理氣候變遷的三個主要原因和兩個具體影響' },
+      { key:'B', text:'我是國二學生，下週要上台報告五分鐘，班上同學對這個主題完全陌生' },
+      { key:'F', text:'用條列方式整理，每個重點不超過兩句話，最後加一個台灣本地的例子' }
+    ],
+    // correctIndex: R=2, T=0, B=0, F=0
+    correctIndex: { R:2, T:0, B:0, F:0 },
+    options: {
+      R: [
+        '你是一位專門研究環境議題的自然科學研究員',
+        '你是一位製作科學節目的主持人，說話生動有趣',
+        '你是一位擅長用生活例子解釋科學的科普老師',  // 2 ← correct
+        '你是一位專門撰寫科普文章的環境教育專家'
+      ],
+      T: [
+        '請幫我整理氣候變遷的三個主要原因和兩個具體影響', // 0 ← correct
+        '請幫我設計一個在家就能做的科學小實驗，說明步驟和原理',
+        '請幫我解釋光合作用的過程，分成吸收、轉換、輸出三個階段',
+        '請幫我比較哺乳類和爬蟲類在體溫調節上的三個主要差異'
+      ],
+      B: [
+        '我是國二學生，下週要上台報告五分鐘，班上同學對這個主題完全陌生', // 0 ← correct
+        '我看了課本三遍還是看不懂，需要用更簡單的方式說明'
+      ],
+      F: [
+        '用條列方式整理，每個重點不超過兩句話，最後加一個台灣本地的例子', // 0 ← correct
+        '分成原因、過程、結果三個段落，每段不超過50字',
+        '用國中生聽得懂的語言，避免使用太專業的科學術語',
+        '先給一個生活化的比喻，再用步驟說明科學原理'
+      ]
+    }
+  },
+  {
+    name: '第4關｜🌍 歷史地理',
+    tag: '第 4 關 / 5',
+    bad: '❌ 模糊問法：「介紹電競歷史」',
+    goal: '✅ 目標：為電競初學者打造最精準的歷史介紹提示詞',
+    introHint: '靠你自己了！\n想想電競初學者最需要什麼樣的說明方式。',
+    hint: '靠你自己了！\n想想電競初學者最需要什麼樣的說明方式。',
+    promptLines: [
+      { key:'R', text:'你是一位同時懂遊戲文化和歷史發展的說書老師' },
+      { key:'T', text:'請介紹電子競技從1990年代到現在的發展，說明三個重要轉折點' },
+      { key:'B', text:'我是喜歡打電動的國中生，對電競歷史完全陌生，想了解它怎麼從遊戲變成運動' },
+      { key:'F', text:'用時間軸方式說明三個重要時期，每個時期配一個具體的代表事件' }
+    ],
+    // correctIndex: R=3, T=2, B=1, F=3
+    correctIndex: { R:3, T:2, B:1, F:3 },
+    options: {
+      R: [
+        '你是一位在博物館工作的歷史解說員，擅長說故事',
+        '你是一位專門帶學生認識世界地理的旅遊導覽員',
+        '你是一位高中社會科老師，熟悉台灣和世界歷史',
+        '你是一位同時懂遊戲文化和歷史發展的說書老師'  // 3 ← correct
+      ],
+      T: [
+        '請幫我比較台灣和日本在飲食文化上的三個相似點和三個差異',
+        '請幫我整理二次世界大戰對亞洲造成的影響，分政治、經濟、社會三方面',
+        '請介紹電子競技從1990年代到現在的發展，說明三個重要轉折點', // 2 ← correct
+        '請幫我介紹絲路的路線和它對東西方貿易帶來的兩個重大改變'
+      ],
+      B: [
+        '我要做社會科報告，對這個主題不熟悉，需要從基礎開始了解',
+        '我是喜歡打電動的國中生，對電競歷史完全陌生，想了解它怎麼從遊戲變成運動' // 1 ← correct
+      ],
+      F: [
+        '用故事方式說明，帶入真實的人物名字和地點，300字以內',
+        '先給整體背景說明，再用條列方式列出五個關鍵發展',
+        '用表格整理，左欄時間、中欄事件、右欄影響',
+        '用時間軸方式說明三個重要時期，每個時期配一個具體的代表事件' // 3 ← correct
+      ]
+    }
+  },
+  {
+    name: '第5關｜🧩 自由挑戰',
+    tag: '第 5 關 / 5',
+    bad: '❌ 自由主題：請依畫面提供的主題自行判斷最佳組合',
+    goal: '✅ 目標：依隨機主題配出唯一正確的 RTBF 組合',
+    introHint: '自由關卡：\n系統會隨機提供主題，不提供提示。\n請依照主題和四類選項，自己判斷最完整、最精準的 RTBF 組合。',
+    hint: '',
+    hasHint: false,
+    promptLines: [],
+    // correctIndex: R=1, T=0, B=1, F=1
+    correctIndex: { R:1, T:0, B:1, F:1 },
+    options: { R: [], T: [], B: [], F: [] }
+  }
+];
+
+const FREE_LEVEL_TOPICS = [
+  {
+    topic: '畫作色彩與構圖分析',
+    audience: '國中生，正在學習欣賞插畫和繪畫作品',
+    result: '分析一幅畫裡面用了哪些顏色和構圖技巧',
+    format: '分成色彩、構圖、視覺效果三部分，各用兩句話說明'
+  },
+  {
+    topic: '奇幻角色設定',
+    audience: '國中生，想為美術作業中的角色補上完整設定',
+    result: '設計一個角色的個性、能力和背景故事',
+    format: '分成個性、能力、背景故事三段，每段兩到三句'
+  },
+  {
+    topic: '不同畫風特色',
+    audience: '第一次接觸 AI 生圖的國中生，想比較不同視覺風格',
+    result: '列出三種不同的畫風，並說明各自的視覺特色',
+    format: '用表格整理，包含畫風名稱、特色、適合的題材'
+  },
+  {
+    topic: '英文自我介紹修改',
+    audience: '國一學生，已經寫好一篇簡短英文自我介紹',
+    result: '修改英文自我介紹，指出三個文法錯誤並說明原因',
+    format: '先列出錯誤句，再給正確句，最後用中文說明原因'
+  },
+  {
+    topic: '英文時態比較',
+    audience: '國中生，常混淆現在完成式和過去式',
+    result: '解釋現在完成式和過去式的差別，並各給兩個例句',
+    format: '用比較表呈現差異，再附上四個例句和中文翻譯'
+  },
+  {
+    topic: '英文感謝信',
+    audience: '國中生，想寫信感謝曾經幫助自己的老師',
+    result: '寫一封英文感謝信給幫助過我的老師，大約100字',
+    format: '分成開頭問候、感謝原因、具體回憶、結尾祝福'
+  },
+  {
+    topic: '居家科學小實驗',
+    audience: '國中生，想用家裡容易取得的材料做科學展示',
+    result: '設計一個在家就能做的科學小實驗，說明步驟和原理',
+    format: '列出材料、步驟、觀察結果、背後原理和安全提醒'
+  },
+  {
+    topic: '光合作用解釋',
+    audience: '國中生，正在複習自然課的植物單元',
+    result: '解釋光合作用的過程，分成吸收、轉換、輸出三個階段',
+    format: '每個階段用一句生活化比喻，再補一句科學說明'
+  },
+  {
+    topic: '動物體溫調節比較',
+    audience: '國中生，想理解哺乳類和爬蟲類的差異',
+    result: '比較哺乳類和爬蟲類在體溫調節上的三個主要差異',
+    format: '用表格比較，最後加上一個日常觀察例子'
+  },
+  {
+    topic: '台日飲食文化比較',
+    audience: '國中社會科報告小組，想做跨文化比較',
+    result: '比較台灣和日本在飲食文化上的三個相似點和三個差異',
+    format: '分成相似點、差異點、總結觀察三部分'
+  },
+  {
+    topic: '二次世界大戰對亞洲的影響',
+    audience: '國中生，對二戰歷史只有基本認識',
+    result: '整理二次世界大戰對亞洲造成的影響，分政治、經濟、社會三方面',
+    format: '每個方面列兩個重點，並用一句話說明影響'
+  },
+  {
+    topic: '絲路介紹',
+    audience: '國中生，第一次認識東西方交流史',
+    result: '介紹絲路的路線和它對東西方貿易帶來的兩個重大改變',
+    format: '依照路線、交易物品、文化交流、重大改變整理'
+  }
+];
+
+function buildFreeLevel() {
+  const topic = FREE_LEVEL_TOPICS[Math.floor(Math.random() * FREE_LEVEL_TOPICS.length)];
+  const level = LEVELS[LEVELS.length - 1];
+  const role = `你是一位擅長把「${topic.topic}」轉成清楚內容的學習設計教練`;
+  const task = `請幫我完成「${topic.topic}」：${topic.result}`;
+  const background = `使用者情境：${topic.audience}`;
+  const format = `請依照「${topic.format}」的格式輸出`;
+
+  level.bad = `❌ 自由主題：「${topic.topic}」`;
+  level.goal = `✅ 目標：不看提示，為「${topic.topic}」配出唯一正確的 RTBF 組合`;
+  level.promptLines = [
+    { key:'R', text: role },
+    { key:'T', text: task },
+    { key:'B', text: background },
+    { key:'F', text: format }
+  ];
+  level.options = {
+    R: [
+      '你是一位嚴格批改作文的國文老師',
+      role,
+      '你是一位專門研究統計資料的分析師',
+      '你是一位擅長設計闖關活動的遊戲主持人'
+    ],
+    T: [
+      task,
+      '請幫我出五題選擇題，測驗大家是否理解內容',
+      '請幫我把這個主題改寫成一首押韻短詩',
+      '請幫我整理這個主題的十個相關名詞解釋'
+    ],
+    B: [
+      '使用者情境：我要準備正式研究論文，需要大量引用文獻',
+      background
+    ],
+    F: [
+      '請用一整段散文完成，不需要分段或標示重點',
+      format,
+      '請用表情符號開頭，每一行都不超過八個字',
+      '請用英文輸出，並附上每個單字的中文解釋'
+    ]
+  };
+}
+
+/* ─────────────────────────────────────────────
+   State
+───────────────────────────────────────────── */
+let currentLevel = 0;
+/*
+  blocks[key] = {
+    el,
+    rotation: number  — controls BOTH shape and displayed text option
+    placed:   boolean
+    gx, gy:   grid position (col, row); -1 if unplaced
+    ox, oy:   scatter origin (play-area coords)
+  }
+*/
+let blocks = {};
+let grid   = []; // ROWS × COLS → null | key
+let setupRafId = null; // guard against multiple rAF callbacks
+
+/* ─────────────────────────────────────────────
+   Screen helpers
+───────────────────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function startGame()   { currentLevel = 0; showIntro(); }
+function restartGame() { currentLevel = 0; showIntro(); }
+function nextLevel() {
+  document.getElementById('success-overlay').classList.remove('active');
+  if (currentLevel < LEVELS.length - 1) { currentLevel++; showIntro(); }
+  else { showScreen('final-screen'); }
+}
+
+function getHeaderGoal(level) {
+  return level.goal.replace(/^✅\s*目標：/, '');
+}
+
+/* ─────────────────────────────────────────────
+   Intro
+───────────────────────────────────────────── */
+function showIntro() {
+  if (currentLevel === LEVELS.length - 1) buildFreeLevel();
+  const lv = LEVELS[currentLevel];
+  document.getElementById('intro-tag').textContent      = lv.tag;
+  document.getElementById('intro-bad').textContent      = lv.bad;
+  document.getElementById('intro-goal').textContent     = lv.goal;
+  document.getElementById('intro-hint-txt').textContent = lv.introHint;
+  showScreen('intro-screen');
+}
+
+/* ─────────────────────────────────────────────
+   Game setup
+───────────────────────────────────────────── */
+function enterGame() {
+  setupGame();
+  showScreen('game-screen');
+  if (currentLevel === 0) { showHint(); setTimeout(hideHint, 5000); }
+}
+
+function setupGame() {
+  const lv = LEVELS[currentLevel];
+  document.getElementById('game-level-name').textContent = lv.name;
+  document.getElementById('game-goal').textContent = getHeaderGoal(lv);
+  document.getElementById('hint-btn').style.display = lv.hasHint === false ? 'none' : '';
+  document.getElementById('box-labels').innerHTML = '';
+
+  // Cancel any pending rAF from a previous setupGame call
+  if (setupRafId !== null) { cancelAnimationFrame(setupRafId); setupRafId = null; }
+
+  grid = Array.from({length: ROWS}, () => Array(COLS).fill(null));
+
+  // Build 5×3 box grid
+  const boxGrid = document.getElementById('box-grid');
+  boxGrid.innerHTML = '';
+  const gw = COLS * CELL + (COLS - 1) * GAP;
+  const gh = ROWS * CELL + (ROWS - 1) * GAP;
+  boxGrid.style.width  = (gw + 6) + 'px';
+  boxGrid.style.height = (gh + 6) + 'px';
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const d = document.createElement('div');
+      d.className = 'box-cell';
+      d.style.left = (3 + c * STEP) + 'px';
+      d.style.top  = (3 + r * STEP) + 'px';
+      boxGrid.appendChild(d);
+    }
+  }
+
+  // Remove old block elements
+  const playArea = document.getElementById('play-area');
+  playArea.querySelectorAll('.block').forEach(b => b.remove());
+  blocks = {};
+
+  // Defer scatter placement until layout is ready
+  setupRafId = requestAnimationFrame(() => {
+    setupRafId = null;
+    const paRect = playArea.getBoundingClientRect();
+    const bcRect = document.getElementById('box-container').getBoundingClientRect();
+    const scatterH = bcRect.top - paRect.top - 14;
+    const scatterW = paRect.width;
+
+    const spots = [
+      { x: scatterW * 0.04, y: 8 },
+      { x: scatterW * 0.33, y: 28 },
+      { x: scatterW * 0.60, y: 8 },
+      { x: scatterW * 0.77, y: Math.min(scatterH * 0.28, 40) }
+    ];
+
+    ['R','T','B','F'].forEach((key, i) => {
+      const { x, y } = spots[i];
+      const el = buildBlock(key, 0, lv.options[key]);
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+      playArea.appendChild(el);
+      blocks[key] = { el, rotation: 0, placed: false, gx: -1, gy: -1, ox: x, oy: y };
+      attachEvents(el, key);
+    });
+  });
+}
+
+/* ─────────────────────────────────────────────
+   Block building & rendering
+───────────────────────────────────────────── */
+function shapeBounds(shape) {
+  let mr = 0, mc = 0;
+  shape.forEach(([r, c]) => { mr = Math.max(mr, r); mc = Math.max(mc, c); });
+  return { rows: mr + 1, cols: mc + 1 };
+}
+
+function buildBlock(key, rotation, options) {
+  const el = document.createElement('div');
+  el.className = `block block-${key}`;
+  renderBlock(el, key, rotation, options);
+  return el;
+}
+
+function renderBlock(el, key, rotation, options) {
+  const allShapes = SHAPES[key];
+  const numShapes = allShapes.length;
+  const rot  = ((rotation % numShapes) + numShapes) % numShapes;
+  const shape = allShapes[rot];
+  const { rows, cols } = shapeBounds(shape);
+  const w = cols * STEP - GAP;
+  const h = rows * STEP - GAP;
+
+  el.innerHTML = '';
+
+  // Cell container (also the drag target)
+  const inner = document.createElement('div');
+  inner.className = 'block-inner';
+  inner.style.cssText = `position:relative;width:${w}px;height:${h}px;`;
+
+  shape.forEach(([r, c]) => {
+    const d = document.createElement('div');
+    d.className = 'block-cell-div';
+    d.style.left = (c * STEP) + 'px';
+    d.style.top  = (r * STEP) + 'px';
+    inner.appendChild(d);
+  });
+
+  // Letter overlay
+  const letter = document.createElement('div');
+  letter.className = 'block-letter';
+  letter.style.cssText = `left:0;top:0;width:${w}px;height:${h}px;pointer-events:none;`;
+  letter.textContent = key;
+  inner.appendChild(letter);
+
+  // Rotation hint icon
+  const rotHint = document.createElement('div');
+  rotHint.className = 'block-rotate-hint';
+  rotHint.textContent = '↻';
+  inner.appendChild(rotHint);
+
+  el.appendChild(inner);
+
+  // Text label — shows option at current rotation index
+  const numOpts = options.length;
+  const optIdx  = rot % numOpts;
+  const tag = document.createElement('div');
+  tag.className = 'block-tag';
+  tag.style.top = (h + 5) + 'px';
+  tag.innerHTML = `<strong>${key}｜</strong>${options[optIdx]}`;
+  el.appendChild(tag);
+
+  el.style.width = w + 'px';
+}
+
+/* ─────────────────────────────────────────────
+   Pointer Events: drag + tap-to-rotate
+   Rotating changes BOTH shape AND text (coupled).
+   Lift from grid only when drag is confirmed.
+───────────────────────────────────────────── */
+function attachEvents(el, key) {
+  let active = false, moved = false, wasPlaced = false;
+  let startPx, startPy, startEx, startEy, tapStart;
+
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    active    = true;
+    moved     = false;
+    tapStart  = Date.now();
+    startPx   = e.clientX; startPy = e.clientY;
+    startEx   = parseFloat(el.style.left) || 0;
+    startEy   = parseFloat(el.style.top)  || 0;
+    wasPlaced = blocks[key].placed;
+    el.style.zIndex = 100;
+  });
+
+  el.addEventListener('pointermove', e => {
+    if (!active) return;
+    e.preventDefault();
+    const dx = e.clientX - startPx, dy = e.clientY - startPy;
+    // Lift from grid only when drag is confirmed (>6px) to prevent state desync on taps
+    if (!moved && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+      moved = true;
+      if (wasPlaced) liftFromGrid(key);
+      el.classList.add('dragging');
+    }
+    if (moved) {
+      el.style.left = (startEx + dx) + 'px';
+      el.style.top  = (startEy + dy) + 'px';
+    }
+  });
+
+  el.addEventListener('pointerup', e => {
+    if (!active) return;
+    active = false;
+    el.classList.remove('dragging');
+    el.style.zIndex = 10;
+
+    const block = blocks[key];
+
+    /* ── TAP → rotate ── */
+    if (!moved && Date.now() - tapStart < 500) {
+      // Save grid position before lifting (liftFromGrid resets gx/gy to -1)
+      const oldGx = block.gx;
+      const oldGy = block.gy;
+      if (wasPlaced) liftFromGrid(key);
+
+      block.rotation++;
+      const lv = LEVELS[currentLevel];
+      renderBlock(el, key, block.rotation, lv.options[key]);
+
+      if (wasPlaced) {
+        // Try to re-place at same grid cell with the new shape
+        const numShapes = SHAPES[key].length;
+        const newRot = ((block.rotation % numShapes) + numShapes) % numShapes;
+        const shape  = SHAPES[key][newRot];
+        if (tryPlace(key, shape, oldGy, oldGx)) {
+          snapToGrid(el, key, oldGx, oldGy); // snapToGrid calls updateBoxLabels
+          // Hide tag since block is placed again
+          const t = el.querySelector('.block-tag');
+          if (t) t.style.display = 'none';
+          block.placed = true;
+          checkWin();
+        } else {
+          // New shape doesn't fit — keep block at current position
+          block.ox = parseFloat(el.style.left);
+          block.oy = parseFloat(el.style.top);
+          showToast('旋轉後形狀放不進同一位置，請重新拖移。');
+        }
+      }
+      return;
+    }
+
+    /* ── DRAG END → try snap ── */
+    if (!moved) {
+      // Pointer barely moved but not a tap — restore position
+      el.style.left = startEx + 'px';
+      el.style.top  = startEy + 'px';
+      if (wasPlaced) {
+        // Re-register in grid (it was lifted on potential drag start... but we only lift on move>6px so actually wasPlaced logic is fine)
+      }
+      return;
+    }
+
+    const playArea = document.getElementById('play-area');
+    const boxGrid  = document.getElementById('box-grid');
+    const paRect   = playArea.getBoundingClientRect();
+    const bgRect   = boxGrid.getBoundingClientRect();
+    const boxOriginX = bgRect.left - paRect.left + 3;
+    const boxOriginY = bgRect.top  - paRect.top  + 3;
+
+    const elX = parseFloat(el.style.left);
+    const elY = parseFloat(el.style.top);
+    const snapCol = Math.round((elX - boxOriginX) / STEP);
+    const snapRow = Math.round((elY - boxOriginY) / STEP);
+
+    const numShapes = SHAPES[key].length;
+    const rot   = ((block.rotation % numShapes) + numShapes) % numShapes;
+    const shape = SHAPES[key][rot];
+
+    if (tryPlace(key, shape, snapRow, snapCol)) {
+      snapToGrid(el, key, snapCol, snapRow);
+      block.placed = true;
+      block.gx = snapCol;
+      block.gy = snapRow;
+      checkWin();
+    } else {
+      // Keep block wherever it was dropped; update scatter origin
+      block.ox = parseFloat(el.style.left);
+      block.oy = parseFloat(el.style.top);
+    }
+  });
+}
+
+/* ─────────────────────────────────────────────
+   Grid helpers
+───────────────────────────────────────────── */
+function tryPlace(key, shape, row, col) {
+  for (const [r, c] of shape) {
+    const nr = row + r, nc = col + c;
+    if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) return false;
+    if (grid[nr][nc] !== null && grid[nr][nc] !== key)  return false;
+  }
+  for (const [r, c] of shape) grid[row + r][col + c] = key;
+  return true;
+}
+
+function liftFromGrid(key) {
+  const b = blocks[key];
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++)
+      if (grid[r][c] === key) grid[r][c] = null;
+  b.placed = false;
+  b.gx = -1;
+  b.gy = -1;
+  // Restore block tag; remove from box-labels
+  const tag = b.el.querySelector('.block-tag');
+  if (tag) tag.style.display = '';
+  updateBoxLabels();
+}
+
+function snapToGrid(el, key, col, row) {
+  const playArea = document.getElementById('play-area');
+  const boxGrid  = document.getElementById('box-grid');
+  const paRect   = playArea.getBoundingClientRect();
+  const bgRect   = boxGrid.getBoundingClientRect();
+  const ox = bgRect.left - paRect.left + 3;
+  const oy = bgRect.top  - paRect.top  + 3;
+  el.style.left = (ox + col * STEP) + 'px';
+  el.style.top  = (oy + row * STEP) + 'px';
+  blocks[key].placed = true;
+  blocks[key].gx = col;
+  blocks[key].gy = row;
+  // Hide block tag; show text in box-labels panel instead
+  const tag = el.querySelector('.block-tag');
+  if (tag) tag.style.display = 'none';
+  updateBoxLabels();
+}
+
+/* ─────────────────────────────────────────────
+   Resize: reposition placed blocks from stored gx/gy
+───────────────────────────────────────────── */
+function repositionPlaced() {
+  for (const key of ['R','T','B','F']) {
+    const b = blocks[key];
+    if (b && b.placed) snapToGrid(b.el, key, b.gx, b.gy);
+  }
+}
+window.addEventListener('resize', repositionPlaced);
+
+/* ─────────────────────────────────────────────
+   Box labels: show placed block texts above grid
+───────────────────────────────────────────── */
+function updateBoxLabels() {
+  const container = document.getElementById('box-labels');
+  if (!container) return;
+  container.innerHTML = '';
+  const lv = LEVELS[currentLevel];
+  for (const key of ['R','T','B','F']) {
+    const b = blocks[key];
+    if (!b || !b.placed) continue;
+    const numShapes = SHAPES[key].length;
+    const rot = ((b.rotation % numShapes) + numShapes) % numShapes;
+    const numOpts = lv.options[key].length;
+    const optIdx = rot % numOpts;
+    const text = lv.options[key][optIdx];
+    const item = document.createElement('div');
+    item.className = `box-label-item box-label-${key}`;
+    item.innerHTML = `<span class="box-label-key">${key}｜</span><span>${text}</span>`;
+    container.appendChild(item);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Win check
+───────────────────────────────────────────── */
+function checkWin() {
+  const keys = ['R','T','B','F'];
+  if (!keys.every(k => blocks[k].placed)) return;
+
+  let filled = 0;
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++)
+      if (grid[r][c] !== null) filled++;
+  if (filled !== 15) { showToast('方塊沒有完全填滿箱子！'); return; }
+
+  // Check rotation matches correctIndex for each block
+  const lv = LEVELS[currentLevel];
+  const wrong = keys.filter(k => {
+    const b = blocks[k];
+    const numOpts = lv.options[k].length;
+    const curIdx  = ((b.rotation % numOpts) + numOpts) % numOpts;
+    return curIdx !== lv.correctIndex[k];
+  });
+
+  if (wrong.length > 0) {
+    wrong.forEach(k => {
+      const el = blocks[k].el;
+      el.classList.remove('error');
+      void el.offsetWidth; // reflow to restart animation
+      el.classList.add('error');
+      setTimeout(() => el.classList.remove('error'), 800);
+    });
+    showToast(`方塊 ${wrong.join('、')} 的選項不正確！點擊旋轉到正確選項。`);
+    return;
+  }
+
+  showSuccess();
+}
+
+/* ─────────────────────────────────────────────
+   Success overlay with staggered animation
+───────────────────────────────────────────── */
+function showSuccess() {
+  const lv = LEVELS[currentLevel];
+  document.getElementById('s-bad').textContent = lv.bad;
+
+  const container = document.getElementById('prompt-lines');
+  container.innerHTML = '';
+  lv.promptLines.forEach(line => {
+    const d = document.createElement('div');
+    d.className = `pline pline-${line.key}`;
+    d.innerHTML = `<strong>${line.key}｜</strong>${line.text}`;
+    container.appendChild(d);
+  });
+
+  document.getElementById('next-btn').textContent =
+    currentLevel < LEVELS.length - 1 ? '下一關 →' : '查看學習總結 →';
+  document.getElementById('success-overlay').classList.add('active');
+
+  container.querySelectorAll('.pline').forEach((d, i) => {
+    setTimeout(() => d.classList.add('vis'), 300 + i * 500);
+  });
+}
+
+/* ─────────────────────────────────────────────
+   Hint overlay
+───────────────────────────────────────────── */
+function showHint() {
+  document.getElementById('hint-body').textContent = LEVELS[currentLevel].hint;
+  document.getElementById('hint-overlay').classList.add('active');
+}
+function hideHint() {
+  document.getElementById('hint-overlay').classList.remove('active');
+}
+
+/* ─────────────────────────────────────────────
+   Error toast
+───────────────────────────────────────────── */
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('err-toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+</script>
+</body>
+</html>

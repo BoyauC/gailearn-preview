@@ -1,0 +1,2 @@
+stage1_message,wrong_word,wrong_prob,wrong_reason,right_word,right_prob,right_reason,factor1,factor1_result,factor2,factor2_result,factor3,factor3_result,retrain_btn_text,final_message,success_feedback
+即使 AI 能快速分析資料，也不代表它能做出<span class='word-btn' data-is-bug='true'>完全客觀公平</span>的判斷；它可能<span class='word-btn' data-is-bug='false'>複製歷史偏見</span>，需要<span class='word-btn' data-is-bug='false'>持續檢查</span>。,完全客觀公平,90,人們容易把電腦程式想成沒有偏見的裁判。,可能複製歷史偏見,10,模型會學到資料中既有的不平等模式。,只使用過去紀錄,模型可能延續過去對某些群體的不利結果。,補足代表性資料,模型較能看見原先被忽略的經驗。,加入公平性測試,團隊可發現不同群體的結果差異。,查看修正後回答,AI 可能複製人類歷史資料中的偏見。,抓出偏見！AI 並非絕對客觀公平。

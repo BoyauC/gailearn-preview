@@ -1,0 +1,2 @@
+stage1_message,wrong_word,wrong_prob,wrong_reason,right_word,right_prob,right_reason,factor1,factor1_result,factor2,factor2_result,factor3,factor3_result,retrain_btn_text,final_message,success_feedback
+我會用看似有情緒的語氣回應。這不代表我<span class='word-btn' data-is-bug='true'>擁有真正的感情</span>；我只是依<span class='word-btn' data-is-bug='false'>文字模式</span>產生<span class='word-btn' data-is-bug='false'>合適的回覆</span>。,擁有真正的感情,85,小說與電影常把 AI 描寫成有內心的人。,沒有意識的數學模型,15,開發文件說明模型是在計算機率。,大量科幻故事,模型更容易用有感受的方式描述自己。,加入工程說明,模型會更常說明自己是依文字模式回應。,收集對話評分,模型可能更貼近人類語氣但仍不具有情感。,查看修正後回答,我沒有真正的感情與意識。,成功修正 AI 的自我描述！
