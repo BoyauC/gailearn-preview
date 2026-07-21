@@ -16,11 +16,14 @@
     nodes: [],
     current: null,
     lastCaseId: null,
+    openingId: null,
+    lastOpeningKey: null,
     selectedSegments: new Set(),
     noticedSuspicion: false,
     groupId: "root",
     path: [],
-    verdict: ""
+    verdict: "",
+    transitionTimer: null
   };
 
   function parseCSV(text) {
@@ -86,14 +89,24 @@
   }
 
   function setScreen(markup) {
+    if (state.transitionTimer) {
+      window.clearTimeout(state.transitionTimer);
+      state.transitionTimer = null;
+    }
     app.innerHTML = markup;
     focusTitle();
   }
 
   function currentSegments() {
     return state.segments
-      .filter((item) => item.case_id === state.current.case_id)
+      .filter((item) => item.case_id === state.current.case_id && (item.opening_id || "default") === state.openingId)
       .sort((a, b) => Number(a.order) - Number(b.order));
+  }
+
+  function openingIdsFor(caseId) {
+    return [...new Set(state.segments
+      .filter((item) => item.case_id === caseId)
+      .map((item) => item.opening_id || "default"))];
   }
 
   function nodesFor(groupId) {
@@ -110,6 +123,13 @@
     return `${state.current.story_prefix}${generatedPhrase()}${state.current.story_suffix}`;
   }
 
+  function originalStoryMarkup() {
+    return currentSegments().map((segment) => {
+      const text = escapeHTML(segment.text);
+      return segment.suspicious === "1" ? `<mark class="generated-word">${text}</mark>` : text;
+    }).join("");
+  }
+
   function currentSources() {
     return [
       { label: state.current.source_label, url: state.current.source_url },
@@ -122,6 +142,25 @@
     if (!activeCases.length) throw new Error("cases.csv 沒有 active=1 的案例");
 
     activeCases.forEach((gameCase) => {
+      const openingIds = openingIdsFor(gameCase.case_id);
+      if (!openingIds.length) throw new Error(`${gameCase.case_id} 沒有開場敘述`);
+      openingIds.forEach((openingId) => {
+        const segments = state.segments
+          .filter((item) => item.case_id === gameCase.case_id && (item.opening_id || "default") === openingId)
+          .sort((a, b) => Number(a.order) - Number(b.order));
+        const orders = segments.map((segment) => Number(segment.order));
+        if (orders.some((order, index) => order !== index + 1)) {
+          throw new Error(`${gameCase.case_id}/${openingId} 的片段 order 必須從 1 連續排列`);
+        }
+        if (!segments.some((segment) => segment.suspicious === "1")) {
+          throw new Error(`${gameCase.case_id}/${openingId} 至少需要一個可疑片段`);
+        }
+        const story = segments.map((segment) => segment.text).join("");
+        if (!story.startsWith(gameCase.story_prefix) || !story.endsWith(gameCase.story_suffix)) {
+          throw new Error(`${gameCase.case_id}/${openingId} 拼接後必須符合案例的前後敘述`);
+        }
+      });
+
       const groups = new Map();
       state.nodes.filter((node) => node.case_id === gameCase.case_id).forEach((node) => {
         if (!groups.has(node.group_id)) groups.set(node.group_id, []);
@@ -167,25 +206,30 @@
       <section class="screen hero" aria-labelledby="home-title">
         <div class="hero-copy">
           <p class="eyebrow">NEXT WORD PREDICTION</p>
-          <h1 id="home-title">AI提供的，<span>會是真的嗎？</span></h1>
-          <p class="lead">跟著 AI 的預測路徑，每一步選出統計上可能接續的詞，看看一段流暢的歷史敘述，是否真的經得起查證。</p>
+          <h1 id="home-title">比比看<span>你跟 AI 一不一樣</span></h1>
+          <div class="home-intro">
+            <p>跟著 AI 的預測路徑，每一步選出統計上可能接續的詞，看看一段流暢的歷史敘述，是否真的經得起查證。</p>
+            <p>AI 看起來很聰明，其實主要是依靠大量運算、統計規律，還有「下一個字可能是什麼」的文字接龍預測能力。</p>
+            <p>接下來 AI 會根據資料庫裡的上下文，拼出一小段看起來很合理、但可能有錯的內容，請你用自己的所學來幫 AI 把關，看看你的理解和 AI 的預測是不是一樣喔。</p>
+          </div>
           <div class="button-row">
             <button class="primary-btn" id="start-game">開始探索</button>
             <span class="selection-count">一局約 5 分鐘・共四次預測</span>
           </div>
         </div>
-        <div class="hero-map" aria-hidden="true">
-          <div class="orbit-ring ring-one"></div>
-          <div class="orbit-ring ring-two"></div>
-          <span class="float-node">高機率 ≠ 正確</span>
-          <span class="float-node">上下文</span>
-          <span class="float-node">重新預測</span>
+        <div class="hero-map">
+          <div class="orbit-ring ring-one" aria-hidden="true"></div>
+          <div class="orbit-ring ring-two" aria-hidden="true"></div>
+          <span class="float-node" aria-hidden="true">高機率 ≠ 正確</span>
+          <span class="float-node" aria-hidden="true">上下文</span>
+          <span class="float-node" aria-hidden="true">重新預測</span>
           <img class="sisi-character" src="assets/images/sisi-60427.png" alt="">
-          <div class="sisi-tablet"><span>下一個詞</span></div>
+          <button class="sisi-tablet" id="start-from-tablet" type="button"><span>下一個詞</span></button>
         </div>
       </section>
     `);
     document.querySelector("#start-game").addEventListener("click", startGame);
+    document.querySelector("#start-from-tablet").addEventListener("click", startGame);
   }
 
   function startGame() {
@@ -194,6 +238,11 @@
     if (!pool.length) pool = active;
     state.current = pool[Math.floor(Math.random() * pool.length)];
     state.lastCaseId = state.current.case_id;
+    const openingIds = openingIdsFor(state.current.case_id);
+    let openingPool = openingIds.filter((openingId) => `${state.current.case_id}/${openingId}` !== state.lastOpeningKey);
+    if (!openingPool.length) openingPool = openingIds;
+    state.openingId = openingPool[Math.floor(Math.random() * openingPool.length)];
+    state.lastOpeningKey = `${state.current.case_id}/${state.openingId}`;
     state.selectedSegments = new Set();
     state.noticedSuspicion = false;
     state.groupId = "root";
@@ -244,19 +293,26 @@
 
   function submitScan() {
     state.noticedSuspicion = currentSegments().some((segment) => segment.suspicious === "1" && state.selectedSegments.has(segment.order));
-    const message = state.noticedSuspicion ? state.current.reveal_hit : state.current.reveal_miss;
+    const selected = currentSegments().filter((segment) => state.selectedSegments.has(segment.order));
+    const selectedMarkup = selected.length
+      ? selected.map((segment) => `<span>${escapeHTML(segment.text)}</span>`).join("")
+      : `<span class="empty-selection">未標記任何詞語</span>`;
+    const explanation = "這段描述的正確人物與年代會讓整段話顯得可信，但後面呢？現在追蹤 AI 如何把它一步步接完。";
     setScreen(`
       <section class="screen" aria-labelledby="reveal-title">
         <div class="glass-panel reveal-card">
           <div class="reveal-icon" aria-hidden="true">⌖</div>
           <p class="eyebrow">調查點已鎖定</p>
           <h2 id="reveal-title">先別急著找答案</h2>
-          <p>${escapeHTML(message)}</p>
+          <p class="selected-label">這是你認為需要查證的詞語：</p>
+          <div class="reveal-selections" aria-label="你標記的詞語">${selectedMarkup}</div>
+          <p class="reveal-explanation">這段描述的正確人物與年代會讓整段話顯得可信，但後面呢？<br>現在追蹤 AI 如何把它一步步接完。</p>
           <button class="primary-btn" id="enter-stars">看看 AI 如何預測</button>
         </div>
       </section>
     `);
-    announce(message);
+    const selectedAnnouncement = selected.length ? selected.map((segment) => segment.text).join("、") : "未標記任何詞語";
+    announce(`這是你認為需要查證的詞語：${selectedAnnouncement}。${explanation}`);
     document.querySelector("#enter-stars").addEventListener("click", showPrediction);
   }
 
@@ -276,7 +332,7 @@
             <h2 id="prediction-title">哪個詞最可能接在後面？</h2>
             <p class="instruction">${escapeHTML(state.current.prediction_prompt)}</p>
           </div>
-          <span class="case-chip">節點大小＝模擬機率</span>
+          <span class="case-chip">球體大小＝模擬機率</span>
         </div>
         <div class="glass-panel context-box">
           <div class="context-label">目前完整上下文</div>
@@ -286,6 +342,7 @@
             <i aria-hidden="true">第 ${step} 步</i>
           </div>
         </div>
+        <div class="reason-box" id="reason-box" aria-live="polite">球體越亮、越大，代表它在目前上下文中的模擬權重越高；這不是正確答案提示。</div>
         <div class="node-field" id="node-field">
           ${options.map((node) => {
             const probability = Number(node.probability);
@@ -296,7 +353,6 @@
             </button>`;
           }).join("")}
         </div>
-        <div class="reason-box" id="reason-box">節點越亮、越大，代表它在目前上下文中的模擬權重越高；這不是正確答案提示。</div>
       </section>
     `);
 
@@ -309,16 +365,21 @@
     app.querySelectorAll(".word-node").forEach((button) => { button.disabled = true; });
     selectedButton.style.borderColor = "var(--gold)";
     selectedButton.style.transform = "scale(1.06)";
-    document.querySelector("#reason-box").textContent = node.reason;
+    const reasonBox = document.querySelector("#reason-box");
+    reasonBox.textContent = node.reason;
+    const waitMessage = document.createElement("span");
+    waitMessage.className = "reason-wait";
+    waitMessage.textContent = state.path.length === 3 ? "5 秒後進入可信度判斷。" : "5 秒後進入下一次預測。";
+    reasonBox.append(waitMessage);
     state.path.push(node);
     announce(`你選擇了${node.label}，${node.probability}%。${node.reason}`);
-    window.setTimeout(() => {
+    state.transitionTimer = window.setTimeout(() => {
       if (state.path.length === 4) showVerdict();
       else {
         state.groupId = node.next_group;
         showPrediction();
       }
-    }, 1150);
+    }, 5000);
   }
 
   function showVerdict() {
@@ -369,34 +430,39 @@
           <div class="score-orb"><strong>${escapeHTML(awareness)}</strong><span>查證意識</span></div>
         </div>
 
-        <div class="glass-panel path-review" aria-label="你的四步預測路徑">
-          ${state.path.map((node, index) => `<div class="path-item"><span>第 ${index + 1} 步</span>${escapeHTML(node.label)} <strong>${node.probability}%</strong></div>`).join("")}
-        </div>
+        <article class="glass-panel result-story-card original-result-card">
+          <div class="result-section-label"><span>1</span>原本 AI 生成敘述</div>
+          <p>${originalStoryMarkup()}</p>
+        </article>
 
-        <div class="compare-grid">
-          <article class="glass-panel compare-card">
-            <span class="compare-label">AI 路徑生成</span>
-            <p>${escapeHTML(generatedStory())}</p>
+        <section class="glass-panel player-result-card" aria-labelledby="player-route-title">
+          <div class="result-section-label" id="player-route-title"><span>2</span>你的選擇路線與生成敘述</div>
+          <div class="path-review" aria-label="你的四步選擇與預測比例">
+            ${state.path.map((node, index) => `<div class="path-item"><span>第 ${index + 1} 步</span>${escapeHTML(node.label)} <strong>${node.probability}%</strong></div>`).join("")}
+          </div>
+          <p class="player-generated-story">${escapeHTML(state.current.story_prefix)}<mark class="generated-word">${escapeHTML(generatedPhrase())}</mark>${escapeHTML(state.current.story_suffix)}</p>
+        </section>
+
+        <article class="glass-panel result-story-card verified-result-card">
+          <div class="result-section-label"><span>3</span>實際查證內容</div>
+          <p>${escapeHTML(state.current.verified_story)}</p>
+        </article>
+
+        <div class="result-bottom-grid">
+          <article class="lesson-note">
+            <h3>為什麼會有落差？</h3>
+            <p>${escapeHTML(state.current.comparison_note)}</p>
           </article>
-          <article class="glass-panel compare-card verified">
-            <span class="compare-label">查證後敘述</span>
-            <p>${escapeHTML(state.current.verified_story)}</p>
-          </article>
-        </div>
-
-        <div class="lesson-note">
-          <h3>為什麼會有落差？</h3>
-          <p>${escapeHTML(state.current.comparison_note)}</p>
-        </div>
-
-        <div class="source-row">
-          <div class="sources-block">
+          <div class="glass-panel sources-block">
             <h3>查證文獻</h3>
             <ol class="source-list">
               ${sources.map((source) => `<li><a class="source-link" href="${escapeHTML(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)}</a></li>`).join("")}
             </ol>
             <p class="simulation-note">${escapeHTML(state.current.simulation_note)}</p>
           </div>
+        </div>
+
+        <div class="source-row result-actions">
           <div class="button-row">
             <button class="secondary-btn" id="leave-game">離開遊戲</button>
             <button class="primary-btn" id="play-again">再玩一個案例</button>
