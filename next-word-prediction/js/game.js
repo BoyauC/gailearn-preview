@@ -269,7 +269,7 @@
             ${segments.map((segment) => `<button class="segment" data-order="${segment.order}" aria-pressed="false">${escapeHTML(segment.text)}</button>`).join("")}
           </div>
           <div class="selection-meta">
-            <span class="selection-count" id="selection-count">尚未標記；也可以直接提交判斷</span>
+            <span class="selection-count" id="selection-count">未標記；也可以直接提交判斷</span>
             <button class="primary-btn" id="submit-scan">提交判斷</button>
           </div>
         </div>
@@ -342,7 +342,7 @@
             <i aria-hidden="true">第 ${step} 步</i>
           </div>
         </div>
-        <div class="reason-box" id="reason-box" aria-live="polite">球體越亮、越大，代表它在目前上下文中的模擬權重越高；這不是正確答案提示。</div>
+        <div class="reason-box" id="reason-box" aria-live="polite">球體越亮、越大，代表它在目前上下文中的模擬權重越高；不一定是正確答案提示。</div>
         <div class="node-field" id="node-field">
           ${options.map((node) => {
             const probability = Number(node.probability);
