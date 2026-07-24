@@ -125,6 +125,27 @@
     return `${state.current.story_prefix}${generatedPhrase()}${state.current.story_suffix}`;
   }
 
+  function comparisonConfig() {
+    const labels = state.current.comparison_role_labels.split("|").map((value) => value.trim());
+    const groups = state.current.comparison_path_groups.split("|").map((group) => group.split("+").map(Number));
+    const verifiedTerms = state.current.verified_compare_terms.split("|").map((value) => value.trim());
+    const playerTerms = groups.map((group) => group.map((step) => state.path[step - 1]?.token || "").join(""));
+    return { labels, groups, verifiedTerms, playerTerms };
+  }
+
+  function semanticStoryMarkup(story, terms, labels) {
+    let cursor = 0;
+    let markup = "";
+    terms.forEach((term, index) => {
+      const position = story.indexOf(term, cursor);
+      if (position < 0) return;
+      markup += escapeHTML(story.slice(cursor, position));
+      markup += `<mark class="semantic-mark" aria-label="${escapeHTML(labels[index])}：${escapeHTML(term)}"><span aria-hidden="true">${index + 1}</span>${escapeHTML(term)}</mark>`;
+      cursor = position + term.length;
+    });
+    return `${markup}${escapeHTML(story.slice(cursor))}`;
+  }
+
   function originalStoryMarkup() {
     return currentSegments().map((segment) => {
       const text = escapeHTML(segment.text);
@@ -156,6 +177,17 @@
     if (!activeCases.length) throw new Error("cases.csv 沒有 active=1 的案例");
 
     activeCases.forEach((gameCase) => {
+      const roleLabels = gameCase.comparison_role_labels.split("|").map((value) => value.trim()).filter(Boolean);
+      const pathGroups = gameCase.comparison_path_groups.split("|").map((group) => group.split("+").map(Number));
+      const verifiedTerms = gameCase.verified_compare_terms.split("|").map((value) => value.trim()).filter(Boolean);
+      const groupedSteps = pathGroups.flat().sort((a, b) => a - b);
+      if (roleLabels.length !== pathGroups.length || roleLabels.length !== verifiedTerms.length || groupedSteps.join(",") !== "1,2,3,4") {
+        throw new Error(`${gameCase.case_id} 的語意位置對照設定不完整`);
+      }
+      if (verifiedTerms.some((term) => !gameCase.verified_story.includes(term))) {
+        throw new Error(`${gameCase.case_id} 的查證關鍵詞未出現在 verified_story`);
+      }
+
       const openingIds = openingIdsFor(gameCase.case_id);
       if (!openingIds.length) throw new Error(`${gameCase.case_id} 沒有開場敘述`);
       openingIds.forEach((openingId) => {
@@ -459,6 +491,7 @@
       : followedOpening
         ? state.current.ending_opening_match
         : state.current.ending_wrong;
+    const comparison = comparisonConfig();
     const sources = currentSources();
     setScreen(`
       <section class="screen result-screen" aria-labelledby="result-title">
@@ -484,12 +517,15 @@
           <div class="path-review" aria-label="你的四步選擇與預測比例">
             ${state.path.map((node, index) => `<div class="path-item"><span>第 ${index + 1} 步</span>${escapeHTML(node.label)} <strong>${node.probability}%</strong></div>`).join("")}
           </div>
-          <p class="player-generated-story">${escapeHTML(state.current.story_prefix)}<mark class="generated-word">${escapeHTML(generatedPhrase())}</mark>${escapeHTML(state.current.story_suffix)}</p>
+          <div class="semantic-legend" aria-label="語意位置對照">
+            ${comparison.labels.map((label, index) => `<span><b>${index + 1}</b>${escapeHTML(label)}</span>`).join("")}
+          </div>
+          <p class="player-generated-story">${semanticStoryMarkup(generatedStory(), comparison.playerTerms, comparison.labels)}</p>
         </section>
 
         <article class="glass-panel result-story-card verified-result-card">
           <div class="result-section-label"><span>3</span>實際查證內容</div>
-          <p>${escapeHTML(state.current.verified_story)}</p>
+          <p>${semanticStoryMarkup(state.current.verified_story, comparison.verifiedTerms, comparison.labels)}</p>
         </article>
 
         <div class="result-bottom-grid">

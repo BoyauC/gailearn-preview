@@ -77,7 +77,7 @@ next-word-prediction/
 
 ### `cases.csv` 必要欄位
 
-`case_id,active,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,simulation_note`
+`case_id,active,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_role_labels,comparison_path_groups,verified_compare_terms,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,simulation_note`
 
 其中 `story_prefix` 是填入生成詞之前的句子，`story_suffix` 是之後的句子。四個球體選出的 `token` 以空字串連接後置入兩者之間。
 
@@ -89,6 +89,9 @@ next-word-prediction/
 - `ending_opening_match`：路徑不符合史實，但等於當局 `opening_id` 的 `matching_path` 時顯示。
 - `ending_wrong`：其他不符合史實的路徑顯示。
 - `reflection_prompt`：接在「你剛才的判斷」之後的中性反思問題，不評分玩家。
+- `comparison_role_labels`：語意位置名稱，以 `|` 分隔，例如 `大區域|具體地點|歷史據點`。
+- `comparison_path_groups`：把四步玩家路徑組成語意位置，以 `|` 分組、`+` 合併步驟，例如 `1|2+3|4`。
+- `verified_compare_terms`：依相同順序提供查證敘述中的對照詞，以 `|` 分隔；每個詞都必須實際出現在 `verified_story`。
 
 ### `openings.csv` 必要欄位
 
@@ -119,9 +122,9 @@ next-word-prediction/
 1. **封面**：主標題固定跨兩行顯示「比比看／你跟 AI 一不一樣」，包含三段教學說明；「開始探索」與思思平板上的「下一個詞」都可開始遊戲。
 2. **隨機開場與批判閱讀**：先為案例隨機抽取一個 `opening_id`，再把該組 `segments.csv` 片段渲染成可點選按鈕，玩家可複選需要查證的詞。
 3. **揭示調查點**：顯示玩家上一頁實際標記的所有片段；若未選取則顯示「未標記任何詞語」。教學文字固定跨兩行，先不公布正解。
-4. **四步預測**：連續四輪、每輪三選一。說明區位於候選球體上方；球體大小與光暈依機率變化，不能用正誤色彩提示。玩家選擇後立即停用三個球體，顯示該選項的 `reason`，停留 5 秒再進入下一輪；第四輪後則進入可信度判斷。
+4. **四步預測**：連續四輪、每輪三選一。說明區位於候選球體上方；球體大小與光暈依機率變化，不能用正誤色彩提示。玩家選擇後立即停用三個球體，以深色粗體顯示該選項的 `reason`，並以一般字重顯示 5 秒切換提示；停留 5 秒再進入下一輪，第四輪後則進入可信度判斷。
 5. **可信度判斷**：把四個 token 填回敘述，請玩家在「可以，機率很高」「不可以，仍需查證」「我不確定」中選擇；這是先判斷、後看證據的反思步驟，不是計分題。
-6. **路徑回放與比對**：移除右上角查證意識評價球體，改為中性記錄「你剛才的判斷」及 `reflection_prompt`。再依序顯示當局抽到的原本 AI 生成敘述、四步選擇與預測比例、玩家路徑生成敘述、實際查證內容、落差成因、查證文獻與教學模擬註記。
+6. **路徑回放與比對**：移除右上角查證意識評價球體，改為中性記錄「你剛才的判斷」及 `reflection_prompt`。再依序顯示當局抽到的原本 AI 生成敘述、四步選擇與預測比例、玩家路徑生成敘述、實際查證內容、落差成因、查證文獻與教學模擬註記。玩家生成敘述與查證敘述使用相同編號，依 `comparison_role_labels` 做語意位置對照；錯誤詞只標示於玩家敘述，不得硬套進查證內容。
 7. **三層結果判定**：依優先順序判斷「符合史實路徑」→「不符合史實但回到本局開場誤導路徑」→「其他不符合史實路徑」，分別顯示 `ending_right`、`ending_opening_match`、`ending_wrong`。
 8. **結束選擇**：再玩一題或離開；未來有多題時亂數且避免立即重複。
 
@@ -169,15 +172,17 @@ next-word-prediction/
 5. 生成敘述確實由玩家四次選擇組成。
 6. 每次球體選擇後的 `reason` 位於球體上方並完整停留約 5 秒，再進入下一步。
 7. 三個可信度選項都會在結果頁逐字記錄玩家原始判斷，不轉換成評價標籤，並顯示反思問題。
-8. 分別走完符合史實、符合當局開場誤導路徑、其他錯誤路徑，確認三種結果說明正確且判定順序不互相覆蓋。
-9. 結算依序顯示原始敘述、四步路徑與比例、玩家生成敘述、查證內容、落差說明、來源連結及教學模擬註記。
-10. 「再玩一個案例」與「離開遊戲」均可用；重玩不得立即抽到同一 `opening_id`。
-11. 六組開場皆可成功拼接、每組 `order` 連續且至少有一個 `suspicious=1` 片段；每組 `matching_path` 都能在節點資料中走出。
-12. 360px 寬度不出現水平捲動；鍵盤操作不會卡住。
-13. JavaScript console 無錯誤；CSV 載入失敗時顯示可理解的錯誤畫面。
-14. 以 1024×768、1180×820 與 1366×1024 橫式尺寸確認三個球體保持橫排、結果頁四步路徑保持單排，且上下文與說明不被裁切。
-15. 以 768×1024 與 820×1180 直式尺寸確認完整流程可用、結果頁路徑為 `2×2`、允許合理捲動、不要求旋轉裝置，旋轉前後遊戲狀態不重置。
-16. 以觸控／無 hover 條件確認所有功能可完成；再以 1440×900 PC 尺寸確認版面沒有被平板規則過度放大。
+8. 提示框的 `reason` 為深色粗體，5 秒切換提示為一般字重；兩者視覺層級不可顛倒。
+9. 玩家生成敘述與查證敘述的語意位置編號、名稱與順序一致；`comparison_path_groups` 必須剛好涵蓋第 1～4 步，`verified_compare_terms` 全部存在於查證敘述。
+10. 分別走完符合史實、符合當局開場誤導路徑、其他錯誤路徑，確認三種結果說明正確且判定順序不互相覆蓋。
+11. 結算依序顯示原始敘述、四步路徑與比例、玩家生成敘述、查證內容、落差說明、來源連結及教學模擬註記。
+12. 「再玩一個案例」與「離開遊戲」均可用；重玩不得立即抽到同一 `opening_id`。
+13. 六組開場皆可成功拼接、每組 `order` 連續且至少有一個 `suspicious=1` 片段；每組 `matching_path` 都能在節點資料中走出。
+14. 360px 寬度不出現水平捲動；鍵盤操作不會卡住。
+15. JavaScript console 無錯誤；CSV 載入失敗時顯示可理解的錯誤畫面。
+16. 以 1024×768、1180×820 與 1366×1024 橫式尺寸確認三個球體保持橫排、結果頁四步路徑保持單排，且上下文與說明不被裁切。
+17. 以 768×1024 與 820×1180 直式尺寸確認完整流程可用、結果頁路徑為 `2×2`、允許合理捲動、不要求旋轉裝置，旋轉前後遊戲狀態不重置。
+18. 以觸控／無 hover 條件確認所有功能可完成；再以 1440×900 PC 尺寸確認版面沒有被平板規則過度放大。
 
 ## 新增第二、三案例
 
