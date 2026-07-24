@@ -3,6 +3,7 @@
 
   const DATA_FILES = {
     cases: "data/cases.csv",
+    openings: "data/openings.csv",
     segments: "data/segments.csv",
     nodes: "data/nodes.csv"
   };
@@ -12,6 +13,7 @@
   const counter = document.querySelector("#case-counter");
   const state = {
     cases: [],
+    openings: [],
     segments: [],
     nodes: [],
     current: null,
@@ -137,6 +139,18 @@
     ].filter((source) => source.label && source.url);
   }
 
+  function currentOpening() {
+    return state.openings.find((opening) => opening.case_id === state.current.case_id && opening.opening_id === state.openingId);
+  }
+
+  function verdictLabel() {
+    return {
+      trust: "可以，機率很高",
+      verify: "不可以，仍需查證",
+      unsure: "我不確定"
+    }[state.verdict] || "未作答";
+  }
+
   function validateData() {
     const activeCases = state.cases.filter((item) => item.active === "1");
     if (!activeCases.length) throw new Error("cases.csv 沒有 active=1 的案例");
@@ -167,6 +181,27 @@
         groups.get(node.group_id).push(node);
       });
       if (!groups.has("root")) throw new Error(`${gameCase.case_id} 缺少 root 節點群組`);
+      const pathSignatures = new Set();
+      const collectPaths = (groupId, labels = []) => {
+        const nodes = groups.get(groupId) || [];
+        nodes.forEach((node) => {
+          const nextLabels = [...labels, node.label];
+          if (Number(node.step) === 4) pathSignatures.add(nextLabels.join(">"));
+          else collectPaths(node.next_group, nextLabels);
+        });
+      };
+      collectPaths("root");
+
+      const openingRecords = state.openings.filter((opening) => opening.case_id === gameCase.case_id);
+      if (openingRecords.length !== openingIds.length || openingIds.some((openingId) => !openingRecords.some((opening) => opening.opening_id === openingId))) {
+        throw new Error(`${gameCase.case_id} 的 openings.csv 與 segments.csv 版本不一致`);
+      }
+      openingRecords.forEach((opening) => {
+        if (!pathSignatures.has(opening.matching_path)) {
+          throw new Error(`${gameCase.case_id}/${opening.opening_id} 的 matching_path 不存在`);
+        }
+      });
+
       groups.forEach((nodes, groupId) => {
         const sum = nodes.reduce((total, node) => total + Number(node.probability), 0);
         if (nodes.length !== 3 || sum !== 100) {
@@ -416,8 +451,14 @@
 
   function showResults() {
     const historicallyAligned = state.path.every((node) => node.is_verified_direction === "1");
-    const ending = historicallyAligned ? state.current.ending_right : state.current.ending_wrong;
-    const awareness = state.verdict === "verify" ? "有保留" : state.verdict === "unsure" ? "願意停看" : "被流暢度說服";
+    const opening = currentOpening();
+    const pathSignature = state.path.map((node) => node.label).join(">");
+    const followedOpening = !historicallyAligned && opening && pathSignature === opening.matching_path;
+    const ending = historicallyAligned
+      ? state.current.ending_right
+      : followedOpening
+        ? state.current.ending_opening_match
+        : state.current.ending_wrong;
     const sources = currentSources();
     setScreen(`
       <section class="screen result-screen" aria-labelledby="result-title">
@@ -426,8 +467,11 @@
             <p class="eyebrow">路徑分析完成</p>
             <h2 id="result-title">流暢，是預測的成果；<br>真實，需要另外查證。</h2>
             <p class="result-message">${escapeHTML(ending)}</p>
+            <div class="reflection-note">
+              <p>你剛才的判斷：<strong>${escapeHTML(verdictLabel())}</strong></p>
+              <p>${escapeHTML(state.current.reflection_prompt)}</p>
+            </div>
           </div>
-          <div class="score-orb"><strong>${escapeHTML(awareness)}</strong><span>查證意識</span></div>
         </div>
 
         <article class="glass-panel result-story-card original-result-card">
@@ -451,7 +495,7 @@
         <div class="result-bottom-grid">
           <article class="lesson-note">
             <h3>為什麼會有落差？</h3>
-            <p>${escapeHTML(state.current.comparison_note)}</p>
+            <p>${escapeHTML(opening?.comparison_note || state.current.comparison_note)}</p>
           </article>
           <div class="glass-panel sources-block">
             <h3>查證文獻</h3>
@@ -479,7 +523,7 @@
     console.error(error);
     const localHint = location.protocol === "file:"
       ? "目前是直接開啟檔案。瀏覽器會阻擋 CSV 讀取；請以本機 HTTP 伺服器開啟，或部署到 GitHub Pages。"
-      : "請確認 data 資料夾與三份 CSV 已一併部署。";
+      : "請確認 data 資料夾與四份 CSV 已一併部署。";
     counter.textContent = "資料載入失敗";
     setScreen(`
       <section class="screen" aria-labelledby="error-title">
@@ -551,8 +595,9 @@
   async function init() {
     initStarfield();
     try {
-      const [cases, segments, nodes] = await Promise.all(Object.values(DATA_FILES).map(fetchCSV));
+      const [cases, openings, segments, nodes] = await Promise.all(Object.values(DATA_FILES).map(fetchCSV));
       state.cases = cases;
+      state.openings = openings;
       state.segments = segments;
       state.nodes = nodes;
       validateData();
