@@ -8,6 +8,9 @@
     nodes: "data/nodes.csv"
   };
 
+  const THEME_CYCLE_KEY = "nextWordPrediction.themeCycle.v1";
+  const THEME_CYCLE_VERSION = 1;
+
   const app = document.querySelector("#app");
   const announcer = document.querySelector("#announcer");
   const counter = document.querySelector("#case-counter");
@@ -17,6 +20,8 @@
     segments: [],
     nodes: [],
     current: null,
+    currentThemeId: null,
+    themeCycleCommitted: false,
     lastCaseId: null,
     openingId: null,
     lastOpeningKey: null,
@@ -121,6 +126,11 @@
     return state.path.map((node) => node.token).join("");
   }
 
+  function predictionSteps(gameCase = state.current) {
+    const steps = Number(gameCase?.prediction_steps || 4);
+    return Number.isInteger(steps) && steps >= 1 ? steps : 4;
+  }
+
   function generatedStory() {
     return `${state.current.story_prefix}${generatedPhrase()}${state.current.story_suffix}`;
   }
@@ -178,16 +188,59 @@
     }[state.verdict] || "未作答";
   }
 
+  function activeThemeIds() {
+    return [...new Set(state.cases.filter((item) => item.active === "1").map((item) => item.theme_id || item.case_id))];
+  }
+
+  function readThemeCycle() {
+    const themeIds = activeThemeIds();
+    try {
+      const saved = JSON.parse(localStorage.getItem(THEME_CYCLE_KEY) || "null");
+      if (!saved || saved.version !== THEME_CYCLE_VERSION || !Array.isArray(saved.playedThemeIds)) return { version: THEME_CYCLE_VERSION, playedThemeIds: [] };
+      return { version: THEME_CYCLE_VERSION, playedThemeIds: [...new Set(saved.playedThemeIds)].filter((themeId) => themeIds.includes(themeId)) };
+    } catch (error) {
+      console.warn("主題循環紀錄無法讀取，已重新建立。", error);
+      return { version: THEME_CYCLE_VERSION, playedThemeIds: [] };
+    }
+  }
+
+  function writeThemeCycle(cycle) {
+    try { localStorage.setItem(THEME_CYCLE_KEY, JSON.stringify(cycle)); }
+    catch (error) { console.warn("主題循環紀錄無法儲存，本次仍可繼續遊戲。", error); }
+  }
+
+  function chooseThemeId() {
+    const themeIds = activeThemeIds();
+    const cycle = readThemeCycle();
+    const played = cycle.playedThemeIds.length >= themeIds.length ? [] : cycle.playedThemeIds;
+    if (played.length !== cycle.playedThemeIds.length) writeThemeCycle({ version: THEME_CYCLE_VERSION, playedThemeIds: played });
+    const available = themeIds.filter((themeId) => !played.includes(themeId));
+    return available[Math.floor(Math.random() * available.length)];
+  }
+
+  function commitCurrentTheme() {
+    if (state.themeCycleCommitted || !state.currentThemeId) return;
+    const themeIds = activeThemeIds();
+    const cycle = readThemeCycle();
+    const played = cycle.playedThemeIds.length >= themeIds.length ? [] : cycle.playedThemeIds;
+    if (!played.includes(state.currentThemeId)) played.push(state.currentThemeId);
+    writeThemeCycle({ version: THEME_CYCLE_VERSION, playedThemeIds: played });
+    state.themeCycleCommitted = true;
+  }
+
   function validateData() {
     const activeCases = state.cases.filter((item) => item.active === "1");
     if (!activeCases.length) throw new Error("cases.csv 沒有 active=1 的案例");
 
     activeCases.forEach((gameCase) => {
+      if (!gameCase.theme_id || !gameCase.theme_label) throw new Error(gameCase.case_id + " 缺少主題分類欄位");
       const roleLabels = gameCase.comparison_role_labels.split("|").map((value) => value.trim()).filter(Boolean);
       const pathGroups = gameCase.comparison_path_groups.split("|").map((group) => group.split("+").map(Number));
       const verifiedTerms = gameCase.verified_compare_terms.split("|").map((value) => value.trim()).filter(Boolean);
+      const totalSteps = predictionSteps(gameCase);
       const groupedSteps = pathGroups.flat().sort((a, b) => a - b);
-      if (roleLabels.length !== pathGroups.length || roleLabels.length !== verifiedTerms.length || groupedSteps.join(",") !== "1,2,3,4") {
+      const expectedSteps = Array.from({ length: totalSteps }, (_, index) => index + 1).join(",");
+      if (roleLabels.length !== pathGroups.length || roleLabels.length !== verifiedTerms.length || groupedSteps.join(",") !== expectedSteps) {
         throw new Error(`${gameCase.case_id} 的語意位置對照設定不完整`);
       }
       if (verifiedTerms.some((term) => !gameCase.verified_story.includes(term))) {
@@ -224,7 +277,7 @@
         const nodes = groups.get(groupId) || [];
         nodes.forEach((node) => {
           const nextLabels = [...labels, node.label];
-          if (Number(node.step) === 4) pathSignatures.add(nextLabels.join(">"));
+          if (Number(node.step) === totalSteps) pathSignatures.add(nextLabels.join(">"));
           else collectPaths(node.next_group, nextLabels);
         });
       };
@@ -250,12 +303,12 @@
         if (nodes.some((node) => Number(node.step) !== step)) {
           throw new Error(`${gameCase.case_id}/${groupId} 不可混用不同步驟`);
         }
-        if (step < 4 && new Set(nodes.map((node) => node.next_group)).size !== nodes.length) {
+        if (step < totalSteps && new Set(nodes.map((node) => node.next_group)).size !== nodes.length) {
           throw new Error(`${gameCase.case_id}/${groupId} 的每個選項必須指向不同的完整路徑群組`);
         }
 
         nodes.forEach((node) => {
-          if (step < 4) {
+          if (step < totalSteps) {
             const nextNodes = groups.get(node.next_group);
             if (!node.next_group || !nextNodes) {
               throw new Error(`${gameCase.case_id}/${groupId}/${node.label} 缺少下一個完整路徑群組`);
@@ -264,7 +317,7 @@
               throw new Error(`${gameCase.case_id}/${groupId}/${node.label} 的下一群組步驟錯誤`);
             }
           } else if (node.next_group) {
-            throw new Error(`${gameCase.case_id}/${groupId}/${node.label} 已是第四步，不可再指定 next_group`);
+            throw new Error(`${gameCase.case_id}/${groupId}/${node.label} 已是最後一步，不可再指定 next_group`);
           }
         });
       });
@@ -273,21 +326,21 @@
 
   function showHome() {
     state.current = null;
-    const activeCount = state.cases.filter((item) => item.active === "1").length;
-    counter.textContent = `${activeCount} 個可玩案例`;
+    const themeCount = activeThemeIds().length;
+    counter.textContent = themeCount + " 個主題・隨機挑戰";
     setScreen(`
       <section class="screen hero" aria-labelledby="home-title">
         <div class="hero-copy">
           <p class="eyebrow">NEXT WORD PREDICTION</p>
           <h1 id="home-title">比比看<span>你跟 AI 一不一樣</span></h1>
           <div class="home-intro">
-            <p>跟著 AI 的預測路徑，每一步選出統計上可能接續的詞，看看一段流暢的歷史敘述，是否真的經得起查證。</p>
+            <p>跟著 AI 的預測路徑，每一步選出統計上可能接續的詞，看看一段流暢的敘述，是否真的經得起查證。</p>
             <p>AI 看起來很聰明，其實主要是依靠大量運算、統計規律，還有「下一個字可能是什麼」的文字接龍預測能力。</p>
             <p>接下來 AI 會根據資料庫裡的上下文，拼出一小段看起來很合理、但可能有錯的內容，請你用自己的所學來幫 AI 把關，看看你的理解和 AI 的預測是不是一樣喔。</p>
           </div>
           <div class="button-row">
             <button class="primary-btn" id="start-game">開始探索</button>
-            <span class="selection-count">一局約 5 分鐘・共四次預測</span>
+            <span class="selection-count">一局約 5 分鐘・3～4 次預測</span>
           </div>
         </div>
         <div class="hero-map">
@@ -307,8 +360,9 @@
 
   function startGame() {
     const active = state.cases.filter((item) => item.active === "1");
-    let pool = active.filter((item) => item.case_id !== state.lastCaseId);
-    if (!pool.length) pool = active;
+    state.currentThemeId = chooseThemeId();
+    const themeCases = active.filter((item) => (item.theme_id || item.case_id) === state.currentThemeId);
+    const pool = themeCases;
     state.current = pool[Math.floor(Math.random() * pool.length)];
     state.lastCaseId = state.current.case_id;
     const openingIds = openingIdsFor(state.current.case_id);
@@ -321,7 +375,9 @@
     state.groupId = "root";
     state.path = [];
     state.verdict = "";
-    counter.textContent = `${state.current.category}・${state.current.difficulty}`;
+    state.themeCycleCommitted = false;
+    const locationLabel = state.current.location_label ? "・" + state.current.location_label : "";
+    counter.textContent = state.current.theme_label + locationLabel + "・" + state.current.difficulty;
     showScan();
   }
 
@@ -338,7 +394,7 @@
             </div>
             <span class="case-chip">AI 生成敘述</span>
           </div>
-          <div class="story-select" id="story-segments" aria-label="可選取的歷史敘述">
+          <div class="story-select" id="story-segments" aria-label="可選取的 AI 生成敘述">
             ${segments.map((segment) => `<button class="segment" data-order="${segment.order}" aria-pressed="false">${escapeHTML(segment.text)}</button>`).join("")}
           </div>
           <div class="selection-meta">
@@ -370,7 +426,7 @@
     const selectedMarkup = selected.length
       ? selected.map((segment) => `<span>${escapeHTML(segment.text)}</span>`).join("")
       : `<span class="empty-selection">未標記任何詞語</span>`;
-    const explanation = "這段描述的正確人物與年代會讓整段話顯得可信，但後面呢？現在追蹤 AI 如何把它一步步接完。";
+    const explanation = state.noticedSuspicion ? state.current.reveal_hit : state.current.reveal_miss;
     setScreen(`
       <section class="screen" aria-labelledby="reveal-title">
         <div class="glass-panel reveal-card">
@@ -379,7 +435,7 @@
           <h2 id="reveal-title">先別急著找答案</h2>
           <p class="selected-label">這是你認為需要查證的詞語：</p>
           <div class="reveal-selections" aria-label="你標記的詞語">${selectedMarkup}</div>
-          <p class="reveal-explanation">這段描述的正確人物與年代會讓整段話顯得可信，但後面呢？<br>現在追蹤 AI 如何把它一步步接完。</p>
+          <p class="reveal-explanation">${escapeHTML(explanation).replace("現在追蹤", "<br>現在追蹤")}</p>
           <button class="primary-btn" id="enter-stars">看看 AI 如何預測</button>
         </div>
       </section>
@@ -393,15 +449,16 @@
     const options = nodesFor(state.groupId);
     if (options.length !== 3) return showError(new Error(`找不到節點群組：${state.groupId}`));
     const step = Number(options[0].step);
+    const totalSteps = predictionSteps();
     const context = `${state.current.story_prefix}${generatedPhrase()}`;
     setScreen(`
       <section class="screen prediction-layout" aria-labelledby="prediction-title">
-        <div class="progress-row" aria-label="目前是四步中的第 ${step} 步">
-          ${[1, 2, 3, 4].map((value) => `<span class="progress-step ${value < step ? "done" : value === step ? "active" : ""}"></span>`).join("")}
+        <div class="progress-row" aria-label="目前是 ${totalSteps} 步中的第 ${step} 步">
+          ${Array.from({ length: totalSteps }, (_, index) => index + 1).map((value) => `<span class="progress-step ${value < step ? "done" : value === step ? "active" : ""}"></span>`).join("")}
         </div>
         <div class="step-header">
           <div>
-            <p class="eyebrow">任務 02・第 ${step} / 4 次預測</p>
+            <p class="eyebrow">任務 02・第 ${step} / ${totalSteps} 次預測</p>
             <h2 id="prediction-title">哪個詞最可能接在後面？</h2>
             <p class="instruction">${escapeHTML(state.current.prediction_prompt)}</p>
           </div>
@@ -440,14 +497,15 @@
     selectedButton.style.transform = "scale(1.06)";
     const reasonBox = document.querySelector("#reason-box");
     reasonBox.textContent = node.reason;
+    const totalSteps = predictionSteps();
     const waitMessage = document.createElement("span");
     waitMessage.className = "reason-wait";
-    waitMessage.textContent = state.path.length === 3 ? "5 秒後進入可信度判斷。" : "5 秒後進入下一次預測。";
+    waitMessage.textContent = state.path.length === totalSteps - 1 ? "5 秒後進入可信度判斷。" : "5 秒後進入下一次預測。";
     reasonBox.append(waitMessage);
     state.path.push(node);
     announce(`你選擇了${node.label}，${node.probability}%。${node.reason}`);
     state.transitionTimer = window.setTimeout(() => {
-      if (state.path.length === 4) showVerdict();
+      if (state.path.length === totalSteps) showVerdict();
       else {
         state.groupId = node.next_group;
         showPrediction();
@@ -456,6 +514,7 @@
   }
 
   function showVerdict() {
+    const totalSteps = predictionSteps();
     setScreen(`
       <section class="screen" aria-labelledby="verdict-title">
         <div class="step-header">
@@ -464,7 +523,7 @@
             <h2 id="verdict-title">句子完成了，但它可信嗎？</h2>
             <p class="instruction">${escapeHTML(state.current.verdict_question)}</p>
           </div>
-          <span class="case-chip">你走完了四個節點</span>
+          <span class="case-chip">你走完了 ${totalSteps} 個節點</span>
         </div>
         <div class="verdict-grid">
           <article class="glass-panel generated-card">
@@ -488,6 +547,7 @@
   }
 
   function showResults() {
+    commitCurrentTheme();
     const historicallyAligned = state.path.every((node) => node.is_verified_direction === "1");
     const opening = currentOpening();
     const pathSignature = state.path.map((node) => node.label).join(">");
@@ -520,7 +580,7 @@
 
         <section class="glass-panel player-result-card" aria-labelledby="player-route-title">
           <div class="result-section-label" id="player-route-title"><span>2</span>你的選擇路線與生成敘述</div>
-          <div class="path-review" aria-label="你的四步選擇與預測比例">
+          <div class="path-review" aria-label="你的 ${predictionSteps()} 步選擇與預測比例">
             ${state.path.map((node, index) => `<div class="path-item"><span>第 ${index + 1} 步</span>${escapeHTML(node.label)} <strong>${node.probability}%</strong></div>`).join("")}
           </div>
           <p class="player-generated-story">${semanticStoryMarkup(generatedStory(), comparison.playerTerms, comparison.labels)}</p>

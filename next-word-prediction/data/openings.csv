@@ -1,7 +1,23 @@
-case_id,opening_id,matching_path,comparison_note
+﻿case_id,opening_id,matching_path,comparison_note
 history_koxinga_1661,tamsui_red_fort,北臺灣>淡水>河口一帶>紅毛城,紅毛城確實與荷蘭人在臺灣的歷史有關，但把相關的歷史名詞放進句子，不代表它就是這次事件的正確地點。
 history_koxinga_1661,keelung_salvador,北臺灣>基隆>和平島上>聖薩爾瓦多城,聖薩爾瓦多城確實是北臺灣的重要殖民史蹟，但相關時代與殖民背景相近，不代表它就是鄭成功長期圍攻的據點。
 history_koxinga_1661,penghu_fort,澎湖群島>馬公>港區>澎湖要塞,鄭軍航程與澎湖有關，港口和要塞也符合戰爭語境，但航行經過的地點不等於荷蘭人最後投降的熱蘭遮城。
 history_koxinga_1661,chihkan_provintia,臺灣南部>今日臺南>赤崁地區>普羅民遮城,普羅民遮城與鄭成功攻臺事件密切相關，但相關地點不等於經九個月包圍後締約獻城的熱蘭遮城。
 history_koxinga_1661,anping_old_fort,臺灣南部>今日臺南>安平地區>安平古堡,今日常用的安平古堡名稱容易讓敘述顯得正確，但查證歷史事件時仍需分辨當時的熱蘭遮城名稱與事件脈絡。
 history_koxinga_1661,anping_generic_fort,臺灣南部>今日臺南>安平地區>安平古堡,臺南安平與荷蘭城堡的方向大致合理，但籠統的相關詞無法取代可查證的據點名稱與事件細節。
+climate_taiwan_water,winter_equal_water,東北季風>全臺降雨平均>全臺不易缺水,把東北季風直接推論成全臺降雨平均、所有水庫都不缺水，忽略地形和南北差異。
+climate_taiwan_water,summer_northeast_south,西南季風>南部背風面>南部全年雨量最多,夏季與東北季風不能任意相接，南部背風面的冬季特徵也不能套成全年雨量最多。
+climate_taiwan_water,annual_typhoon_secure,颱風>全臺降雨平均>全臺不易缺水,颱風可能帶來大量降雨，但不能據此推論全年各地平均、所有水庫都不會缺水。
+climate_taiwan_water,winter_southwest_average,西南季風>全臺降雨平均>南部全年雨量最多,西南季風主要影響暖季，把它接到冬季並推論南部全年雨量最多，是流暢但錯置的因果鏈。
+geology_yangmingshan,basalt_columns,玄武岩柱狀節理>熔岩冷卻收縮>海岸柱狀節理,AI 把陽明山的火山背景與澎湖玄武岩柱狀節理混成同一組地景。
+geology_yangmingshan,coral_uplift,珊瑚礁石灰岩>珊瑚生長與地殼抬升>隆起珊瑚礁與熱帶海岸生態,AI 把墾丁的珊瑚礁石灰岩與海岸生態套用到陽明山。
+geology_yangmingshan,penghu_hot_spring,安山岩與火山地形>火山及熱液作用>海岸柱狀節理,火山與溫泉經常共同出現，但澎湖的代表地景不能直接套用陽明山的熱液現象。
+geology_yangmingshan,kenting_columns,安山岩與火山地形>熔岩冷卻收縮>海岸柱狀節理,不同火山岩、作用與地景詞被順暢串接，卻跨越三個場域。
+geology_taroko,coral_gorge,珊瑚礁石灰岩>珊瑚生長與地殼抬升>隆起珊瑚礁,AI 把墾丁珊瑚礁石灰岩與太魯閣峽谷放在同一條形成路徑。
+geology_taroko,volcanic_taroko,安山岩與火山地形>火山及熱液作用>硫氣孔與溫泉地景,火山與山地景觀經常共同出現，但太魯閣峽谷不是火山熱液作用形成。
+geology_taroko,kenting_marble,大理岩>珊瑚生長與地殼抬升>深切峽谷,AI 保留太魯閣地質資料，卻把場域換成墾丁。
+geology_taroko,yangmingshan_gorge,大理岩>地殼抬升與河流侵蝕>硫氣孔與溫泉地景,大理岩、抬升與峽谷構成合理因果，但接到陽明山後成為跨場域拼接。
+geology_kenting,basalt_kenting,玄武岩柱狀節理>熔岩冷卻收縮>海岸柱狀節理,AI 把澎湖玄武岩柱狀節理與墾丁熱帶海岸放進同一條路徑。
+geology_kenting,marble_kenting,大理岩>地殼抬升與河流侵蝕>深切峽谷,AI 將太魯閣的大理岩、河流侵蝕與峽谷資料移植到墾丁。
+geology_kenting,penghu_coral,珊瑚礁石灰岩>珊瑚生長、地殼抬升與侵蝕>海岸柱狀節理,珊瑚礁路徑本身合理，但場域改成澎湖後便需要重新查證。
+geology_kenting,taroko_columns,玄武岩柱狀節理>熔岩冷卻收縮>海岸柱狀節理,太魯閣、澎湖玄武岩與柱狀節理被串成一句流暢敘述，卻混合不同場域。
