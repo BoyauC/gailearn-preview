@@ -8,8 +8,8 @@
     nodes: "data/nodes.csv"
   };
 
-  const THEME_CYCLE_KEY = "nextWordPrediction.themeCycle.v1";
-  const THEME_CYCLE_VERSION = 1;
+  const THEME_CYCLE_KEY = "nextWordPrediction.themeCycle.v2";
+  const THEME_CYCLE_VERSION = 2;
 
   const app = document.querySelector("#app");
   const announcer = document.querySelector("#announcer");
@@ -21,7 +21,6 @@
     nodes: [],
     current: null,
     currentThemeId: null,
-    themeCycleCommitted: false,
     lastCaseId: null,
     openingId: null,
     lastOpeningKey: null,
@@ -197,11 +196,20 @@
     const themeIds = activeThemeIds();
     try {
       const saved = JSON.parse(localStorage.getItem(THEME_CYCLE_KEY) || "null");
-      if (!saved || saved.version !== THEME_CYCLE_VERSION || !Array.isArray(saved.playedThemeIds)) return { version: THEME_CYCLE_VERSION, playedThemeIds: [] };
-      return { version: THEME_CYCLE_VERSION, playedThemeIds: [...new Set(saved.playedThemeIds)].filter((themeId) => themeIds.includes(themeId)) };
+      const themeListChanged = !Array.isArray(saved?.themeIds)
+        || saved.themeIds.length !== themeIds.length
+        || themeIds.some((themeId) => !saved.themeIds.includes(themeId));
+      if (!saved || saved.version !== THEME_CYCLE_VERSION || !Array.isArray(saved.remainingThemeIds) || themeListChanged) {
+        return { version: THEME_CYCLE_VERSION, remainingThemeIds: [], lastThemeId: "" };
+      }
+      return {
+        version: THEME_CYCLE_VERSION,
+        remainingThemeIds: [...new Set(saved.remainingThemeIds)].filter((themeId) => themeIds.includes(themeId)),
+        lastThemeId: themeIds.includes(saved.lastThemeId) ? saved.lastThemeId : ""
+      };
     } catch (error) {
       console.warn("主題循環紀錄無法讀取，已重新建立。", error);
-      return { version: THEME_CYCLE_VERSION, playedThemeIds: [] };
+      return { version: THEME_CYCLE_VERSION, remainingThemeIds: [], lastThemeId: "" };
     }
   }
 
@@ -210,23 +218,38 @@
     catch (error) { console.warn("主題循環紀錄無法儲存，本次仍可繼續遊戲。", error); }
   }
 
+  function shuffledThemeIds(themeIds) {
+    const shuffled = [...themeIds];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+    }
+    return shuffled;
+  }
+
+  function createThemeQueue(themeIds, lastThemeId) {
+    const queue = shuffledThemeIds(themeIds);
+    if (queue.length > 1 && queue[0] === lastThemeId) {
+      const replacementIndex = queue.findIndex((themeId) => themeId !== lastThemeId);
+      [queue[0], queue[replacementIndex]] = [queue[replacementIndex], queue[0]];
+    }
+    return queue;
+  }
+
   function chooseThemeId() {
     const themeIds = activeThemeIds();
     const cycle = readThemeCycle();
-    const played = cycle.playedThemeIds.length >= themeIds.length ? [] : cycle.playedThemeIds;
-    if (played.length !== cycle.playedThemeIds.length) writeThemeCycle({ version: THEME_CYCLE_VERSION, playedThemeIds: played });
-    const available = themeIds.filter((themeId) => !played.includes(themeId));
-    return available[Math.floor(Math.random() * available.length)];
-  }
-
-  function commitCurrentTheme() {
-    if (state.themeCycleCommitted || !state.currentThemeId) return;
-    const themeIds = activeThemeIds();
-    const cycle = readThemeCycle();
-    const played = cycle.playedThemeIds.length >= themeIds.length ? [] : cycle.playedThemeIds;
-    if (!played.includes(state.currentThemeId)) played.push(state.currentThemeId);
-    writeThemeCycle({ version: THEME_CYCLE_VERSION, playedThemeIds: played });
-    state.themeCycleCommitted = true;
+    const remainingThemeIds = cycle.remainingThemeIds.length
+      ? [...cycle.remainingThemeIds]
+      : createThemeQueue(themeIds, cycle.lastThemeId);
+    const selectedThemeId = remainingThemeIds.shift();
+    writeThemeCycle({
+      version: THEME_CYCLE_VERSION,
+      themeIds,
+      remainingThemeIds,
+      lastThemeId: selectedThemeId
+    });
+    return selectedThemeId;
   }
 
   function validateData() {
@@ -376,9 +399,7 @@
     state.groupId = "root";
     state.path = [];
     state.verdict = "";
-    state.themeCycleCommitted = false;
-    const locationLabel = state.current.location_label ? "・" + state.current.location_label : "";
-    counter.textContent = state.current.theme_label + locationLabel + "・" + state.current.difficulty;
+    counter.textContent = state.current.theme_label + "・" + state.current.difficulty;
     showScan();
   }
 
@@ -564,7 +585,6 @@
   }
 
   function showResults() {
-    commitCurrentTheme();
     const historicallyAligned = state.path.every((node) => node.is_verified_direction === "1");
     const opening = currentOpening();
     const pathSignature = state.path.map((node) => node.label).join(">");
