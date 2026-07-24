@@ -77,7 +77,7 @@ next-word-prediction/
 
 ### `cases.csv` 必要欄位
 
-`case_id,active,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_role_labels,comparison_path_groups,verified_compare_terms,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,simulation_note`
+`case_id,active,theme_id,theme_label,location_label,prediction_steps,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_role_labels,comparison_path_groups,verified_compare_terms,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,simulation_note`
 
 其中 `story_prefix` 是填入生成詞之前的句子，`story_suffix` 是之後的句子。四個球體選出的 `token` 以空字串連接後置入兩者之間。
 
@@ -85,13 +85,13 @@ next-word-prediction/
 
 每個案例至少提供一筆查證文獻於 `source_label` 與 `source_url`；第二筆文獻填入 `source_label_2` 與 `source_url_2`。沒有第二筆時兩欄可留白，結算頁會自動隱藏空白項目。
 
-- `ending_right`：四步皆為 `is_verified_direction=1` 時顯示。
+- `ending_right`：案例設定的所有步驟皆為 `is_verified_direction=1` 時顯示。
 - `ending_opening_match`：路徑不符合史實，但等於當局 `opening_id` 的 `matching_path` 時顯示。
 - `ending_wrong`：其他不符合史實的路徑顯示。
 - 三個 `ending_*` 欄位的第一個完整句點 `。` 之前為判定句，結果頁以粗體呈現；句點後的教學解釋維持一般字重。
 - `reflection_prompt`：接在「你剛才的判斷」之後的中性反思問題，不評分玩家。
 - `comparison_role_labels`：語意位置名稱，以 `|` 分隔，例如 `大區域|具體地點|歷史據點`。
-- `comparison_path_groups`：把四步玩家路徑組成語意位置，以 `|` 分組、`+` 合併步驟，例如 `1|2+3|4`。
+- `comparison_path_groups`：把玩家路徑組成語意位置，以 `|` 分組、`+` 合併步驟；歷史案例可用 `1|2+3|4`，三層案例使用 `1|2|3`。
 - `verified_compare_terms`：依相同順序提供查證敘述中的對照詞，以 `|` 分隔；每個詞都必須實際出現在 `verified_story`。
 
 ### `openings.csv` 必要欄位
@@ -106,7 +106,7 @@ next-word-prediction/
 
 `type` 目前允許 `fact`、`inference`、`context`。玩家可以複選；只要選中任一 `suspicious=1` 片段就算有注意到核心問題。
 
-同一案例可有多個 `opening_id`。開始或重玩時從該案例的開場版本隨機抽取，並避免同一裝置立即重複上一個版本；不同開場版本共用相同的四步預測節點與查證內容。
+同一案例可有多個 `opening_id`。開始或重玩時從該案例的開場版本隨機抽取，並避免同一裝置立即重複上一個版本；不同開場版本共用該案例設定層數的預測節點與查證內容。
 
 ### `nodes.csv` 必要欄位
 
@@ -123,9 +123,9 @@ next-word-prediction/
 1. **封面**：主標題固定跨兩行顯示「比比看／你跟 AI 一不一樣」，包含三段教學說明；「開始探索」與思思平板上的「下一個詞」都可開始遊戲。
 2. **隨機開場與批判閱讀**：先為案例隨機抽取一個 `opening_id`，再把該組 `segments.csv` 片段渲染成可點選按鈕，玩家可複選需要查證的詞。
 3. **揭示調查點**：顯示玩家上一頁實際標記的所有片段；若未選取則顯示「未標記任何詞語」。教學文字固定跨兩行，先不公布正解。
-4. **四步預測**：連續四輪、每輪三選一。說明區位於候選球體上方；球體大小與光暈依機率變化，不能用正誤色彩提示。玩家選擇後立即停用三個球體，以深色粗體顯示該選項的 `reason`，並以一般字重顯示 5 秒切換提示；停留 5 秒再進入下一輪，第四輪後則進入可信度判斷。
+4. **自迴歸預測**：依 `prediction_steps` 連續三輪或四輪、每輪三選一。說明區位於候選球體上方；球體大小與光暈依機率變化，不能用正誤色彩提示。玩家選擇後立即停用三個球體，以深色粗體顯示該選項的 `reason`，並以一般字重顯示 5 秒切換提示；停留 5 秒再進入下一輪，案例的最後一輪後則進入可信度判斷。
 5. **可信度判斷**：把四個 token 填回敘述，請玩家在「可以，機率很高」「不可以，仍需查證」「我不確定」中選擇；這是先判斷、後看證據的反思步驟，不是計分題。
-6. **路徑回放與比對**：移除右上角查證意識評價球體，改為中性記錄「你剛才的判斷」及 `reflection_prompt`。再依序顯示當局抽到的原本 AI 生成敘述、四步選擇與預測比例、玩家路徑生成敘述、實際查證內容、落差成因、查證文獻與教學模擬註記。玩家生成敘述與查證敘述依 `comparison_role_labels` 做相同語意位置的凸顯對照，但不顯示語意位置圖例或敘述關鍵詞前的編號；錯誤詞只標示於玩家敘述，不得硬套進查證內容。
+6. **路徑回放與比對**：移除右上角查證意識評價球體，改為中性記錄「你剛才的判斷」及 `reflection_prompt`。再依序顯示當局抽到的原本 AI 生成敘述、完整路徑選擇與預測比例、玩家路徑生成敘述、實際查證內容、落差成因、查證文獻與教學模擬註記。玩家生成敘述與查證敘述依 `comparison_role_labels` 做相同語意位置的凸顯對照，但不顯示語意位置圖例或敘述關鍵詞前的編號；錯誤詞只標示於玩家敘述，不得硬套進查證內容。
 7. **三層結果判定**：依優先順序判斷「符合史實路徑」→「不符合史實但回到本局開場誤導路徑」→「其他不符合史實路徑」，分別顯示 `ending_right`、`ending_opening_match`、`ending_wrong`。
 8. **結束選擇**：再玩一題或離開；未來有多題時亂數且避免立即重複。
 
@@ -141,7 +141,7 @@ next-word-prediction/
 - 桌機、平板與手機皆可操作；橫式平板使用 `768px–1366px + orientation: landscape`，直式平板使用 `621px–900px + orientation: portrait`，手機窄版斷點約 620px。
 - 平板主要操作按鈕至少 56px 高，一般可點區至少 44×44px，正文至少 16px；需考慮瀏海與安全區 `env(safe-area-inset-*)`。
 - 不以紅／綠單獨表示正誤，所有狀態同時提供文字。
-- 結果頁以閱讀時間順序縱向排列；橫式平板的四步路徑維持單排，落差說明與文獻左右並列；直式平板的路徑改為 `2×2`，落差說明與文獻改為上下排列。
+- 結果頁以閱讀時間順序縱向排列；橫式平板的三至四步路徑維持單排，落差說明與文獻左右並列；直式平板的路徑改為 `2×2`，落差說明與文獻改為上下排列。
 
 ## 平板操作原則
 
@@ -169,19 +169,19 @@ next-word-prediction/
 1. 使用本機 HTTP server 開啟第一層 `index.html`，四份 CSV 均成功載入。
 2. 封面兩個入口 → 隨機開場 → 找詞 → 標記揭示 → 四輪選擇 → 可信度判斷 → 結算可完整走完。
 3. 每輪剛好三個候選球體且機率總和為 100。
-4. 選擇不同第一步會出現不同第二步候選，第三、第四步也必須依完整路徑切換。
+4. 選擇不同第一步會出現不同第二步候選，後續各步也必須依完整路徑切換。
 5. 生成敘述確實由玩家四次選擇組成。
 6. 每次球體選擇後的 `reason` 位於球體上方並完整停留約 5 秒，再進入下一步。
 7. 三個可信度選項都會在結果頁逐字記錄玩家原始判斷，不轉換成評價標籤，並顯示反思問題。
 8. 提示框的 `reason` 為深色粗體，5 秒切換提示為一般字重；兩者視覺層級不可顛倒。
 9. 玩家生成敘述與查證敘述的語意位置與順序一致，不顯示語意位置圖例或敘述關鍵詞前的編號；`comparison_path_groups` 必須剛好涵蓋第 1～4 步，`verified_compare_terms` 全部存在於查證敘述。
 10. 分別走完符合史實、符合當局開場誤導路徑、其他錯誤路徑，確認三種結果說明正確、判定順序不互相覆蓋，且每段第一句判定文字為粗體、後續解釋為一般字重。
-11. 結算依序顯示原始敘述、四步路徑與比例、玩家生成敘述、查證內容、落差說明、來源連結及教學模擬註記。
+11. 結算依序顯示原始敘述、完整路徑與比例、玩家生成敘述、查證內容、落差說明、來源連結及教學模擬註記。
 12. 「再玩一個案例」與「離開遊戲」均可用；重玩不得立即抽到同一 `opening_id`。
 13. 六組開場皆可成功拼接、每組 `order` 連續且至少有一個 `suspicious=1` 片段；每組 `matching_path` 都能在節點資料中走出。
 14. 360px 寬度不出現水平捲動；鍵盤操作不會卡住。
 15. JavaScript console 無錯誤；CSV 載入失敗時顯示可理解的錯誤畫面。
-16. 以 1024×768、1180×820 與 1366×1024 橫式尺寸確認三個球體保持橫排、結果頁四步路徑保持單排，且上下文與說明不被裁切。
+16. 以 1024×768、1180×820 與 1366×1024 橫式尺寸確認三個球體保持橫排、結果頁三至四步路徑保持單排，且上下文與說明不被裁切。
 17. 以 768×1024 與 820×1180 直式尺寸確認完整流程可用、結果頁路徑為 `2×2`、允許合理捲動、不要求旋轉裝置，旋轉前後遊戲狀態不重置。
 18. 以觸控／無 hover 條件確認所有功能可完成；再以 1440×900 PC 尺寸確認版面沒有被平板規則過度放大。
 
@@ -203,3 +203,34 @@ next-word-prediction/
 - 保留使用者自行修改過的案例文字，不因程式重構覆寫 CSV。
 - 不更動本目錄以外的其他章節，除非使用者明確要求整合導覽。
 - 不提交部署、推送 GitHub 或修改 repository settings，除非使用者明確要求。
+
+
+## 主題池與跨場遊玩規則
+
+目前共有三個頂層主題，首頁不顯示主題選單，僅在右上角呈現本局類別：
+
+- `history`：既有 `history_koxinga_1661`。
+- `climate_water`：`climate_taiwan_water`，固定上文為「臺灣冬季」，三步語意為盛行風、主要影響區域、水資源結果。
+- `ecology_geology`：先抽取此主題，再等機率抽取 `geology_yangmingshan`、`geology_taroko` 或 `geology_kenting`；場域寫入固定上文，三步語意為岩性、形成作用、代表地景或生態。
+
+`cases.csv` 的 `theme_id` 是抽題識別值，`theme_label` 是右上角顯示名稱，`location_label` 只用於生態地質子案例。新增案例不可只靠 `category` 推論主題。
+
+主題循環使用 `localStorage` 的 `nextWordPrediction.themeCycle.v1` 保存。玩家抵達結果頁才將本局主題記為完成；前三個完成的遊戲必須來自三個不同主題，第 4 局重置主題池。重新整理或重開瀏覽器要延續循環。紀錄格式錯誤、版本不符、儲存空間不可用時不得阻止遊戲，應重建紀錄或退回當次隨機。
+
+## 氣候與生態地質案例規格
+
+- `climate_taiwan_water` 的查證主路徑為「冬季 → 東北季風 → 北部及東北部迎風面 → 南部冬季降雨較少」，對應國中地理 `地 Ac-Ⅳ-1～4`。
+- `geology_yangmingshan` 的查證主路徑為「陽明山 → 安山岩與火山地形 → 火山及熱液作用 → 硫氣孔與溫泉地景」。
+- `geology_taroko` 的查證主路徑為「太魯閣 → 大理岩 → 地殼抬升與河流侵蝕 → 深切峽谷」。
+- `geology_kenting` 的查證主路徑為「墾丁 → 珊瑚礁石灰岩 → 珊瑚生長、地殼抬升與侵蝕 → 隆起珊瑚礁與熱帶海岸生態」。
+- 生態地質三個場域是三棵獨立的 27 路徑樹，不得共用查證答案；誘導內容應混合真實的跨場域名詞，而不是加入明顯荒謬的選項。
+- 百分比一律稱為「教學模擬權重」，不可暗示來自線上或特定 LLM。每個完整上下文群組必須自行提供三個合計 100% 的權重。
+- `scripts/build-expanded-cases.mjs` 可重建新增四案的 CSV 資料。若直接修改新增案例 CSV，之後執行產生器會覆寫這些案例，因此正式文字調整也要同步更新產生器。
+
+
+## 可變預測層數
+
+- `cases.csv` 的 `prediction_steps` 是每案的終點層數；歷史案例為 `4`，氣候與三個生態地質案例為 `3`。
+- 進度條、步數文字、5 秒切換提示、可信度判斷入口、結果頁路徑卡與資料驗證都必須讀取此欄，不可把第 4 步寫死。
+- 四層三選一案例應有 40 個群組、120 個節點、81 條完整路徑；三層三選一案例應有 13 個群組、39 個節點、27 條完整路徑。
+- 三層案例的固定上文承擔第一個已知條件：氣候案例固定「臺灣冬季」，生態地質案例固定當局抽中的場域；玩家從仍需推論的三個語意位置開始選擇。
