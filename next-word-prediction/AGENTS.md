@@ -37,7 +37,7 @@
 - 不依賴後端、API 金鑰、資料庫或跨網域服務。
 - 不使用內嵌 SVG 當裝飾。星空以 CSS 與 Canvas 繪製。
 - GitHub Pages 與本機 HTTP server 必須可正常載入 CSV。瀏覽器直接以 `file://` 開啟時可能因安全政策阻擋 `fetch`，介面應顯示清楚的啟動提示，不可靜默失敗。
-- 文字內容以 UTF-8 CSV 為主要資料來源；不要把案例敘述複製成 JavaScript 常數。
+- 文字內容以 UTF-8 CSV 為主要資料來源；不要把案例敘述、結果回饋或開場對應路徑複製成 JavaScript 常數。
 
 ## 目錄與職責
 
@@ -54,6 +54,7 @@ next-word-prediction/
 │  └─ game.js
 ├─ data/
    ├─ cases.csv       # 案例標題、敘述、回饋、查證內容與來源
+   ├─ openings.csv    # 每組開場版本對應的誤導路徑
    ├─ segments.csv    # 多組開場版本、可點選文字片段與可疑詞判定
    └─ nodes.csv       # 四輪候選節點、機率、旁白與下一組節點
 └─ docs/
@@ -76,13 +77,24 @@ next-word-prediction/
 
 ### `cases.csv` 必要欄位
 
-`case_id,active,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_note,ending_wrong,ending_right,source_label,source_url,source_label_2,source_url_2,simulation_note`
+`case_id,active,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,simulation_note`
 
 其中 `story_prefix` 是填入生成詞之前的句子，`story_suffix` 是之後的句子。四個球體選出的 `token` 以空字串連接後置入兩者之間。
 
 `reveal_hit` 與 `reveal_miss` 為既有資料相容欄位；目前揭示頁改為顯示玩家實際標記的片段與固定教學引導，不直接顯示這兩欄。
 
 每個案例至少提供一筆查證文獻於 `source_label` 與 `source_url`；第二筆文獻填入 `source_label_2` 與 `source_url_2`。沒有第二筆時兩欄可留白，結算頁會自動隱藏空白項目。
+
+- `ending_right`：四步皆為 `is_verified_direction=1` 時顯示。
+- `ending_opening_match`：路徑不符合史實，但等於當局 `opening_id` 的 `matching_path` 時顯示。
+- `ending_wrong`：其他不符合史實的路徑顯示。
+- `reflection_prompt`：接在「你剛才的判斷」之後的中性反思問題，不評分玩家。
+
+### `openings.csv` 必要欄位
+
+`case_id,opening_id,matching_path,comparison_note`
+
+每一個 `segments.csv` 的 `opening_id` 必須在 `openings.csv` 有且只有一筆對應資料。`matching_path` 使用四個球體 `label` 以 `>` 連接，例如 `北臺灣>淡水>河口一帶>紅毛城`，而且必須是 `nodes.csv` 中實際可走出的完整路徑。`comparison_note` 是該開場版本專屬的落差說明，結果頁優先使用此欄，避免所有版本都顯示同一個歷史名詞。
 
 ### `segments.csv` 必要欄位
 
@@ -108,9 +120,10 @@ next-word-prediction/
 2. **隨機開場與批判閱讀**：先為案例隨機抽取一個 `opening_id`，再把該組 `segments.csv` 片段渲染成可點選按鈕，玩家可複選需要查證的詞。
 3. **揭示調查點**：顯示玩家上一頁實際標記的所有片段；若未選取則顯示「未標記任何詞語」。教學文字固定跨兩行，先不公布正解。
 4. **四步預測**：連續四輪、每輪三選一。說明區位於候選球體上方；球體大小與光暈依機率變化，不能用正誤色彩提示。玩家選擇後立即停用三個球體，顯示該選項的 `reason`，停留 5 秒再進入下一輪；第四輪後則進入可信度判斷。
-5. **可信度判斷**：把四個 token 填回敘述，詢問是否可以直接視為史實。
-6. **路徑回放與比對**：依序顯示當局抽到的原本 AI 生成敘述、四步選擇與預測比例、玩家路徑生成敘述、實際查證內容、落差成因、查證文獻與教學模擬註記。
-7. **結束選擇**：再玩一題或離開；未來有多題時亂數且避免立即重複。
+5. **可信度判斷**：把四個 token 填回敘述，請玩家在「可以，機率很高」「不可以，仍需查證」「我不確定」中選擇；這是先判斷、後看證據的反思步驟，不是計分題。
+6. **路徑回放與比對**：移除右上角查證意識評價球體，改為中性記錄「你剛才的判斷」及 `reflection_prompt`。再依序顯示當局抽到的原本 AI 生成敘述、四步選擇與預測比例、玩家路徑生成敘述、實際查證內容、落差成因、查證文獻與教學模擬註記。
+7. **三層結果判定**：依優先順序判斷「符合史實路徑」→「不符合史實但回到本局開場誤導路徑」→「其他不符合史實路徑」，分別顯示 `ending_right`、`ending_opening_match`、`ending_wrong`。
+8. **結束選擇**：再玩一題或離開；未來有多題時亂數且避免立即重複。
 
 ## 介面與視覺方向
 
@@ -149,24 +162,26 @@ next-word-prediction/
 
 每次修改後至少確認：
 
-1. 使用本機 HTTP server 開啟第一層 `index.html`，三份 CSV 均成功載入。
+1. 使用本機 HTTP server 開啟第一層 `index.html`，四份 CSV 均成功載入。
 2. 封面兩個入口 → 隨機開場 → 找詞 → 標記揭示 → 四輪選擇 → 可信度判斷 → 結算可完整走完。
 3. 每輪剛好三個候選球體且機率總和為 100。
 4. 選擇不同第一步會出現不同第二步候選，第三、第四步也必須依完整路徑切換。
 5. 生成敘述確實由玩家四次選擇組成。
 6. 每次球體選擇後的 `reason` 位於球體上方並完整停留約 5 秒，再進入下一步。
-7. 結算依序顯示原始敘述、四步路徑與比例、玩家生成敘述、查證內容、落差說明、來源連結及教學模擬註記。
-8. 「再玩一個案例」與「離開遊戲」均可用；重玩不得立即抽到同一 `opening_id`。
-9. 六組開場皆可成功拼接、每組 `order` 連續且至少有一個 `suspicious=1` 片段。
-10. 360px 寬度不出現水平捲動；鍵盤操作不會卡住。
-11. JavaScript console 無錯誤；CSV 載入失敗時顯示可理解的錯誤畫面。
-12. 以 1024×768、1180×820 與 1366×1024 橫式尺寸確認三個球體保持橫排、結果頁四步路徑保持單排，且上下文與說明不被裁切。
-13. 以 768×1024 與 820×1180 直式尺寸確認完整流程可用、結果頁路徑為 `2×2`、允許合理捲動、不要求旋轉裝置，旋轉前後遊戲狀態不重置。
-14. 以觸控／無 hover 條件確認所有功能可完成；再以 1440×900 PC 尺寸確認版面沒有被平板規則過度放大。
+7. 三個可信度選項都會在結果頁逐字記錄玩家原始判斷，不轉換成評價標籤，並顯示反思問題。
+8. 分別走完符合史實、符合當局開場誤導路徑、其他錯誤路徑，確認三種結果說明正確且判定順序不互相覆蓋。
+9. 結算依序顯示原始敘述、四步路徑與比例、玩家生成敘述、查證內容、落差說明、來源連結及教學模擬註記。
+10. 「再玩一個案例」與「離開遊戲」均可用；重玩不得立即抽到同一 `opening_id`。
+11. 六組開場皆可成功拼接、每組 `order` 連續且至少有一個 `suspicious=1` 片段；每組 `matching_path` 都能在節點資料中走出。
+12. 360px 寬度不出現水平捲動；鍵盤操作不會卡住。
+13. JavaScript console 無錯誤；CSV 載入失敗時顯示可理解的錯誤畫面。
+14. 以 1024×768、1180×820 與 1366×1024 橫式尺寸確認三個球體保持橫排、結果頁四步路徑保持單排，且上下文與說明不被裁切。
+15. 以 768×1024 與 820×1180 直式尺寸確認完整流程可用、結果頁路徑為 `2×2`、允許合理捲動、不要求旋轉裝置，旋轉前後遊戲狀態不重置。
+16. 以觸控／無 hover 條件確認所有功能可完成；再以 1440×900 PC 尺寸確認版面沒有被平板規則過度放大。
 
 ## 新增第二、三案例
 
-新增案例時不複製頁面：只在三份 CSV 增加相同 `case_id` 的資料。每題必須包含一個根群組 `root`、四個步驟與完整查證來源。案例應先由可靠的一手或權威教育／典藏來源查核，再寫入 `verified_story`、`source_url`，並盡可能提供第二筆交叉查證文獻。若新案例需要新的遊戲機制，先維持舊 CSV 向後相容，再擴充欄位與解析器。
+新增案例時不複製頁面：只在四份 CSV 增加相同 `case_id` 的資料。每題必須包含至少一個開場版本、一筆對應 `openings.csv`、一個根群組 `root`、四個步驟與完整查證來源。案例應先由可靠的一手或權威教育／典藏來源查核，再寫入 `verified_story`、`source_url`，並盡可能提供第二筆交叉查證文獻。若新案例需要新的遊戲機制，先維持舊 CSV 向後相容，再擴充欄位與解析器。
 
 ## 品牌與視覺規格
 
