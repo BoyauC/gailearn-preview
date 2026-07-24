@@ -596,7 +596,25 @@ button:focus-visible, a:focus-visible { outline-color: #6f7e3f; }
   background: rgba(204, 225, 160, .3);
   font-weight: 800;
 }
-.reason-box .reason-wait { color: var(--muted); font-weight: 400; }
+.reason-box .reason-wait {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.reason-box .reason-countdown {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  color: #f9f8ef;
+  background: #879b47;
+  border-radius: 50%;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
 
 .generated-word {
   color: #5f6c38;
