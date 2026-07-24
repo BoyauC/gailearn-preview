@@ -172,7 +172,8 @@
   function currentSources() {
     return [
       { label: state.current.source_label, url: state.current.source_url },
-      { label: state.current.source_label_2, url: state.current.source_url_2 }
+      { label: state.current.source_label_2, url: state.current.source_url_2 },
+      { label: state.current.source_label_3, url: state.current.source_url_3 }
     ].filter((source) => source.label && source.url);
   }
 
