@@ -37,6 +37,7 @@
 - 不依賴後端、API 金鑰、資料庫或跨網域服務。
 - 不使用內嵌 SVG 當裝飾。星空以 CSS 與 Canvas 繪製。
 - GitHub Pages 與本機 HTTP server 必須可正常載入 CSV。瀏覽器直接以 `file://` 開啟時可能因安全政策阻擋 `fetch`，介面應顯示清楚的啟動提示，不可靜默失敗。
+- 在 Codex 右側瀏覽器預覽時，HTTP server 必須啟動於 Windows 主機層，工作目錄設為本資料夾並綁定 `127.0.0.1:8000`；若從受隔離的執行環境啟動，右側瀏覽器可能無法連線。Windows 可用隱藏背景程序執行 `python -m http.server 8000 --bind 127.0.0.1`，再開啟 `http://localhost:8000/`。
 - 文字內容以 UTF-8 CSV 為主要資料來源；不要把案例敘述、結果回饋或開場對應路徑複製成 JavaScript 常數。
 
 ## 目錄與職責
@@ -77,13 +78,13 @@ next-word-prediction/
 
 ### `cases.csv` 必要欄位
 
-`case_id,active,theme_id,theme_label,location_label,prediction_steps,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_role_labels,comparison_path_groups,verified_compare_terms,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,simulation_note`
+`case_id,active,theme_id,theme_label,location_label,prediction_steps,category,difficulty,title,kicker,intro_instruction,story_prefix,story_suffix,reveal_hit,reveal_miss,prediction_prompt,verdict_question,verified_story,comparison_role_labels,comparison_path_groups,verified_compare_terms,comparison_note,ending_wrong,ending_right,ending_opening_match,reflection_prompt,source_label,source_url,source_label_2,source_url_2,source_label_3,source_url_3,simulation_note`
 
 其中 `story_prefix` 是填入生成詞之前的句子，`story_suffix` 是之後的句子。四個球體選出的 `token` 以空字串連接後置入兩者之間。
 
 `reveal_hit` 與 `reveal_miss` 為既有資料相容欄位；目前揭示頁改為顯示玩家實際標記的片段與固定教學引導，不直接顯示這兩欄。
 
-每個案例至少提供一筆查證文獻於 `source_label` 與 `source_url`；第二筆文獻填入 `source_label_2` 與 `source_url_2`。沒有第二筆時兩欄可留白，結算頁會自動隱藏空白項目。
+每個案例至少提供一筆查證文獻於 `source_label` 與 `source_url`；第二、三筆文獻分別填入 `source_label_2`、`source_url_2` 與 `source_label_3`、`source_url_3`。沒有第二或第三筆時對應欄位可留白，結算頁會自動隱藏空白項目。
 
 - `ending_right`：案例設定的所有步驟皆為 `is_verified_direction=1` 時顯示。
 - `ending_opening_match`：路徑不符合史實，但等於當局 `opening_id` 的 `matching_path` 時顯示。
