@@ -97,7 +97,7 @@
 
   function setScreen(markup) {
     if (state.transitionTimer) {
-      window.clearTimeout(state.transitionTimer);
+      window.clearInterval(state.transitionTimer);
       state.transitionTimer = null;
     }
     app.innerHTML = markup;
@@ -501,17 +501,33 @@
     const totalSteps = predictionSteps();
     const waitMessage = document.createElement("span");
     waitMessage.className = "reason-wait";
-    waitMessage.textContent = state.path.length === totalSteps - 1 ? "5 秒後進入可信度判斷。" : "5 秒後進入下一次預測。";
+    const countdown = document.createElement("span");
+    countdown.className = "reason-countdown";
+    countdown.setAttribute("role", "timer");
+    countdown.setAttribute("aria-label", "剩餘 5 秒");
+    countdown.textContent = "5";
+    const waitLabel = document.createElement("span");
+    waitLabel.textContent = state.path.length === totalSteps - 1 ? "即將進入可信度判斷" : "即將進入下一次預測";
+    waitMessage.append(countdown, waitLabel);
     reasonBox.append(waitMessage);
     state.path.push(node);
     announce(`你選擇了${node.label}，${node.probability}%。${node.reason}`);
-    state.transitionTimer = window.setTimeout(() => {
+    let remainingSeconds = 5;
+    state.transitionTimer = window.setInterval(() => {
+      remainingSeconds -= 1;
+      if (remainingSeconds > 0) {
+        countdown.textContent = String(remainingSeconds);
+        countdown.setAttribute("aria-label", `剩餘 ${remainingSeconds} 秒`);
+        return;
+      }
+      window.clearInterval(state.transitionTimer);
+      state.transitionTimer = null;
       if (state.path.length === totalSteps) showVerdict();
       else {
         state.groupId = node.next_group;
         showPrediction();
       }
-    }, 5000);
+    }, 1000);
   }
 
   function showVerdict() {
