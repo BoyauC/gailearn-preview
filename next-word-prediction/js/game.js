@@ -146,6 +146,12 @@
     return `${markup}${escapeHTML(story.slice(cursor))}`;
   }
 
+  function emphasizedEndingMarkup(text) {
+    const sentenceEnd = text.indexOf("。");
+    if (sentenceEnd < 0) return `<strong>${escapeHTML(text)}</strong>`;
+    return `<strong>${escapeHTML(text.slice(0, sentenceEnd))}</strong>${escapeHTML(text.slice(sentenceEnd))}`;
+  }
+
   function originalStoryMarkup() {
     return currentSegments().map((segment) => {
       const text = escapeHTML(segment.text);
@@ -499,7 +505,7 @@
           <div>
             <p class="eyebrow">路徑分析完成</p>
             <h2 id="result-title">流暢，是預測的成果；<br>真實，需要另外查證。</h2>
-            <p class="result-message">${escapeHTML(ending)}</p>
+            <p class="result-message">${emphasizedEndingMarkup(ending)}</p>
             <div class="reflection-note">
               <p>你剛才的判斷：<strong>${escapeHTML(verdictLabel())}</strong></p>
               <p>${escapeHTML(state.current.reflection_prompt)}</p>
