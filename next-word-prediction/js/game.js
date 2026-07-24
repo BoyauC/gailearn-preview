@@ -140,7 +140,7 @@
       const position = story.indexOf(term, cursor);
       if (position < 0) return;
       markup += escapeHTML(story.slice(cursor, position));
-      markup += `<mark class="semantic-mark" aria-label="${escapeHTML(labels[index])}：${escapeHTML(term)}"><span aria-hidden="true">${index + 1}</span>${escapeHTML(term)}</mark>`;
+      markup += `<mark class="semantic-mark" aria-label="${escapeHTML(labels[index])}：${escapeHTML(term)}">${escapeHTML(term)}</mark>`;
       cursor = position + term.length;
     });
     return `${markup}${escapeHTML(story.slice(cursor))}`;
@@ -516,9 +516,6 @@
           <div class="result-section-label" id="player-route-title"><span>2</span>你的選擇路線與生成敘述</div>
           <div class="path-review" aria-label="你的四步選擇與預測比例">
             ${state.path.map((node, index) => `<div class="path-item"><span>第 ${index + 1} 步</span>${escapeHTML(node.label)} <strong>${node.probability}%</strong></div>`).join("")}
-          </div>
-          <div class="semantic-legend" aria-label="語意位置對照">
-            ${comparison.labels.map((label, index) => `<span><b>${index + 1}</b>${escapeHTML(label)}</span>`).join("")}
           </div>
           <p class="player-generated-story">${semanticStoryMarkup(generatedStory(), comparison.playerTerms, comparison.labels)}</p>
         </section>
