@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="description" content="AI 三色燈挑戰學生作答頁。" />
+  <title>學生加入｜AI 三色燈挑戰</title>
+  <link rel="stylesheet" href="css/style.css?v=9" />
+</head>
+<body data-level="basic" data-class-mode="student">
+  <main id="app" aria-live="polite">
+    <section id="screen-join" class="screen screen--active">
+      <div class="auth-card join-card">
+        <a class="back-link" href="index.html">← 回到身分選擇</a>
+        <span class="eyebrow">學生入口</span>
+        <h1 class="title">加入 AI 三色燈課堂</h1>
+        <p class="subtitle">向老師取得代碼後，就可以開始挑戰。</p>
+
+        <form id="student-join-form" class="form-stack" novalidate>
+          <div class="field-group">
+            <label for="student-code">4 位數課堂代碼</label>
+            <input id="student-code" name="code" class="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{4}" maxlength="4" placeholder="例如：4821" aria-describedby="student-code-help" required />
+            <small id="student-code-help" class="field-help">只需輸入老師提供的 4 位數字。</small>
+          </div>
+
+          <div class="field-group">
+            <label for="student-name">姓名 <span class="optional">（選填）</span></label>
+            <input id="student-name" name="name" type="text" autocomplete="name" maxlength="30" placeholder="例如：小安" aria-describedby="student-name-help" />
+            <small id="student-name-help" class="field-help">不填時會自動顯示「匿名 01」；請不要填入學號或電話。</small>
+          </div>
+
+          <p id="student-form-error" class="form-message form-message--error hidden" role="alert"></p>
+          <button id="btn-join" type="submit" class="btn btn-primary btn-block">加入課堂</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="screen-start" class="screen">
+      <div class="start-card">
+        <div class="class-context">
+          <span id="student-display-name" class="chip">同學</span>
+          <span id="student-session-code" class="chip chip--muted">課堂 ----</span>
+          <span id="sync-status" class="sync-status" role="status">尚未作答</span>
+        </div>
+        <h1 class="title">AI 三色燈挑戰</h1>
+        <p class="subtitle">依據提問的情境，選擇燈號</p>
+
+        <div class="legend">
+          <div class="legend-item"><span class="dot dot-red" aria-hidden="true"></span><div><strong>紅燈</strong><p>絕對不能用：代寫、造假、霸凌、上傳考題或個資。</p></div></div>
+          <div class="legend-item"><span class="dot dot-yellow" aria-hidden="true"></span><div><strong>黃燈</strong><p>可以用但要小心：先查證、理解內容，並標註 AI 的協助。</p></div></div>
+          <div class="legend-item"><span class="dot dot-green" aria-hidden="true"></span><div><strong>綠燈</strong><p>可以用：整理重點、列大綱、改寫自己的句子或發想練習題。</p></div></div>
+        </div>
+
+        <p class="note">AI 是輔助學習的工具，不是替代思考的決策者。<br />答錯也沒關係，錯誤是學習的一部分！</p>
+        <button type="button" id="btn-start" class="btn btn-primary btn-start-hero">開始</button>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen">
+      <header class="game-header">
+        <div class="hud-left"><span id="level-label" class="chip">基礎關卡</span><span id="progress" class="chip chip--muted">第 1 / 5 題</span></div>
+        <div class="hud-right"><span id="score" class="chip chip--score">分數 0</span><div id="timer-wrap" class="timer hidden" aria-hidden="true"><svg viewBox="0 0 36 36" class="timer-ring"><circle class="timer-ring__bg" cx="18" cy="18" r="15.9"></circle><circle id="timer-ring-progress" class="timer-ring__fg" cx="18" cy="18" r="15.9"></circle></svg><span id="timer-text">10</span></div></div>
+      </header>
+      <article class="scenario-card" aria-labelledby="scenario-text"><p class="scenario-eyebrow">想一想，這樣使用 AI 是…</p><p id="scenario-text" class="scenario-text"></p></article>
+      <section class="traffic-lights" aria-label="三色燈選擇">
+        <button type="button" class="light light--red" data-signal="red" aria-label="選擇紅燈"><span class="light-orb" aria-hidden="true"></span><span class="light-label">紅燈<br /><small>絕對不能用</small></span></button>
+        <button type="button" class="light light--yellow" data-signal="yellow" aria-label="選擇黃燈"><span class="light-orb" aria-hidden="true"></span><span class="light-label">黃燈<br /><small>可以用但要小心</small></span></button>
+        <button type="button" class="light light--green" data-signal="green" aria-label="選擇綠燈"><span class="light-orb" aria-hidden="true"></span><span class="light-label">綠燈<br /><small>可以用</small></span></button>
+      </section>
+    </section>
+
+    <section id="screen-transition" class="screen"><div class="transition-card"><h2 id="transition-title" class="title">基礎關卡完成！</h2><p id="transition-msg" class="subtitle"></p><p id="checkpoint-status" class="form-message" role="status">正在備份基礎關紀錄…</p><div class="transition-actions"><button type="button" id="btn-go-advanced" class="btn btn-primary">挑戰進階關卡</button><button type="button" id="btn-finish-early" class="btn btn-ghost">直接看學習回饋</button></div></div></section>
+
+    <section id="screen-result" class="screen"><div class="result-card"><h2 class="title">學習歷程回饋</h2><p class="subtitle">這些圖示只是陪你看見一路的努力，不是拿來比較。</p><div class="result-block result-block--advanced"><h3>進階 · 聖杯</h3><div id="cups" class="icon-row" aria-label="進階得分"></div><p id="cups-caption" class="caption"></p></div><div class="result-block result-block--basic"><h3>基礎 · 星星</h3><div id="stars" class="icon-row" aria-label="基礎得分"></div><p id="stars-caption" class="caption"></p></div><p id="final-sync-status" class="form-message" role="status">正在送出完整紀錄…</p><p class="closing">每一次思考，都讓你更靠近「聰明使用 AI 的公民」。<br />AI 是夥伴，真正做決定的人永遠是你。</p><a href="index.html" class="btn btn-primary">完成並回首頁</a></div></section>
+  </main>
+
+  <div id="feedback-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="feedback-title"><div class="dialog"><h3 id="feedback-title">AI 領航員的溫馨提醒</h3><p id="feedback-text" class="dialog-body"></p><p id="feedback-correct" class="dialog-correct"></p><div class="dialog-actions"><button type="button" id="btn-retry" class="btn btn-primary">再次選擇</button><button type="button" id="btn-next" class="btn btn-primary">再加油，前往下一題</button></div></div></div>
+  <div id="load-error" class="overlay hidden" role="alertdialog"><div class="dialog"><h3>目前無法開始</h3><p class="dialog-body">請檢查網路連線後重試；如果問題持續發生，請告知老師。</p><p id="load-error-detail" class="dialog-foot"></p><a href="student.html" class="btn btn-primary btn-block">重新加入</a></div></div>
+  <div id="correct-ring" aria-hidden="true"></div>
+
+  <script src="js/csv-parser.js?v=9"></script>
+  <script type="module" src="js/student.js?v=10"></script>
+  <script src="js/game.js?v=10" defer></script>
+</body>
+</html>
+

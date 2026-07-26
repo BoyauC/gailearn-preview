@@ -1,0 +1,10 @@
+packages:
+  - .
+  - functions
+
+allowBuilds:
+  '@firebase/util': true
+  protobufjs: true
+
+overrides:
+  color-name: 2.1.0

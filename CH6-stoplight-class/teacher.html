@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI 三色燈挑戰教師課堂管理頁。" />
+  <title>教師管理｜AI 三色燈挑戰</title>
+  <link rel="stylesheet" href="css/style.css?v=9" />
+</head>
+<body class="teacher-page" data-level="basic">
+  <main id="app" class="wide-shell" aria-live="polite">
+    <header class="page-header">
+      <div>
+        <a class="back-link" href="index.html">← 回到身分選擇</a>
+        <span class="eyebrow">教師入口</span>
+        <h1 class="page-title">班級課堂管理</h1>
+        <p>建立課堂，或使用代碼與管理密碼重新進入。</p>
+      </div>
+      <span class="security-badge">🔒 管理密碼不會提供給學生</span>
+    </header>
+
+    <section id="teacher-auth-view" class="teacher-auth-grid">
+      <article class="auth-card">
+        <span class="step-badge">新課堂</span>
+        <h2>建立新課堂</h2>
+        <form id="create-session-form" class="form-stack" novalidate>
+          <div class="field-group password-field">
+            <label for="create-password">設定教師管理密碼</label>
+            <div class="input-with-action"><input id="create-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="64" placeholder="8–64 個字元" aria-describedby="create-password-help" required /><button class="input-action password-toggle" type="button" data-target="create-password" aria-label="顯示密碼" aria-pressed="false">顯示</button></div>
+          </div>
+          <div class="field-group password-field">
+            <label for="confirm-password">再次輸入管理密碼</label>
+            <div class="input-with-action"><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" maxlength="64" placeholder="再次輸入相同密碼" required /><button class="input-action password-toggle" type="button" data-target="confirm-password" aria-label="顯示密碼" aria-pressed="false">顯示</button></div>
+          </div>
+          <small id="create-password-help" class="field-help callout">此密碼用於重新進入教師後台，不會提供給學生。建立課堂後，請將密碼與系統產生的 4 位數代碼妥善保存。</small>
+          <p id="create-error" class="form-message form-message--error hidden" role="alert"></p>
+          <button id="btn-create-session" type="submit" class="btn btn-primary btn-block">建立課堂</button>
+        </form>
+      </article>
+
+      <article class="auth-card">
+        <span class="step-badge">已有課堂</span>
+        <h2>進入既有課堂</h2>
+        <form id="teacher-login-form" class="form-stack" novalidate>
+          <div class="field-group"><label for="teacher-code">4 位數課堂代碼</label><input id="teacher-code" name="code" class="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{4}" maxlength="4" placeholder="例如：4821" required /></div>
+          <div class="field-group password-field">
+            <label for="teacher-password">教師管理密碼</label>
+            <div class="input-with-action"><input id="teacher-password" name="password" type="password" autocomplete="current-password" maxlength="64" placeholder="建立課堂時設定的密碼" required /><button class="input-action password-toggle" type="button" data-target="teacher-password" aria-label="顯示密碼" aria-pressed="false">顯示</button></div>
+          </div>
+          <small class="field-help callout">請輸入建立課堂時取得的 4 位數代碼，以及當時設定的教師管理密碼。</small>
+          <p id="login-error" class="form-message form-message--error hidden" role="alert"></p>
+          <button id="btn-teacher-login" type="submit" class="btn btn-primary btn-block">進入教師後台</button>
+        </form>
+        <details class="forgot-note"><summary>忘記管理密碼？</summary><p>本系統沒有教師帳號，無法透過 Email 找回密碼。若原瀏覽器仍保有教師權限，可進入後台修改密碼；否則需建立新課堂。</p></details>
+      </article>
+    </section>
+
+    <section id="session-created-view" class="created-card hidden" aria-labelledby="created-title">
+      <span class="success-mark" aria-hidden="true">✓</span>
+      <h2 id="created-title">課堂建立成功</h2>
+      <p>請把下面的代碼提供給學生。</p>
+      <div id="created-code" class="giant-code" aria-label="課堂代碼">----</div>
+      <p class="callout">學生只需要這組 4 位數代碼即可加入；請勿將教師管理密碼提供給學生。</p>
+      <div class="button-row"><button id="copy-student-code" type="button" class="btn btn-primary">複製學生代碼</button><button id="copy-teacher-info" type="button" class="btn btn-ghost">複製教師登入資訊</button><button id="enter-created-session" type="button" class="btn btn-primary">進入教師後台</button></div>
+      <p id="copy-status" class="form-message" role="status"></p>
+    </section>
+
+    <section id="teacher-dashboard" class="dashboard hidden">
+      <header class="dashboard-header">
+        <div><span class="eyebrow">教師後台</span><h2>課堂 <span id="dashboard-code" class="inline-code">----</span></h2><p id="session-state-text">開放學生加入中</p></div>
+        <div class="button-row"><button id="copy-dashboard-code" type="button" class="btn btn-ghost">複製學生代碼</button><button id="refresh-dashboard" type="button" class="btn btn-ghost">重新整理</button><button id="close-session" type="button" class="btn btn-danger">關閉課堂</button></div>
+      </header>
+
+      <div class="stats-grid">
+        <article class="stat-card"><span>已加入</span><strong id="stat-joined">0</strong><small>位學生</small></article>
+        <article class="stat-card"><span>基礎關已備份</span><strong id="stat-basic">0</strong><small>份紀錄</small></article>
+        <article class="stat-card"><span>已完成</span><strong id="stat-final">0</strong><small>份紀錄</small></article>
+        <article class="stat-card"><span>平均得分</span><strong id="stat-average">—</strong><small>滿分 8 分</small></article>
+      </div>
+
+      <nav class="dashboard-tabs" aria-label="後台資料頁籤"><button class="tab-button is-active" type="button" data-panel="students-panel">學生進度</button><button class="tab-button" type="button" data-panel="questions-panel">題目答題狀況</button><button class="tab-button" type="button" data-panel="settings-panel">課堂設定</button></nav>
+
+      <section id="students-panel" class="dashboard-panel">
+        <div class="panel-heading"><div><h3>學生進度</h3><p>僅在加入、完成基礎關與遊戲結束時更新。</p></div><button id="export-csv" class="btn btn-ghost" type="button">下載 CSV</button></div>
+        <div class="table-wrap"><table><thead><tr><th>姓名</th><th>狀態</th><th>基礎關</th><th>進階關</th><th>總分</th><th>更新時間</th></tr></thead><tbody id="student-table-body"><tr><td colspan="6" class="empty-cell">尚無學生加入</td></tr></tbody></table></div>
+      </section>
+
+      <section id="questions-panel" class="dashboard-panel hidden"><div class="panel-heading"><div><h3>題目答題狀況</h3><p>依已送出的紀錄統計第一次答對率。</p></div></div><div id="question-summary" class="question-summary"><p class="empty-cell">尚無作答紀錄</p></div></section>
+
+      <section id="settings-panel" class="dashboard-panel hidden">
+        <div class="settings-grid">
+          <article class="settings-card"><h3>修改教師管理密碼</h3><form id="change-password-form" class="form-stack" novalidate><div class="field-group"><label for="new-teacher-password">新管理密碼</label><div class="input-with-action"><input id="new-teacher-password" type="password" autocomplete="new-password" minlength="8" maxlength="64" placeholder="8–64 個字元" required /><button class="input-action password-toggle" type="button" data-target="new-teacher-password" aria-label="顯示密碼">顯示</button></div></div><div class="field-group"><label for="confirm-new-password">再次輸入新密碼</label><input id="confirm-new-password" type="password" autocomplete="new-password" minlength="8" maxlength="64" required /></div><button class="btn btn-primary" type="submit">更新管理密碼</button><p id="change-password-status" class="form-message" role="status"></p></form></article>
+          <article class="settings-card"><h3>關閉課堂</h3><p>關閉後不再接受新學生加入；已加入的學生仍有 10 分鐘可以補交。</p><button id="close-session-settings" type="button" class="btn btn-danger">關閉這個課堂</button></article>
+        </div>
+      </section>
+      <p id="dashboard-message" class="form-message" role="status"></p>
+    </section>
+  </main>
+  <script type="module" src="js/teacher.js?v=10"></script>
+</body>
+</html>
+
