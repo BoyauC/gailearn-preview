@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "start": "intro_01",
+  "progressSteps": 6,
+  "nodes": [
+    {
+      "id": "intro_01",
+      "speaker": "系統",
+      "character": "system",
+      "text": "查核行動指揮中心連線完成。新進調查員席位已啟用。",
+      "progress": 1,
+      "next": "intro_02"
+    },
+    {
+      "id": "intro_02",
+      "speaker": "可可隊長",
+      "character": "koko",
+      "text": "歡迎報到。這裡不比誰猜得快，只看誰找得到可靠的證據。",
+      "progress": 2,
+      "next": "intro_03"
+    },
+    {
+      "id": "intro_03",
+      "speaker": "思思",
+      "character": "sisi",
+      "text": "所以只要消息看起來很合理，而且很多人轉傳，就可以先相信吧？",
+      "progress": 3,
+      "next": "intro_04"
+    },
+    {
+      "id": "intro_04",
+      "speaker": "小澄",
+      "character": "xiaocheng",
+      "text": "先別急著結案。『很多人轉傳』能證明消息的哪一部分？",
+      "progress": 4,
+      "next": "intro_05"
+    },
+    {
+      "id": "intro_05",
+      "speaker": "通報員歐匿",
+      "character": "ouni",
+      "text": "收到一則正在快速轉傳的健康消息！轉傳數還在增加，要直接標成假消息嗎？",
+      "progress": 5,
+      "next": "intro_choice"
+    },
+    {
+      "id": "intro_choice",
+      "speaker": "行動選擇",
+      "character": "system",
+      "text": "",
+      "presentation": "choice",
+      "progress": 5,
+      "prompt": "第一步，你想先做什麼？",
+      "choices": [
+        { "id": "check_source", "label": "先看發布者是誰。", "next": "response_source" },
+        { "id": "trust_shares", "label": "很多人轉傳，應該是真的。", "next": "response_shares" },
+        { "id": "ask_ai", "label": "請 AI 直接告訴我答案。", "next": "response_ai" }
+      ]
+    },
+    {
+      "id": "response_source",
+      "speaker": "可可隊長",
+      "character": "koko",
+      "text": "很好，來源能幫我們判斷該把多少信任放在這則消息上。但別停在這裡，還要看時間與證據。",
+      "progress": 6,
+      "next": "closing"
+    },
+    {
+      "id": "response_shares",
+      "speaker": "小澄",
+      "character": "xiaocheng",
+      "text": "轉傳數只告訴我們消息傳得多快，不代表內容已經查證。你願意先找出最早的發布者嗎？",
+      "progress": 6,
+      "next": "closing"
+    },
+    {
+      "id": "response_ai",
+      "speaker": "可可隊長",
+      "character": "koko",
+      "text": "AI 可以協助整理問題，但不能代替原始來源。先問：它的回答引用了哪一項可驗證的證據？",
+      "progress": 6,
+      "next": "closing"
+    },
+    {
+      "id": "closing",
+      "speaker": "可可隊長",
+      "character": "koko",
+      "text": "記住：你的任務不是猜，而是查。第一則案件，準備開始。",
+      "progress": 6,
+      "next": "CASE_01"
+    }
+  ]
+}
