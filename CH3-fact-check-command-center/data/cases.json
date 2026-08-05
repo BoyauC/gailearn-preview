@@ -1,0 +1,83 @@
+{
+  "version": 2,
+  "cases": [
+    {
+      "id": "miracle_drink",
+      "title": "神奇飲料傳言",
+      "questions": {
+        "who": { "label": "誰說的？", "description": "確認發布者及被引用者的身分" },
+        "when": { "label": "何時發布？", "description": "確認最早發布時間及資訊時效" },
+        "reasonable": { "label": "合不合理？", "description": "檢查說法是否有足夠證據支持" }
+      },
+      "clues": [
+        {
+          "id": "anonymous",
+          "text": "發布者只顯示『健康分享站』，沒有真實姓名及組織介紹。",
+          "question": "who",
+          "questionFeedback": "對，先問『誰說的？』。名稱看起來像健康資訊來源，不代表能確認發布者的身分與專業。",
+          "wrongFeedback": "這張線索首先指向發布者的身分。想想書本三問中，哪一問能幫你確認消息來源？",
+          "followupPrompt": "下一步最值得確認什麼？",
+          "options": [
+            { "text": "查找發布者的真實身分、組織介紹與聯絡方式。", "correct": true, "feedback": "這能幫助我們判斷發布者是否可追溯，以及是否具備相關專業。" },
+            { "text": "查看這個帳號有多少追蹤者。", "correct": false, "feedback": "追蹤者多不等於內容可信，仍要確認身分與專業依據。" },
+            { "text": "看看帳號圖片是否設計得像官方標誌。", "correct": false, "feedback": "外觀可以模仿，不能代替可驗證的組織資料。" }
+          ]
+        },
+        {
+          "id": "posted_today",
+          "text": "畫面只顯示『今天 08:20』，無法確認這是不是最早發布時間。",
+          "question": "when",
+          "questionFeedback": "對，先問『何時發布？』。眼前的時間可能只是轉貼時間，不能直接當成消息的原始日期。",
+          "wrongFeedback": "這張線索和時間脈絡有關。『今天』究竟是原始發布，還是再次轉貼？",
+          "followupPrompt": "下一步最值得確認什麼？",
+          "options": [
+            { "text": "尋找最早版本，並核對原始發布日期。", "correct": true, "feedback": "找到最早版本，才能判斷是否為舊聞重傳或過期資訊。" },
+            { "text": "只記下目前畫面顯示的時間。", "correct": false, "feedback": "目前時間不一定是原始發布時間，還需要往前追查。" },
+            { "text": "等到明天再看一次。", "correct": false, "feedback": "等待不會自動補上原始時間，應主動追查最早來源。" }
+          ]
+        },
+        {
+          "id": "no_expert",
+          "text": "內容寫著『多位專家已證實』，但沒有提供專家姓名。",
+          "question": "who",
+          "questionFeedback": "對，先問『誰說的？』。『專家』只是身分宣稱，我們還不知道是哪一位、具備什麼資格。",
+          "wrongFeedback": "看到『專家證實』時，先別被稱號說服。書本三問中，哪一問能追查這位專家？",
+          "followupPrompt": "下一步最值得確認什麼？",
+          "options": [
+            { "text": "查找專家姓名、專業領域與原始發言。", "correct": true, "feedback": "確認姓名與原始發言，才能判斷貼文是否正確引用。" },
+            { "text": "因為用了『專家』兩字，所以先相信。", "correct": false, "feedback": "稱號本身不是證據，仍需確認人物及原始說法。" },
+            { "text": "詢問另一個匿名帳號是否聽過。", "correct": false, "feedback": "另一個無法確認身分的說法，不能補足目前的來源缺口。" }
+          ]
+        },
+        {
+          "id": "miracle_claim",
+          "text": "貼文宣稱『喝三天就有效』，卻沒有研究報告、原始連結或官方衛生說明。",
+          "question": "reasonable",
+          "questionFeedback": "對，先問『合不合理？』。明確的療效與時間宣稱，需要可靠研究及專業來源支持。",
+          "wrongFeedback": "這張線索要檢查的是說法與證據能不能互相支持。哪一問最能提醒你停下來檢查？",
+          "followupPrompt": "哪一項最能補足目前的證據缺口？",
+          "options": [
+            { "text": "查找衛生主管機關、可靠醫療來源與研究原文。", "correct": true, "feedback": "這些來源能協助判斷療效宣稱是否有足夠證據支持。" },
+            { "text": "找更多轉貼相同說法的文章。", "correct": false, "feedback": "多篇文章可能都來自同一則錯誤訊息，數量不能取代證據品質。" },
+            { "text": "請兩個 AI 回答，答案一樣就結案。", "correct": false, "feedback": "AI 可能引用相同錯誤來源；仍要回到官方資料與研究原文。" }
+          ]
+        },
+        {
+          "id": "share_now",
+          "text": "貼文催促讀者『趕快分享給所有家人』。",
+          "question": "reasonable",
+          "questionFeedback": "對，先問『合不合理？』。催促轉傳會壓縮查證時間，是需要停下來檢查的警訊。",
+          "wrongFeedback": "這不是發布日期，也不是人物身分。請檢查這種催促語氣是否合理。",
+          "followupPrompt": "面對催促轉傳，最合適的行動是什麼？",
+          "options": [
+            { "text": "暫停轉傳，先完成查證。", "correct": true, "feedback": "不因急迫語氣行動，才能把判斷主導權拿回來。" },
+            { "text": "先轉傳給家人，再慢慢查。", "correct": false, "feedback": "未查證前轉傳，可能讓錯誤資訊繼續擴散。" },
+            { "text": "只要出發點是關心家人，就可以分享。", "correct": false, "feedback": "善意不能保證內容正確；關心家人更應先查證。" }
+          ]
+        }
+      ],
+      "missingEvidence": "發布者與專家的可驗證身分、消息最早發布日期、研究原文，以及衛生主管機關或可靠醫療來源的說明。",
+      "completion": "你已用書本三問完成第一輪審視。目前證據仍不足以支持『喝三天就有效』，應維持黃色警報、暫停轉傳並繼續查證。"
+    }
+  ]
+}
