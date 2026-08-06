@@ -288,7 +288,33 @@ h1:focus, h2:focus { outline: none; }
 .question-report article strong { display: block; margin: 5px 0; color: var(--night); font-size: 19px; }
 .question-report article p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
 .missing-evidence { margin-top: 13px; padding: 14px 16px; border-radius: 14px; color: #66552f; background: #f2e4ba; }
-.missing-evidence p { margin: 5px 0 0; font-size: 13px; line-height: 1.5; }
+.missing-evidence p { margin: 7px 0 0; color: #514322; font-size: clamp(15px, 1.55vw, 18px); line-height: 1.65; font-weight: 650; }
+.end-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.next-case-briefing { margin: 18px 0; padding: 12px 14px; display: grid; grid-template-columns: 58px 1fr; align-items: center; gap: 12px; border: 1px solid rgba(83,108,98,.18); border-radius: 15px; background: #edf0e7; }
+.next-case-briefing img { width: 58px; height: 62px; object-fit: contain; }
+.next-case-briefing strong { color: var(--lavender); }
+.next-case-briefing p { margin: 3px 0 0; font-size: 13px; line-height: 1.5; }
+.next-case-briefing.is-alerting { animation: briefing-alert 1s ease-in-out 2s 10 alternate; }
+.mission2-task { grid-template-rows: auto auto auto minmax(0,1fr) auto; }
+.mission2-rumor { padding: 11px 15px; border-left: 5px solid var(--coral); border-radius: 13px; background: #fff; }
+.mission2-rumor > span { color: var(--coral-dark); font-size: 10px; font-weight: 900; letter-spacing: .1em; }
+.mission2-rumor blockquote { margin: 4px 0 0; color: var(--night); font-size: clamp(17px,1.8vw,22px); font-weight: 800; }
+.route-strip { min-height: 62px; padding: 8px 10px; overflow-x: auto; border-radius: 13px; background: #e3e8df; }
+.route-strip > div { min-width: max-content; display: flex; align-items: center; gap: 7px; }
+.route-strip p { margin: 12px; color: var(--muted); font-size: 12px; }
+.route-strip span { max-width: 165px; min-height: 45px; padding: 7px 9px; display: flex; align-items: center; gap: 7px; border-radius: 10px; color: var(--ink); background: #fff; font-size: 11px; font-weight: 800; }
+.route-strip span b { flex: 0 0 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--sage-dark); }
+.action-library { min-height: 0; overflow-y: auto; }
+.action-library h3 { margin: 0 0 8px; color: var(--night); font-size: 16px; }
+#mission2-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#mission2-actions > button { position: relative; min-height: 58px; padding: 9px 11px 9px 43px; border: 2px solid transparent; border-radius: 12px; color: var(--ink); background: #fff; text-align: left; cursor: pointer; }
+#mission2-actions > button span { position: absolute; left: 9px; top: 11px; width: 25px; height: 25px; display: grid; place-items: center; border-radius: 8px; color: var(--sage-dark); background: #e5ebdf; font-size: 10px; font-weight: 900; }
+#mission2-actions > button strong { font-size: 13px; line-height: 1.35; }
+#mission2-actions > button.is-wrong { border-color: var(--coral); background: #f8e8e3; }
+.mission-complete-card { grid-column: 1 / -1; padding: 23px; border-radius: 16px; color: var(--night); background: #e5eddf; text-align: center; }
+.mission-complete-card span { color: var(--sage-dark); font-size: 10px; font-weight: 900; letter-spacing: .13em; }
+.mission-complete-card strong { display: block; margin: 7px; font-size: 22px; }
+.mission-complete-card p { margin: 0; font-size: 13px; line-height: 1.6; }
 
 .orientation-note { display: none; position: fixed; z-index: 50; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 10px 15px; border-radius: 12px; color: #fff; background: rgba(23,41,41,.92); box-shadow: var(--shadow); font-size: 13px; white-space: nowrap; }
 .orientation-note span { margin-left: 8px; color: #c7d4d0; }
@@ -297,6 +323,10 @@ h1:focus, h2:focus { outline: none; }
 @keyframes signal { to { transform: scaleY(.35); opacity: .5; } }
 @keyframes character-in { from { opacity: 0; transform: translateY(24px); } }
 @keyframes screen-in { from { opacity: 0; } }
+@keyframes briefing-alert {
+  0% { border-color: #c65446; box-shadow: 0 0 0 2px rgba(198,84,70,.24), 0 0 14px rgba(198,84,70,.28); }
+  100% { border-color: #d6a534; box-shadow: 0 0 0 4px rgba(214,165,52,.38), 0 0 28px rgba(214,165,52,.52); }
+}
 
 @media (max-width: 1100px) and (orientation: landscape) {
   .home-grid { width: 90vw; grid-template-columns: .92fr 1.08fr; gap: 28px; }
@@ -330,6 +360,10 @@ h1:focus, h2:focus { outline: none; }
   .three-question-actions button { min-height: 78px; padding: 8px; }
   .followup-panel { margin-top: 8px; padding: 9px 11px; }
   #followup-actions button { min-height: 42px; font-size: 12px; }
+  .mission2-rumor { padding: 8px 11px; }
+  .route-strip { min-height: 53px; }
+  .route-strip span { min-height: 38px; }
+  #mission2-actions > button { min-height: 51px; padding-block: 7px; }
   .task-actions { min-height: 54px; padding-top: 6px; }
   .rumor-board { padding: 13px 15px; }
   .rumor-board h3 { margin: 6px 0; font-size: 19px; }
@@ -402,4 +436,5 @@ h1:focus, h2:focus { outline: none; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .next-case-briefing.is-alerting { border-color: #d6a534; box-shadow: 0 0 0 3px rgba(214,165,52,.28); }
 }

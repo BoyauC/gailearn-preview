@@ -4,6 +4,7 @@
   const state = {
     story: null,
     cases: null,
+    mission2: null,
     nodeId: "intro_01",
     typingTimer: null,
     isTyping: false,
@@ -13,7 +14,10 @@
     discoveredClues: [],
     completedClues: {},
     selectedQuestion: null,
-    actionLog: []
+    actionLog: [],
+    mission2Sequence: [],
+    mission2Phase: "opening",
+    mission2Judgment: null
   };
 
   const elements = {
@@ -22,8 +26,10 @@
     story: document.querySelector("#story-screen"),
     caseScreen: document.querySelector("#case-screen"),
     end: document.querySelector("#prototype-end"),
+    mission2Screen: document.querySelector("#mission2-screen"),
     start: document.querySelector("#start-button"),
     replay: document.querySelector("#replay-button"),
+    continueMission2: document.querySelector("#continue-mission2"),
     dialoguePanel: document.querySelector("#dialogue-panel"),
     speaker: document.querySelector("#speaker-name"),
     text: document.querySelector("#dialogue-text"),
@@ -60,7 +66,18 @@
     finishCase: document.querySelector("#finish-case"),
     logToggle: document.querySelector("#case-log-toggle"),
     actionLog: document.querySelector("#action-log"),
-    actionLogList: document.querySelector("#action-log-list")
+    actionLogList: document.querySelector("#action-log-list"),
+    mission2Step: document.querySelector("#mission2-step"),
+    mission2Feedback: document.querySelector("#mission2-feedback"),
+    mission2Energy: document.querySelector("#mission2-energy"),
+    mission2Actions: document.querySelector("#mission2-actions"),
+    mission2Route: document.querySelector("#mission2-route"),
+    mission2Hint: document.querySelector("#mission2-hint"),
+    mission2Undo: document.querySelector("#mission2-undo"),
+    mission2Finish: document.querySelector("#mission2-finish"),
+    mission2Log: document.querySelector("#mission2-log"),
+    mission2LogToggle: document.querySelector("#mission2-log-toggle"),
+    mission2LogList: document.querySelector("#mission2-log-list")
   };
 
   const characterFiles = {
@@ -73,13 +90,15 @@
 
   async function loadStory() {
     try {
-      const [storyResponse, casesResponse] = await Promise.all([
+      const [storyResponse, casesResponse, mission2Response] = await Promise.all([
         fetch("./data/prologue.json"),
-        fetch("./data/cases.json")
+        fetch("./data/cases.json"),
+        fetch("./data/mission2.json")
       ]);
-      if (!storyResponse.ok || !casesResponse.ok) throw new Error("教材資料載入失敗");
+      if (!storyResponse.ok || !casesResponse.ok || !mission2Response.ok) throw new Error("教材資料載入失敗");
       state.story = await storyResponse.json();
       state.cases = await casesResponse.json();
+      state.mission2 = await mission2Response.json();
     } catch (error) {
       console.error(error);
       elements.home.querySelector(".home-note").textContent = "教材資料載入失敗。請使用本機 HTTP 伺服器預覽。";
@@ -308,8 +327,8 @@
     elements.taskHeading.textContent = "逐張審視線索";
     elements.clueSequence.textContent = `已發現第 ${index} 個調查點`;
     elements.reviewClueText.textContent = clue.text;
-    elements.taskHint.textContent = "先選擇書本三問，再決定下一步要確認什麼。";
-    elements.feedbackText.textContent = "這張線索提醒了什麼？先用書本三問選出最直接的檢查方向。";
+    elements.taskHint.textContent = "先選擇簡易查核小技巧的三問，再決定下一步要確認什麼。";
+    elements.feedbackText.textContent = "這張線索提醒了什麼？先用簡易查核小技巧的三問，選出最直接的檢查方向。";
     elements.questionButtons.forEach((button) => {
       button.disabled = false;
       button.classList.remove("is-selected", "is-wrong");
@@ -341,7 +360,12 @@
     elements.followupPanel.hidden = false;
     elements.followupPrompt.textContent = clue.followupPrompt;
     elements.followupActions.innerHTML = "";
-    clue.options.forEach((option) => {
+    const shuffledOptions = [...clue.options];
+    for (let index = shuffledOptions.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [shuffledOptions[index], shuffledOptions[randomIndex]] = [shuffledOptions[randomIndex], shuffledOptions[index]];
+    }
+    shuffledOptions.forEach((option) => {
       const button = document.createElement("button");
       button.type = "button";
       button.textContent = option.text;
@@ -407,6 +431,179 @@
     const caseData = getActiveCase();
     document.querySelector("#case-summary").textContent = caseData.completion;
     showScreen(elements.end);
+    const briefing = document.querySelector(".next-case-briefing");
+    briefing.classList.remove("is-alerting");
+    window.requestAnimationFrame(() => briefing.classList.add("is-alerting"));
+  }
+
+  function startMission2() {
+    if (!state.mission2) return;
+    state.mission2Sequence = [];
+    state.mission2Phase = "opening";
+    state.mission2Judgment = null;
+    elements.mission2Log.classList.remove("is-open");
+    elements.mission2LogToggle.setAttribute("aria-expanded", "false");
+    showScreen(elements.mission2Screen);
+    renderMission2();
+  }
+
+  function renderMission2() {
+    const data = state.mission2;
+    const completedCount = state.mission2Sequence.length;
+    elements.mission2Step.textContent = String(completedCount);
+    elements.mission2Energy.textContent = state.mission2Phase === "opening"
+      ? "尚未開始查核"
+      : state.mission2Phase === "investigate"
+        ? `已取得 ${completedCount}／${data.investigations.length} 項結果`
+        : state.mission2Phase === "judge"
+          ? "證據已備妥，等待判斷"
+          : "等待後續行動";
+    elements.mission2Undo.disabled = state.mission2Phase !== "investigate" || completedCount === 0;
+    elements.mission2Undo.hidden = state.mission2Phase === "opening" || state.mission2Phase === "judge" || state.mission2Phase === "final";
+    elements.mission2Finish.hidden = true;
+    elements.mission2Actions.innerHTML = "";
+
+    elements.mission2Route.innerHTML = state.mission2Sequence.length
+      ? state.mission2Sequence.map((id, index) => {
+          const action = data.investigations.find((item) => item.id === id);
+          return `<span><b>${index + 1}</b>${action.label}</span>`;
+        }).join("")
+      : "<p>完成查核行動後，取得的結果會放在這裡。</p>";
+
+    elements.mission2LogList.innerHTML = state.mission2Sequence.length
+      ? state.mission2Sequence.map((id) => {
+          const item = data.investigations.find((investigation) => investigation.id === id);
+          return `<li class="is-correct"><strong>${item.label}</strong><br>${item.result}</li>`;
+        }).join("")
+      : "<li>尚未取得查核結果。</li>";
+
+    if (state.mission2Phase === "opening") return renderMission2Opening();
+    if (state.mission2Phase === "investigate") return renderMission2Investigations();
+    if (state.mission2Phase === "judge") return renderMission2Judgments();
+    if (state.mission2Phase === "final") return renderMission2FinalActions();
+  }
+
+  function renderMission2Opening() {
+    const data = state.mission2;
+    document.querySelector("#mission2-task-title").textContent = "先停止擴散";
+    document.querySelector("#action-library-title").textContent = "收到可疑消息時，第一個行動是什麼？";
+    elements.mission2Hint.textContent = "查核行動沒有固定順序，但應先停止轉傳，保留查證時間。";
+    renderMission2Buttons([data.opening, ...data.distractors], chooseMission2Opening);
+  }
+
+  function chooseMission2Opening(actionId) {
+    const data = state.mission2;
+    const distractor = data.distractors.find((item) => item.id === actionId);
+    if (distractor) {
+      elements.mission2Feedback.textContent = distractor.feedback;
+      return markMission2Choice(actionId, false);
+    }
+    elements.mission2Feedback.textContent = data.opening.feedback;
+    state.mission2Phase = "investigate";
+    renderMission2();
+  }
+
+  function renderMission2Investigations() {
+    const data = state.mission2;
+    const remaining = data.investigations.filter((item) => !state.mission2Sequence.includes(item.id));
+    document.querySelector("#mission2-task-title").textContent = "自由選擇查核行動";
+    document.querySelector("#action-library-title").textContent = remaining.length ? "接下來想查哪一項？" : "查核結果已備妥";
+    if (!remaining.length) {
+      state.mission2Phase = "judge";
+      renderMission2();
+      return;
+    }
+    elements.mission2Hint.textContent = `還有 ${remaining.length} 項可查。這些行動沒有唯一順序，可依情境自由選擇。`;
+    renderMission2Buttons([...remaining, ...data.distractors], chooseMission2Investigation);
+  }
+
+  function chooseMission2Investigation(actionId) {
+    const data = state.mission2;
+    const distractor = data.distractors.find((item) => item.id === actionId);
+    if (distractor) {
+      elements.mission2Feedback.textContent = distractor.feedback;
+      return markMission2Choice(actionId, false);
+    }
+    const investigation = data.investigations.find((item) => item.id === actionId);
+    state.mission2Sequence.push(actionId);
+    elements.mission2Feedback.textContent = `${investigation.feedback} 查核結果：${investigation.result}`;
+    renderMission2();
+  }
+
+  function renderMission2Judgments() {
+    const data = state.mission2;
+    document.querySelector("#mission2-task-title").textContent = "根據證據下達警報";
+    document.querySelector("#action-library-title").textContent = "這則停課消息應判定為哪一種警報？";
+    elements.mission2Hint.textContent = "判斷放在蒐集證據之後。請根據調查紀錄，而不是直覺選擇。";
+    renderMission2Buttons(data.judgments, chooseMission2Judgment);
+  }
+
+  function chooseMission2Judgment(actionId) {
+    const judgment = state.mission2.judgments.find((item) => item.id === actionId);
+    elements.mission2Feedback.textContent = judgment.feedback;
+    if (!judgment.correct) return markMission2Choice(actionId, false);
+    state.mission2Judgment = actionId;
+    state.mission2Phase = "final";
+    renderMission2();
+  }
+
+  function renderMission2FinalActions() {
+    const data = state.mission2;
+    document.querySelector("#mission2-task-title").textContent = "選擇查核後的行動";
+    document.querySelector("#action-library-title").textContent = "下達紅色警報後，你要怎麼做？";
+    elements.mission2Hint.textContent = "最後依查核結果選擇是否分享，以及要如何提醒他人。";
+    renderMission2Buttons(data.finalActions, chooseMission2FinalAction);
+  }
+
+  function chooseMission2FinalAction(actionId) {
+    const action = state.mission2.finalActions.find((item) => item.id === actionId);
+    if (!action.safe) {
+      elements.mission2Feedback.textContent = action.feedback;
+      return markMission2Choice(actionId, false);
+    }
+    elements.mission2Feedback.textContent = action.completion;
+    elements.mission2Finish.hidden = false;
+    elements.mission2Hint.textContent = "這項行動符合目前的查核結果。確認後完成案件02。";
+    [...elements.mission2Actions.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
+    markMission2Choice(actionId, true);
+  }
+
+  function renderMission2Buttons(actions, handler) {
+    const shuffledActions = [...actions];
+    for (let index = shuffledActions.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [shuffledActions[index], shuffledActions[randomIndex]] = [shuffledActions[randomIndex], shuffledActions[index]];
+    }
+    shuffledActions.forEach((action, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.actionId = action.id;
+      button.innerHTML = `<span>${String(index + 1).padStart(2, "0")}</span><strong>${action.label}</strong>`;
+      button.onclick = () => handler(action.id);
+      elements.mission2Actions.append(button);
+    });
+  }
+
+  function markMission2Choice(actionId, correct) {
+    [...elements.mission2Actions.querySelectorAll("button")].forEach((button) => {
+      button.classList.toggle(correct ? "is-correct" : "is-wrong", button.dataset.actionId === actionId);
+    });
+  }
+
+  function undoMission2() {
+    if (!state.mission2Sequence.length) return;
+    const removedId = state.mission2Sequence.pop();
+    const removed = state.mission2.investigations.find((item) => item.id === removedId);
+    elements.mission2Feedback.textContent = `已撤回「${removed.label}」的查核結果，你可以重新選擇查核行動。`;
+    renderMission2();
+  }
+
+  function finishMission2() {
+    elements.mission2Feedback.textContent = state.mission2.completion;
+    elements.mission2Hint.textContent = "案件02完成。下一關將練習依案件選擇合適的查核工具。";
+    elements.mission2Finish.hidden = true;
+    elements.mission2Undo.hidden = true;
+    elements.mission2Actions.innerHTML = `<div class="mission-complete-card"><span>MISSION COMPLETE</span><strong>案件02已完成查核</strong><p>${state.mission2.completion}</p></div>`;
   }
 
   function toggleSound() {
@@ -418,6 +615,7 @@
 
   elements.start.addEventListener("click", startStory);
   elements.replay.addEventListener("click", () => showScreen(elements.home));
+  elements.continueMission2.addEventListener("click", startMission2);
   elements.next.addEventListener("click", (event) => { event.stopPropagation(); advance(); });
   elements.skip.addEventListener("click", (event) => { event.stopPropagation(); completeTyping(); });
   elements.dialoguePanel.addEventListener("click", advance);
@@ -428,6 +626,12 @@
   elements.logToggle.addEventListener("click", () => {
     const open = elements.actionLog.classList.toggle("is-open");
     elements.logToggle.setAttribute("aria-expanded", String(open));
+  });
+  elements.mission2Undo.addEventListener("click", undoMission2);
+  elements.mission2Finish.addEventListener("click", finishMission2);
+  elements.mission2LogToggle.addEventListener("click", () => {
+    const open = elements.mission2Log.classList.toggle("is-open");
+    elements.mission2LogToggle.setAttribute("aria-expanded", String(open));
   });
   document.addEventListener("keydown", (event) => {
     if ((event.key === "Enter" || event.key === " ") && elements.story.classList.contains("is-active") && document.activeElement === document.body) {
