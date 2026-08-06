@@ -1,0 +1,58 @@
+{
+  "version": 2,
+  "title": "查核工具選擇所",
+  "intro": "不同問題需要不同工具。每案從四項工具選出兩項：一項直指核心問題，另一項補足查核證據。",
+  "tools": [
+    { "id": "reverse", "label": "反向圖片搜尋", "icon": "圖" },
+    { "id": "tfc", "label": "臺灣事實查核中心", "icon": "臺" },
+    { "id": "mygopen", "label": "MyGoPen", "icon": "查" },
+    { "id": "comments", "label": "查看貼文留言與分享數", "icon": "讚" },
+    { "id": "official_site", "label": "補助主管機關官方網站", "icon": "官" },
+    { "id": "official_phone", "label": "補助主管機關官方電話", "icon": "電" },
+    { "id": "anti_fraud_165", "label": "165全民防騙網／防詐騙諮詢專線", "icon": "165" },
+    { "id": "enter_link", "label": "打開縮網址並輸入資料", "icon": "入" },
+    { "id": "academic_db", "label": "學術論文資料庫", "icon": "庫" },
+    { "id": "publisher", "label": "期刊或出版社原始頁面", "icon": "原" },
+    { "id": "web_summary", "label": "一般網頁的論文摘要", "icon": "摘" },
+    { "id": "ask_ai", "label": "再問 AI 一次是否確定", "icon": "AI" }
+  ],
+  "cases": [
+    {
+      "id": "old_photo",
+      "tag": "影像脈絡",
+      "title": "這是今天的災情照片嗎？",
+      "summary": "社群貼文用一張淹水照片，宣稱是今天附近發生的災情，但沒有拍攝日期與地點。",
+      "options": ["reverse", "tfc", "mygopen", "comments"],
+      "core": "reverse",
+      "supports": ["tfc", "mygopen"],
+      "result": "反向圖片搜尋找到三年前的相同照片；具名查核平台也能協助確認是否已有相關查核報告。",
+      "success": "反向圖片搜尋能追查照片過去出現的位置，再用查核平台交叉確認相關傳言。",
+      "partial": "這組工具還沒有直接追查照片的原始時間與地點。分享數或留言不能證明照片拍攝於今天。"
+    },
+    {
+      "id": "subsidy_link",
+      "tag": "政府補助",
+      "title": "點這個網址就能領補助？",
+      "summary": "陌生訊息宣稱限時申請政府補助，要求點擊縮網址並輸入身分證及銀行資料。",
+      "options": ["official_site", "official_phone", "anti_fraud_165", "enter_link"],
+      "core": "official_site",
+      "supports": ["official_phone", "anti_fraud_165"],
+      "result": "主管機關官方網站沒有這項補助；官方電話可確認政策，165也能協助判斷網址及個資要求的詐騙風險。",
+      "success": "先離開陌生連結並查主管機關網站；再用官方電話或165處理仍待確認的政策或詐騙風險。",
+      "partial": "確認補助應回到主管機關官方網站。不要為了測試網址而輸入身分證或銀行資料。"
+    },
+    {
+      "id": "missing_paper",
+      "tag": "AI 引用",
+      "title": "AI 提供的論文真的存在嗎？",
+      "summary": "AI 列出一篇看似完整的論文名稱與作者，但在報告中沒有附上可開啟的原始連結。",
+      "options": ["academic_db", "publisher", "web_summary", "ask_ai"],
+      "core": "academic_db",
+      "supports": ["publisher"],
+      "result": "學術論文資料庫與出版社原始頁面都找不到完全相符的題名、作者及出版資訊，可能是引用有誤或論文不存在。",
+      "success": "用論文資料庫搜尋，再回到期刊或出版社原始頁面核對，才能確認引用是否存在。",
+      "partial": "一般摘要只能提供搜尋線索，AI也不能自行證明自己的引用正確。請回到學術資料庫與原始出版頁面。"
+    }
+  ],
+  "completion": "你已完成三種問題的工具調度：圖片追來源、補助回官方、論文找原始。選對工具只是開始，仍要比較取得的證據。"
+}

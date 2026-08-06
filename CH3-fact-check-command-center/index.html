@@ -216,6 +216,33 @@
             <p id="mission2-hint">先停止轉傳；接著可依情境自由選擇查核行動。</p>
             <button id="mission2-undo" class="secondary-button" type="button" disabled>撤回上一項查核</button>
             <button id="mission2-finish" class="primary-button" type="button" hidden>確認結案行動</button>
+            <button id="continue-mission3" class="primary-button" type="button" hidden>前往工具選擇所</button>
+          </footer>
+        </section>
+      </div>
+    </section>
+
+    <section id="mission3-screen" class="screen case-screen" aria-labelledby="mission3-title">
+      <header class="case-header">
+        <div><p class="case-kicker">任務 03 · 工具調度</p><h2 id="mission3-title">查核工具選擇所</h2></div>
+        <div class="case-progress"><span id="mission3-step">1</span>／3 短案件</div>
+      </header>
+      <div class="case-workspace mission3-workspace">
+        <aside class="partner-panel" aria-labelledby="mission3-partner-title">
+          <div class="partner-role">證據員／調查夥伴</div>
+          <div class="partner-portrait"><img src="./assets/characters/xiaocheng.png" alt="小澄"></div>
+          <div class="partner-dialogue" aria-live="polite"><strong id="mission3-partner-title">小澄</strong><p id="mission3-feedback">先看案件要解決什麼問題，再挑選工具。工具很多，不代表全部都要用。</p></div>
+          <div class="evidence-status"><span>工具調度</span><strong id="mission3-status">尚未選擇</strong></div>
+        </aside>
+        <section class="task-panel mission3-task" aria-labelledby="mission3-case-title">
+          <article class="tool-case-card"><span id="mission3-tag"></span><h3 id="mission3-case-title"></h3><p id="mission3-summary"></p></article>
+          <div id="mission3-selection" class="tool-selection" aria-live="polite"><span>已選工具</span><p>請從四項工具中選出兩項。</p></div>
+          <section class="toolbox" aria-labelledby="toolbox-title"><h3 id="toolbox-title">你要調度哪些工具？</h3><div id="mission3-tools"></div></section>
+          <section id="mission3-result" class="tool-result" hidden><strong>模擬查核結果</strong><p></p></section>
+          <footer class="task-actions">
+            <p id="mission3-hint">四選二：點選工具即可加入或取消，不需要拖曳。</p>
+            <button id="mission3-check" class="primary-button" type="button" disabled>執行查核</button>
+            <button id="mission3-next" class="primary-button" type="button" hidden>下一件短案件</button>
           </footer>
         </section>
       </div>
