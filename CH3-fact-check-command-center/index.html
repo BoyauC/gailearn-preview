@@ -169,13 +169,55 @@
           <span>誰說的？</span><span>何時發布？</span><span>合不合理？</span>
         </div>
         <p class="prototype-note">下一步：查找官方衛生單位與可靠醫療來源，再決定是否結案。</p>
-        <button id="replay-button" class="primary-button" type="button">重新挑戰</button>
+        <div class="next-case-briefing">
+          <img src="./assets/characters/ouni.png" alt="通報員歐匿">
+          <div><strong>通報員歐匿</strong><p>新的通報進來了！社群正在轉傳「全臺停課三天」。這是另一件需要查核的新案件。</p></div>
+        </div>
+        <div class="end-actions">
+          <button id="replay-button" class="secondary-button" type="button">重新挑戰</button>
+          <button id="continue-mission2" class="primary-button" type="button">接收新案件</button>
+        </div>
       </div>
       <div class="end-team" aria-hidden="true">
         <img src="./assets/characters/koko.png" alt="">
         <img src="./assets/characters/sisi.png" alt="">
         <img src="./assets/characters/xiaocheng.png" alt="">
         <img src="./assets/characters/ouni.png" alt="">
+      </div>
+    </section>
+
+    <section id="mission2-screen" class="screen case-screen" aria-labelledby="mission2-title">
+      <header class="case-header">
+        <div><p class="case-kicker">新案件 02 · 查核行動盤</p><h2 id="mission2-title">全臺停課三天？</h2></div>
+        <div class="case-progress"><span id="mission2-step">0</span>／4 查核結果</div>
+        <button id="mission2-log-toggle" class="case-log-toggle" type="button" aria-expanded="false">調查紀錄</button>
+      </header>
+      <div class="case-workspace">
+        <aside id="mission2-log" class="action-log" aria-label="查核路徑">
+          <h3>已取得的查核結果</h3><ol id="mission2-log-list"><li>尚未取得查核結果。</li></ol>
+        </aside>
+        <aside class="partner-panel" aria-labelledby="mission2-partner-title">
+          <div class="partner-role">證據員／調查夥伴</div>
+          <div class="partner-portrait"><img src="./assets/characters/xiaocheng.png" alt="小澄"></div>
+          <div class="partner-dialogue" aria-live="polite"><strong id="mission2-partner-title">小澄</strong><p id="mission2-feedback">先別急著安排固定流程。第一步只有一件事：停止轉傳，拿回查核時間。</p></div>
+          <div class="evidence-status"><span>案件狀態</span><strong id="mission2-energy">尚未開始查核</strong></div>
+        </aside>
+        <section class="task-panel mission2-task" aria-labelledby="mission2-task-title">
+          <div class="task-stage-label"><span>MISSION 2</span><strong id="mission2-task-title">先停止擴散</strong></div>
+          <article class="mission2-rumor">
+            <span>正在大量轉傳</span><blockquote>「聽說下週因為高溫，全臺學校停課三天。」</blockquote>
+          </article>
+          <div class="route-strip" aria-label="已取得的查核結果"><div id="mission2-route"></div></div>
+          <section class="action-library" aria-labelledby="action-library-title">
+            <h3 id="action-library-title">你要採取什麼行動？</h3>
+            <div id="mission2-actions"></div>
+          </section>
+          <footer class="task-actions">
+            <p id="mission2-hint">先停止轉傳；接著可依情境自由選擇查核行動。</p>
+            <button id="mission2-undo" class="secondary-button" type="button" disabled>撤回上一項查核</button>
+            <button id="mission2-finish" class="primary-button" type="button" hidden>確認結案行動</button>
+          </footer>
+        </section>
       </div>
     </section>
   </main>
