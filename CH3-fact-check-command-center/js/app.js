@@ -686,6 +686,7 @@
     [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => {
       const selected = state.mission3Selected.includes(button.dataset.toolId);
       button.classList.toggle("is-selected", selected);
+      button.classList.remove("is-wrong");
       button.setAttribute("aria-pressed", String(selected));
     });
     const labels = state.mission3Selected.map((id) => state.mission3.tools.find((tool) => tool.id === id).label);
@@ -700,10 +701,15 @@
     const hasSupport = item.supports.some((id) => state.mission3Selected.includes(id));
     if (!hasCore || !hasSupport || state.mission3Selected.length !== 2) {
       elements.mission3Feedback.textContent = item.partial;
-      elements.mission3Status.textContent = "證據仍有缺口";
+      elements.mission3Status.textContent = "證據仍有缺口，請重新選擇";
+      elements.mission3Hint.textContent = "這組工具尚未補足證據。選項已重設，請重新選擇兩項。";
+      state.mission3Selected = [];
       [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => {
-        button.classList.toggle("is-wrong", state.mission3Selected.includes(button.dataset.toolId));
+        button.classList.remove("is-selected", "is-wrong");
+        button.setAttribute("aria-pressed", "false");
       });
+      elements.mission3Selection.textContent = "請從四項工具中選出兩項。";
+      elements.mission3Check.disabled = true;
       return;
     }
     state.mission3Solved = true;

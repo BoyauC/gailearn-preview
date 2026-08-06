@@ -25,7 +25,7 @@
   ],
   "finalActions": [
     { "id": "do_not_share", "label": "不分享這則傳言", "safe": true, "completion": "你停止了未經證實的停課消息繼續擴散。" },
-    { "id": "share_correction", "label": "附上官方來源，提醒轉傳者查證", "safe": true, "completion": "你用可靠來源說明查核結果，也提醒他人不要只看轉傳摘要。" },
+    { "id": "share_correction", "label": "提醒轉傳者查證，並附上官方來源", "safe": true, "completion": "你用可靠來源說明查核結果，也提醒他人不要只看轉傳摘要。" },
     { "id": "share_rumor", "label": "先分享傳言，再補一句『不確定』", "safe": false, "feedback": "加上『不確定』仍可能讓傳言繼續擴散。應停止分享，或只分享查核後的可靠資訊。" }
   ],
   "completion": "你先停止轉傳，再依情境自由查詢來源、時間、官方公告與其他可靠資料，最後才根據證據下達警報並決定後續行動。"
