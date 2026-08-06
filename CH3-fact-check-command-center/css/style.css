@@ -315,6 +315,26 @@ h1:focus, h2:focus { outline: none; }
 .mission-complete-card span { color: var(--sage-dark); font-size: 10px; font-weight: 900; letter-spacing: .13em; }
 .mission-complete-card strong { display: block; margin: 7px; font-size: 22px; }
 .mission-complete-card p { margin: 0; font-size: 13px; line-height: 1.6; }
+.mission3-workspace { grid-template-columns: minmax(210px, .29fr) minmax(0, .71fr); }
+.mission3-task { grid-template-rows: auto auto minmax(0,1fr) auto auto; }
+.tool-case-card { padding: 13px 16px; border-left: 5px solid var(--lavender); border-radius: 14px; background: #fff; }
+.tool-case-card > span { color: var(--lavender); font-size: 10px; font-weight: 900; letter-spacing: .12em; }
+.tool-case-card h3 { margin: 4px 0 6px; color: var(--night); font-size: clamp(17px,1.7vw,19px); }
+.tool-case-card p { margin: 0; color: var(--ink); font-size: clamp(20px,2.05vw,23px); line-height: 1.55; }
+.tool-selection { min-height: 49px; padding: 8px 12px; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 10px; border-radius: 12px; background: #e4e9e0; }
+.tool-selection span { color: var(--sage-dark); font-size: 11px; font-weight: 900; }
+.tool-selection p { margin: 0; color: var(--ink); font-size: 13px; font-weight: 750; }
+.toolbox { min-height: 0; overflow-y: auto; }
+.toolbox h3 { margin: 0 0 8px; color: var(--night); font-size: 16px; }
+#mission3-tools { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+#mission3-tools > button { min-height: 65px; padding: 8px; display: flex; align-items: center; gap: 8px; border: 2px solid transparent; border-radius: 12px; color: var(--ink); background: #fff; text-align: left; cursor: pointer; }
+#mission3-tools > button span { flex: 0 0 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: var(--lavender); background: #ece5ef; font-size: 11px; font-weight: 900; }
+#mission3-tools > button strong { font-size: 13px; line-height: 1.35; }
+#mission3-tools > button.is-selected { border-color: var(--sage-dark); background: #e5eddf; }
+#mission3-tools > button.is-wrong { border-color: var(--coral); background: #f8e8e3; }
+.tool-result { padding: 10px 13px; border-radius: 12px; color: #31554a; background: #dcebe5; }
+.tool-result strong { font-size: 12px; }
+.tool-result p { margin: 3px 0 0; font-size: 13px; line-height: 1.5; }
 
 .orientation-note { display: none; position: fixed; z-index: 50; left: 50%; bottom: 12px; transform: translateX(-50%); padding: 10px 15px; border-radius: 12px; color: #fff; background: rgba(23,41,41,.92); box-shadow: var(--shadow); font-size: 13px; white-space: nowrap; }
 .orientation-note span { margin-left: 8px; color: #c7d4d0; }
@@ -364,6 +384,9 @@ h1:focus, h2:focus { outline: none; }
   .route-strip { min-height: 53px; }
   .route-strip span { min-height: 38px; }
   #mission2-actions > button { min-height: 51px; padding-block: 7px; }
+  #mission3-tools > button { min-height: 54px; padding: 6px; }
+  .tool-case-card { padding: 9px 12px; }
+  .tool-case-card p { font-size: 19px; line-height: 1.45; }
   .task-actions { min-height: 54px; padding-top: 6px; }
   .rumor-board { padding: 13px 15px; }
   .rumor-board h3 { margin: 6px 0; font-size: 19px; }

@@ -5,6 +5,7 @@
     story: null,
     cases: null,
     mission2: null,
+    mission3: null,
     nodeId: "intro_01",
     typingTimer: null,
     isTyping: false,
@@ -17,7 +18,10 @@
     actionLog: [],
     mission2Sequence: [],
     mission2Phase: "opening",
-    mission2Judgment: null
+    mission2Judgment: null,
+    mission3Index: 0,
+    mission3Selected: [],
+    mission3Solved: false
   };
 
   const elements = {
@@ -77,7 +81,21 @@
     mission2Finish: document.querySelector("#mission2-finish"),
     mission2Log: document.querySelector("#mission2-log"),
     mission2LogToggle: document.querySelector("#mission2-log-toggle"),
-    mission2LogList: document.querySelector("#mission2-log-list")
+    mission2LogList: document.querySelector("#mission2-log-list"),
+    continueMission3: document.querySelector("#continue-mission3"),
+    mission3Screen: document.querySelector("#mission3-screen"),
+    mission3Step: document.querySelector("#mission3-step"),
+    mission3Feedback: document.querySelector("#mission3-feedback"),
+    mission3Status: document.querySelector("#mission3-status"),
+    mission3Tag: document.querySelector("#mission3-tag"),
+    mission3CaseTitle: document.querySelector("#mission3-case-title"),
+    mission3Summary: document.querySelector("#mission3-summary"),
+    mission3Selection: document.querySelector("#mission3-selection p"),
+    mission3Tools: document.querySelector("#mission3-tools"),
+    mission3Result: document.querySelector("#mission3-result"),
+    mission3Hint: document.querySelector("#mission3-hint"),
+    mission3Check: document.querySelector("#mission3-check"),
+    mission3Next: document.querySelector("#mission3-next")
   };
 
   const characterFiles = {
@@ -90,15 +108,17 @@
 
   async function loadStory() {
     try {
-      const [storyResponse, casesResponse, mission2Response] = await Promise.all([
+      const [storyResponse, casesResponse, mission2Response, mission3Response] = await Promise.all([
         fetch("./data/prologue.json"),
         fetch("./data/cases.json"),
-        fetch("./data/mission2.json")
+        fetch("./data/mission2.json"),
+        fetch("./data/mission3.json")
       ]);
-      if (!storyResponse.ok || !casesResponse.ok || !mission2Response.ok) throw new Error("教材資料載入失敗");
+      if (!storyResponse.ok || !casesResponse.ok || !mission2Response.ok || !mission3Response.ok) throw new Error("教材資料載入失敗");
       state.story = await storyResponse.json();
       state.cases = await casesResponse.json();
       state.mission2 = await mission2Response.json();
+      state.mission3 = await mission3Response.json();
     } catch (error) {
       console.error(error);
       elements.home.querySelector(".home-note").textContent = "教材資料載入失敗。請使用本機 HTTP 伺服器預覽。";
@@ -604,6 +624,111 @@
     elements.mission2Finish.hidden = true;
     elements.mission2Undo.hidden = true;
     elements.mission2Actions.innerHTML = `<div class="mission-complete-card"><span>MISSION COMPLETE</span><strong>案件02已完成查核</strong><p>${state.mission2.completion}</p></div>`;
+    elements.continueMission3.hidden = false;
+  }
+
+  function startMission3() {
+    if (!state.mission3) return;
+    state.mission3Index = 0;
+    state.mission3Selected = [];
+    state.mission3Solved = false;
+    showScreen(elements.mission3Screen);
+    renderMission3Case();
+  }
+
+  function renderMission3Case() {
+    const item = state.mission3.cases[state.mission3Index];
+    state.mission3Selected = [];
+    state.mission3Solved = false;
+    elements.mission3Step.textContent = String(state.mission3Index + 1);
+    elements.mission3Tag.textContent = item.tag;
+    elements.mission3CaseTitle.textContent = item.title;
+    elements.mission3Summary.textContent = item.summary;
+    elements.mission3Selection.textContent = "請從四項工具中選出兩項。";
+    elements.mission3Feedback.textContent = "先說清楚想確認的問題，再選能直接取得證據的工具。";
+    elements.mission3Status.textContent = "尚未選擇";
+    elements.mission3Hint.textContent = "四選二：點選工具即可加入或取消，不需要拖曳。";
+    elements.mission3Check.disabled = true;
+    elements.mission3Check.hidden = false;
+    elements.mission3Next.hidden = true;
+    elements.mission3Result.hidden = true;
+    renderMission3Tools();
+  }
+
+  function renderMission3Tools() {
+    const item = state.mission3.cases[state.mission3Index];
+    const tools = item.options.map((id) => state.mission3.tools.find((tool) => tool.id === id));
+    for (let index = tools.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [tools[index], tools[randomIndex]] = [tools[randomIndex], tools[index]];
+    }
+    elements.mission3Tools.innerHTML = "";
+    tools.forEach((tool) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.toolId = tool.id;
+      button.setAttribute("aria-pressed", "false");
+      button.innerHTML = `<span>${tool.icon}</span><strong>${tool.label}</strong>`;
+      button.onclick = () => toggleMission3Tool(tool.id);
+      elements.mission3Tools.append(button);
+    });
+  }
+
+  function toggleMission3Tool(toolId) {
+    if (state.mission3Solved) return;
+    const selectedIndex = state.mission3Selected.indexOf(toolId);
+    if (selectedIndex >= 0) state.mission3Selected.splice(selectedIndex, 1);
+    else if (state.mission3Selected.length < 2) state.mission3Selected.push(toolId);
+    else {
+      elements.mission3Feedback.textContent = "一次先集中使用兩項主要工具。若要更換，請先取消一項。";
+      return;
+    }
+    [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => {
+      const selected = state.mission3Selected.includes(button.dataset.toolId);
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    const labels = state.mission3Selected.map((id) => state.mission3.tools.find((tool) => tool.id === id).label);
+    elements.mission3Selection.textContent = labels.length ? labels.map((label, index) => `${index + 1}. ${label}`).join("　") : "請從四項工具中選出兩項。";
+    elements.mission3Status.textContent = labels.length ? `已選 ${labels.length}／2 項` : "尚未選擇";
+    elements.mission3Check.disabled = labels.length !== 2;
+  }
+
+  function checkMission3Tools() {
+    const item = state.mission3.cases[state.mission3Index];
+    const hasCore = state.mission3Selected.includes(item.core);
+    const hasSupport = item.supports.some((id) => state.mission3Selected.includes(id));
+    if (!hasCore || !hasSupport || state.mission3Selected.length !== 2) {
+      elements.mission3Feedback.textContent = item.partial;
+      elements.mission3Status.textContent = "證據仍有缺口";
+      [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => {
+        button.classList.toggle("is-wrong", state.mission3Selected.includes(button.dataset.toolId));
+      });
+      return;
+    }
+    state.mission3Solved = true;
+    elements.mission3Feedback.textContent = item.success;
+    elements.mission3Status.textContent = "工具調度完成";
+    elements.mission3Result.querySelector("p").textContent = item.result;
+    elements.mission3Result.hidden = false;
+    elements.mission3Hint.textContent = "工具能取得查核結果；最後仍要比較證據並說明判斷依據。";
+    elements.mission3Check.hidden = true;
+    elements.mission3Next.hidden = false;
+    elements.mission3Next.textContent = state.mission3Index === state.mission3.cases.length - 1 ? "完成工具調度" : "下一件短案件";
+    [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
+  }
+
+  function nextMission3Case() {
+    if (state.mission3Index < state.mission3.cases.length - 1) {
+      state.mission3Index += 1;
+      renderMission3Case();
+      return;
+    }
+    elements.mission3Feedback.textContent = state.mission3.completion;
+    elements.mission3Status.textContent = "任務 03 完成";
+    elements.mission3Hint.textContent = "下一輪將進入親友視訊要求匯款的綜合安全挑戰。";
+    elements.mission3Next.hidden = true;
+    elements.mission3Tools.innerHTML = `<div class="mission-complete-card"><span>MISSION COMPLETE</span><strong>查核工具選擇所完成</strong><p>${state.mission3.completion}</p></div>`;
   }
 
   function toggleSound() {
@@ -629,10 +754,13 @@
   });
   elements.mission2Undo.addEventListener("click", undoMission2);
   elements.mission2Finish.addEventListener("click", finishMission2);
+  elements.continueMission3.addEventListener("click", startMission3);
   elements.mission2LogToggle.addEventListener("click", () => {
     const open = elements.mission2Log.classList.toggle("is-open");
     elements.mission2LogToggle.setAttribute("aria-expanded", String(open));
   });
+  elements.mission3Check.addEventListener("click", checkMission3Tools);
+  elements.mission3Next.addEventListener("click", nextMission3Case);
   document.addEventListener("keydown", (event) => {
     if ((event.key === "Enter" || event.key === " ") && elements.story.classList.contains("is-active") && document.activeElement === document.body) {
       event.preventDefault();
