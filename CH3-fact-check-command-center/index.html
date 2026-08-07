@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#e8e3d8">
   <title>查核行動指揮中心</title>
-  <link rel="stylesheet" href="./css/style.css?v=20260807-4">
+  <link rel="stylesheet" href="./css/style.css?v=20260807-7">
 </head>
 <body>
   <noscript>這份教材需要啟用 JavaScript 才能操作。</noscript>
@@ -154,7 +154,8 @@
             <p id="task-hint">已找到的調查點會保留標記；請找出全部五個位置。</p>
             <button id="back-to-explore" class="secondary-button" type="button" hidden>返回案件</button>
             <button id="next-clue" class="primary-button" type="button" hidden>檢查下一張線索</button>
-            <button id="finish-case" class="primary-button" type="button" hidden>維持黃色警報</button>
+            <button id="green-alert" class="green-alert-button" type="button" hidden>綠色警報</button>
+            <button id="finish-case" class="primary-button" type="button" hidden>黃色警報</button>
           </footer>
         </section>
       </div>
@@ -163,12 +164,11 @@
     <section id="prototype-end" class="screen end-screen" aria-labelledby="end-title">
       <div class="end-card">
         <p class="eyebrow">案件 01 完成</p>
-        <h2 id="end-title">先維持黃色警報</h2>
-        <p id="case-summary">目前仍缺少可驗證的專家姓名、研究原文與官方說法，不能因為搜尋不到澄清就直接相信。</p>
-        <div class="evidence-chips" aria-label="審視資訊三問">
+        <h2 id="end-title">本案件先維持黃色警報</h2>
+        <div class="evidence-chips is-compact" aria-label="審視資訊三問">
           <span>誰說的？</span><span>何時發布？</span><span>合不合理？</span>
         </div>
-        <p class="prototype-note">下一步：查找官方衛生單位與可靠醫療來源，再決定是否結案。</p>
+        <p id="case-summary">目前仍缺少可驗證的專家姓名、研究原文與官方說法，不能因為搜尋不到澄清就直接相信。</p>
         <div class="next-case-briefing">
           <img src="./assets/characters/ouni.png" alt="通報員歐匿">
           <div><strong>通報員歐匿</strong><p>新的通報進來了！社群正在轉傳「全臺停課三天」。這是另一件需要查核的新案件。</p></div>
@@ -186,6 +186,13 @@
       </div>
     </section>
 
+    <dialog id="green-alert-dialog" class="case-alert-dialog" aria-labelledby="green-alert-title">
+      <div class="alert-symbol" aria-hidden="true">!</div>
+      <h2 id="green-alert-title">這不是綠色警報</h2>
+      <p>目前取得的資訊仍有證據缺口，還不能判定內容可以採信。請重新調查案件，再依結果選擇警報狀態。</p>
+      <button id="restart-case-investigation" class="primary-button" type="button">重新調查</button>
+    </dialog>
+
     <section id="mission2-screen" class="screen case-screen" aria-labelledby="mission2-title">
       <header class="case-header">
         <div><p class="case-kicker">新案件 02 · 查核行動盤</p><h2 id="mission2-title">全臺停課三天？</h2></div>
@@ -198,7 +205,7 @@
         </aside>
         <aside class="partner-panel" aria-labelledby="mission2-partner-title">
           <div class="partner-role">證據員／調查夥伴</div>
-          <div class="partner-dialogue" aria-live="polite"><strong id="mission2-partner-title">小澄</strong><p id="mission2-feedback">先別急著安排固定流程。第一步只有一件事：停止轉傳，拿回查核時間。</p></div>
+          <div class="partner-dialogue" aria-live="polite"><strong id="mission2-partner-title">小澄</strong><p id="mission2-feedback">先別急著行動，看到資訊第一步只有一件事，你覺得是哪一件呢？</p></div>
           <div class="partner-portrait"><img src="./assets/characters/xiaocheng.png" alt="小澄"></div>
           <div class="evidence-status"><span>案件狀態</span><strong id="mission2-energy">尚未開始查核</strong></div>
         </aside>
@@ -216,7 +223,7 @@
             <p id="mission2-hint">先停止轉傳；接著可依情境自由選擇查核行動。</p>
             <button id="mission2-undo" class="secondary-button" type="button" disabled>撤回上一項查核</button>
             <button id="mission2-finish" class="primary-button" type="button" hidden>確認結案行動</button>
-            <button id="continue-mission3" class="primary-button" type="button" hidden>前往工具選擇所</button>
+            <button id="continue-mission3" class="primary-button" type="button" hidden>前往查核工具選擇所</button>
           </footer>
         </section>
       </div>
@@ -230,7 +237,7 @@
       <div class="case-workspace mission3-workspace">
         <aside class="partner-panel" aria-labelledby="mission3-partner-title">
           <div class="partner-role">證據員／調查夥伴</div>
-          <div class="partner-dialogue" aria-live="polite"><strong id="mission3-partner-title">小澄</strong><p id="mission3-feedback">先看案件要解決什麼問題，再挑選工具。工具很多，不代表全部都要用。</p></div>
+          <div class="partner-dialogue" aria-live="polite"><strong id="mission3-partner-title">小澄</strong><p id="mission3-feedback">先瞭解想確認的問題，再選擇能直接取得證據的查核工具或平台。</p></div>
           <div class="partner-portrait"><img src="./assets/characters/xiaocheng.png" alt="小澄"></div>
           <div class="evidence-status"><span>工具調度</span><strong id="mission3-status">尚未選擇</strong></div>
         </aside>
@@ -239,6 +246,7 @@
           <div id="mission3-selection" class="tool-selection" aria-live="polite"><span>已選工具</span><p>請從四項工具中選出兩項。</p></div>
           <section class="toolbox" aria-labelledby="toolbox-title"><h3 id="toolbox-title">你要調度哪些工具？</h3><div id="mission3-tools"></div></section>
           <section id="mission3-result" class="tool-result" hidden><strong>模擬查核結果</strong><p></p></section>
+          <section id="mission3-completion" class="mission3-completion" hidden></section>
           <footer class="task-actions">
             <p id="mission3-hint">四選二：點選工具即可加入或取消，不需要拖曳。</p>
             <button id="mission3-check" class="primary-button" type="button" disabled>執行查核</button>
@@ -280,6 +288,6 @@
     <strong>橫向體驗更完整</strong><span>目前仍可繼續操作。</span>
   </div>
 
-  <script src="./js/app.js?v=20260807-4" defer></script>
+  <script src="./js/app.js?v=20260807-7" defer></script>
 </body>
 </html>
