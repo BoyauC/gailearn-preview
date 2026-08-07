@@ -20,9 +20,12 @@
     mission2Sequence: [],
     mission2Phase: "opening",
     mission2Judgment: null,
+    mission2TransitionTimer: null,
     mission3Index: 0,
     mission3Selected: [],
     mission3Solved: false,
+    mission3History: [],
+    mission3TransitionTimer: null,
     mission4Phase: "opening",
     mission4Selected: [],
     mission4Evidence: []
@@ -71,6 +74,9 @@
     placedCount: document.querySelector("#placed-count"),
     totalClues: document.querySelector("#total-clues"),
     feedbackText: document.querySelector("#case-feedback-text"),
+    greenAlert: document.querySelector("#green-alert"),
+    greenAlertDialog: document.querySelector("#green-alert-dialog"),
+    restartCaseInvestigation: document.querySelector("#restart-case-investigation"),
     finishCase: document.querySelector("#finish-case"),
     logToggle: document.querySelector("#case-log-toggle"),
     actionLog: document.querySelector("#action-log"),
@@ -94,9 +100,13 @@
     mission3Tag: document.querySelector("#mission3-tag"),
     mission3CaseTitle: document.querySelector("#mission3-case-title"),
     mission3Summary: document.querySelector("#mission3-summary"),
+    mission3CaseCard: document.querySelector(".tool-case-card"),
+    mission3SelectionBox: document.querySelector("#mission3-selection"),
+    mission3Toolbox: document.querySelector(".toolbox"),
     mission3Selection: document.querySelector("#mission3-selection p"),
     mission3Tools: document.querySelector("#mission3-tools"),
     mission3Result: document.querySelector("#mission3-result"),
+    mission3Completion: document.querySelector("#mission3-completion"),
     mission3Hint: document.querySelector("#mission3-hint"),
     mission3Check: document.querySelector("#mission3-check"),
     mission3Next: document.querySelector("#mission3-next"),
@@ -332,6 +342,7 @@
     elements.summaryView.hidden = true;
     elements.backToExplore.hidden = true;
     elements.nextClue.hidden = true;
+    elements.greenAlert.hidden = true;
     elements.finishCase.hidden = true;
     elements.stageNumber.textContent = "STEP 1";
     elements.taskHeading.textContent = "找出需要查核的位置";
@@ -360,6 +371,7 @@
     elements.followupActions.innerHTML = "";
     elements.backToExplore.hidden = false;
     elements.nextClue.hidden = true;
+    elements.greenAlert.hidden = true;
     elements.finishCase.hidden = true;
     elements.stageNumber.textContent = "STEP 2";
     elements.taskHeading.textContent = "逐張審視線索";
@@ -451,18 +463,31 @@
     elements.summaryView.hidden = false;
     elements.backToExplore.hidden = true;
     elements.nextClue.hidden = true;
+    elements.greenAlert.hidden = false;
     elements.finishCase.hidden = false;
     elements.stageNumber.textContent = "STEP 3";
     elements.taskHeading.textContent = "整理三問與證據缺口";
-    elements.feedbackText.textContent = "三問不是三個答案，而是三條查核路徑。請用目前取得的結果決定警報狀態。";
+    elements.feedbackText.textContent = "審核資訊有基本的三問，請用目前取得的結果決定目前的警報狀態。";
     elements.evidenceStatus.textContent = "證據不足，建議黃色警報";
     elements.taskHint.textContent = "尚未查到可靠支持，不等於消息正確；也不必在證據不足時急著宣布是假消息。";
-    elements.questionReport.innerHTML = Object.entries(caseData.questions).map(([id, question]) => {
-      const count = Object.values(state.completedClues).filter((item) => item.question === id).length;
-      return `<article><span>${count} 項調查</span><strong>${question.label}</strong><p>${question.description}</p></article>`;
-    }).join("");
+    const keywordMap = {
+      who: ["健康分享站", "多位專家已證實"],
+      when: ["今天 08:20"],
+      reasonable: ["喝三天就有效", "趕快分享給所有家人"]
+    };
+    elements.questionReport.innerHTML = Object.entries(caseData.questions).map(([id, question]) => `
+      <article><strong>${question.label}</strong><div class="report-keywords">${keywordMap[id].map((keyword) => `<span>${keyword}</span>`).join("")}</div><p>${question.description}</p></article>`).join("");
     elements.missingEvidence.textContent = caseData.missingEvidence;
     elements.finishCase.focus();
+  }
+
+  function rejectGreenAlert() {
+    if (typeof elements.greenAlertDialog.showModal === "function") elements.greenAlertDialog.showModal();
+  }
+
+  function restartCaseInvestigation() {
+    elements.greenAlertDialog.close();
+    startCase();
   }
 
   function completeCase() {
@@ -481,11 +506,14 @@
 
   function startMission2() {
     if (!state.mission2) return;
+    window.clearTimeout(state.mission2TransitionTimer);
     state.mission2Sequence = [];
     state.mission2Phase = "opening";
     state.mission2Judgment = null;
+    elements.mission2Route.parentElement.classList.remove("is-complete");
     elements.mission2Log.classList.remove("is-open");
     elements.mission2LogToggle.setAttribute("aria-expanded", "false");
+    elements.mission2Feedback.textContent = "先別急著行動，看到資訊第一步只有一件事，你覺得是哪一件呢？";
     showScreen(elements.mission2Screen);
     renderMission2();
   }
@@ -552,8 +580,12 @@
     document.querySelector("#mission2-task-title").textContent = "自由選擇查核行動";
     document.querySelector("#action-library-title").textContent = remaining.length ? "接下來想查哪一項？" : "查核結果已備妥";
     if (!remaining.length) {
-      state.mission2Phase = "judge";
-      renderMission2();
+      elements.mission2Hint.textContent = "四項查核結果已取得，請整理目前的判斷依據。";
+      state.mission2TransitionTimer = window.setTimeout(() => {
+        state.mission2Phase = "judge";
+        renderMission2();
+        elements.mission2Feedback.textContent = "依照你目前的查核動作，你覺得這個屬於哪個警報？";
+      }, 1000);
       return;
     }
     elements.mission2Hint.textContent = `還有 ${remaining.length} 項可查。這些行動沒有唯一順序，可依情境自由選擇。`;
@@ -585,6 +617,7 @@
     const judgment = state.mission2.judgments.find((item) => item.id === actionId);
     elements.mission2Feedback.textContent = judgment.feedback;
     if (!judgment.correct) return markMission2Choice(actionId, false);
+    elements.mission2Feedback.textContent = `${judgment.feedback} 接下來要怎麼做？`;
     state.mission2Judgment = actionId;
     state.mission2Phase = "final";
     renderMission2();
@@ -593,7 +626,7 @@
   function renderMission2FinalActions() {
     const data = state.mission2;
     document.querySelector("#mission2-task-title").textContent = "選擇查核後的行動";
-    document.querySelector("#action-library-title").textContent = "下達紅色警報後，你要怎麼做？";
+    document.querySelector("#action-library-title").textContent = "";
     elements.mission2Hint.textContent = "最後依查核結果選擇是否分享，以及要如何提醒他人。";
     renderMission2Buttons(data.finalActions, chooseMission2FinalAction);
   }
@@ -629,12 +662,14 @@
 
   function markMission2Choice(actionId, correct) {
     [...elements.mission2Actions.querySelectorAll("button")].forEach((button) => {
+      button.classList.remove("is-correct", "is-wrong");
       button.classList.toggle(correct ? "is-correct" : "is-wrong", button.dataset.actionId === actionId);
     });
   }
 
   function undoMission2() {
     if (!state.mission2Sequence.length) return;
+    window.clearTimeout(state.mission2TransitionTimer);
     const removedId = state.mission2Sequence.pop();
     const removed = state.mission2.investigations.find((item) => item.id === removedId);
     elements.mission2Feedback.textContent = `已撤回「${removed.label}」的查核結果，你可以重新選擇查核行動。`;
@@ -642,19 +677,28 @@
   }
 
   function finishMission2() {
-    elements.mission2Feedback.textContent = state.mission2.completion;
+    elements.mission2Feedback.textContent = `太棒了！${state.mission2.completion}`;
     elements.mission2Hint.textContent = "案件02完成。下一關將練習依案件選擇合適的查核工具。";
     elements.mission2Finish.hidden = true;
     elements.mission2Undo.hidden = true;
+    const completedRoute = [
+      state.mission2.opening.label,
+      ...state.mission2Sequence.map((id) => state.mission2.investigations.find((item) => item.id === id).label),
+      state.mission2.judgments.find((item) => item.id === state.mission2Judgment).label
+    ];
+    elements.mission2Route.parentElement.classList.add("is-complete");
+    elements.mission2Route.innerHTML = completedRoute.map((label, index) => `<span><b>${index + 1}</b>${label}</span>`).join("");
     elements.mission2Actions.innerHTML = `<div class="mission-complete-card"><span>MISSION COMPLETE</span><strong>案件02已完成查核</strong><p>${state.mission2.completion}</p></div>`;
     elements.continueMission3.hidden = false;
   }
 
   function startMission3() {
     if (!state.mission3) return;
+    window.clearTimeout(state.mission3TransitionTimer);
     state.mission3Index = 0;
     state.mission3Selected = [];
     state.mission3Solved = false;
+    state.mission3History = [];
     showScreen(elements.mission3Screen);
     renderMission3Case();
   }
@@ -668,13 +712,17 @@
     elements.mission3CaseTitle.textContent = item.title;
     elements.mission3Summary.textContent = item.summary;
     elements.mission3Selection.textContent = "請從四項工具中選出兩項。";
-    elements.mission3Feedback.textContent = "先說清楚想確認的問題，再選能直接取得證據的工具。";
+    elements.mission3Feedback.textContent = "先瞭解想確認的問題，再選擇能直接取得證據的查核工具或平台。";
     elements.mission3Status.textContent = "尚未選擇";
     elements.mission3Hint.textContent = "四選二：點選工具即可加入或取消，不需要拖曳。";
     elements.mission3Check.disabled = true;
     elements.mission3Check.hidden = false;
     elements.mission3Next.hidden = true;
     elements.mission3Result.hidden = true;
+    elements.mission3Completion.hidden = true;
+    elements.mission3CaseCard.hidden = false;
+    elements.mission3SelectionBox.hidden = false;
+    elements.mission3Toolbox.hidden = false;
     renderMission3Tools();
   }
 
@@ -736,15 +784,24 @@
       return;
     }
     state.mission3Solved = true;
+    state.mission3History.push({
+      title: item.title,
+      tools: state.mission3Selected.map((id) => state.mission3.tools.find((tool) => tool.id === id).label)
+    });
     elements.mission3Feedback.textContent = item.success;
     elements.mission3Status.textContent = "工具調度完成";
     elements.mission3Result.querySelector("p").textContent = item.result;
     elements.mission3Result.hidden = false;
     elements.mission3Hint.textContent = "工具能取得查核結果；最後仍要比較證據並說明判斷依據。";
     elements.mission3Check.hidden = true;
-    elements.mission3Next.hidden = false;
-    elements.mission3Next.textContent = state.mission3Index === state.mission3.cases.length - 1 ? "完成工具調度" : "下一件短案件";
+    const isLastCase = state.mission3Index === state.mission3.cases.length - 1;
+    elements.mission3Next.hidden = isLastCase;
+    elements.mission3Next.textContent = "下一件短案件";
     [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
+    if (isLastCase) {
+      elements.mission3Hint.textContent = "請先閱讀 AI 引用的模擬查核結果，3 秒後進入任務總結。";
+      state.mission3TransitionTimer = window.setTimeout(nextMission3Case, 3000);
+    }
   }
 
   function nextMission3Case() {
@@ -757,7 +814,12 @@
     elements.mission3Status.textContent = "任務 03 完成";
     elements.mission3Hint.textContent = "下一輪將進入親友視訊要求匯款的綜合安全挑戰。";
     elements.mission3Next.hidden = true;
-    elements.mission3Tools.innerHTML = `<div class="mission-complete-card"><span>MISSION COMPLETE</span><strong>查核工具選擇所完成</strong><p>${state.mission3.completion}</p></div>`;
+    elements.mission3CaseCard.hidden = true;
+    elements.mission3SelectionBox.hidden = true;
+    elements.mission3Toolbox.hidden = true;
+    elements.mission3Result.hidden = true;
+    elements.mission3Completion.hidden = false;
+    elements.mission3Completion.innerHTML = `<span>MISSION COMPLETE</span><h3>查核工具選擇所完成</h3><p>${state.mission3.completion}</p><div class="mission3-summary-list">${state.mission3History.map((entry, index) => `<article><b>${String(index + 1).padStart(2, "0")}</b><div><strong>${entry.title}</strong><p>${entry.tools.join(" ＋ ")}</p></div></article>`).join("")}</div>`;
     elements.continueMission4.hidden = false;
   }
 
@@ -948,6 +1010,8 @@
   elements.dialoguePanel.addEventListener("click", advance);
   elements.sound.addEventListener("click", toggleSound);
   elements.finishCase.addEventListener("click", completeCase);
+  elements.greenAlert.addEventListener("click", rejectGreenAlert);
+  elements.restartCaseInvestigation.addEventListener("click", restartCaseInvestigation);
   elements.backToExplore.addEventListener("click", showExploreView);
   elements.nextClue.addEventListener("click", showExploreView);
   elements.logToggle.addEventListener("click", () => {
