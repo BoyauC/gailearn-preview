@@ -6,6 +6,7 @@
     cases: null,
     mission2: null,
     mission3: null,
+    mission4: null,
     nodeId: "intro_01",
     typingTimer: null,
     isTyping: false,
@@ -21,7 +22,10 @@
     mission2Judgment: null,
     mission3Index: 0,
     mission3Selected: [],
-    mission3Solved: false
+    mission3Solved: false,
+    mission4Phase: "opening",
+    mission4Selected: [],
+    mission4Evidence: []
   };
 
   const elements = {
@@ -95,7 +99,19 @@
     mission3Result: document.querySelector("#mission3-result"),
     mission3Hint: document.querySelector("#mission3-hint"),
     mission3Check: document.querySelector("#mission3-check"),
-    mission3Next: document.querySelector("#mission3-next")
+    mission3Next: document.querySelector("#mission3-next"),
+    continueMission4: document.querySelector("#continue-mission4"),
+    mission4Screen: document.querySelector("#mission4-screen"),
+    mission4Phase: document.querySelector("#mission4-phase"),
+    callerName: document.querySelector("#caller-name"),
+    callerMessage: document.querySelector("#caller-message"),
+    mission4ActionTitle: document.querySelector("#mission4-action-title"),
+    mission4Evidence: document.querySelector("#mission4-evidence"),
+    mission4Feedback: document.querySelector("#mission4-feedback p"),
+    mission4Actions: document.querySelector("#mission4-actions"),
+    mission4Hint: document.querySelector("#mission4-hint"),
+    mission4Check: document.querySelector("#mission4-check"),
+    mission4Complete: document.querySelector("#mission4-complete")
   };
 
   const characterFiles = {
@@ -108,17 +124,19 @@
 
   async function loadStory() {
     try {
-      const [storyResponse, casesResponse, mission2Response, mission3Response] = await Promise.all([
+      const [storyResponse, casesResponse, mission2Response, mission3Response, mission4Response] = await Promise.all([
         fetch("./data/prologue.json"),
         fetch("./data/cases.json"),
         fetch("./data/mission2.json"),
-        fetch("./data/mission3.json")
+        fetch("./data/mission3.json"),
+        fetch("./data/mission4.json")
       ]);
-      if (!storyResponse.ok || !casesResponse.ok || !mission2Response.ok || !mission3Response.ok) throw new Error("教材資料載入失敗");
+      if (!storyResponse.ok || !casesResponse.ok || !mission2Response.ok || !mission3Response.ok || !mission4Response.ok) throw new Error("教材資料載入失敗");
       state.story = await storyResponse.json();
       state.cases = await casesResponse.json();
       state.mission2 = await mission2Response.json();
       state.mission3 = await mission3Response.json();
+      state.mission4 = await mission4Response.json();
     } catch (error) {
       console.error(error);
       elements.home.querySelector(".home-note").textContent = "教材資料載入失敗。請使用本機 HTTP 伺服器預覽。";
@@ -452,7 +470,12 @@
     document.querySelector("#case-summary").textContent = caseData.completion;
     showScreen(elements.end);
     const briefing = document.querySelector(".next-case-briefing");
-    briefing.classList.remove("is-alerting");
+    briefing.classList.remove("is-alerting", "is-alerted");
+    briefing.onanimationend = (event) => {
+      if (event.animationName !== "briefing-alert") return;
+      briefing.classList.remove("is-alerting");
+      briefing.classList.add("is-alerted");
+    };
     window.requestAnimationFrame(() => briefing.classList.add("is-alerting"));
   }
 
@@ -735,6 +758,179 @@
     elements.mission3Hint.textContent = "下一輪將進入親友視訊要求匯款的綜合安全挑戰。";
     elements.mission3Next.hidden = true;
     elements.mission3Tools.innerHTML = `<div class="mission-complete-card"><span>MISSION COMPLETE</span><strong>查核工具選擇所完成</strong><p>${state.mission3.completion}</p></div>`;
+    elements.continueMission4.hidden = false;
+  }
+
+  function startMission4() {
+    if (!state.mission4) return;
+    state.mission4Phase = "opening";
+    document.querySelector("#mission4-title").textContent = state.mission4.title;
+    document.querySelector(".video-call-panel")?.classList.remove("is-ended");
+    document.querySelector(".response-console")?.classList.remove("is-chapter-summary");
+    document.querySelector(".final-workspace")?.classList.remove("is-summary");
+    state.mission4Selected = [];
+    state.mission4Evidence = [];
+    elements.callerName.textContent = state.mission4.caller;
+    elements.callerMessage.textContent = state.mission4.openingMessage;
+    showScreen(elements.mission4Screen);
+    renderMission4Opening();
+  }
+
+  function renderMission4Opening() {
+    state.mission4Phase = "opening";
+    elements.mission4Phase.textContent = "通話進行中";
+    elements.mission4ActionTitle.textContent = "面對催促，先做什麼？";
+    elements.mission4Feedback.textContent = "不要因為看起來像本人，就跳過其他管道的確認。";
+    elements.mission4Hint.textContent = "高風險選擇會被安全攔截，你仍可重新判斷。";
+    elements.mission4Evidence.innerHTML = "<p>尚未取得獨立證據。</p>";
+    elements.mission4Check.hidden = true;
+    elements.mission4Complete.hidden = true;
+    renderMission4Buttons(state.mission4.opening, chooseMission4Opening);
+  }
+
+  function chooseMission4Opening(actionId) {
+    const action = state.mission4.opening.find((item) => item.id === actionId);
+    elements.mission4Feedback.textContent = action.feedback;
+    if (!action.safe) {
+      markMission4Choice(actionId, "is-danger");
+      return;
+    }
+    markMission4Choice(actionId, "is-safe");
+    [...elements.mission4Actions.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
+    window.setTimeout(() => {
+      document.querySelector(".video-call-panel").classList.add("is-ended");
+      elements.callerMessage.textContent = "通話已結束。現在請用原本可信的管道確認身分與狀況。";
+      renderMission4Verification();
+    }, 500);
+  }
+
+  function renderMission4Verification() {
+    state.mission4Phase = "verification";
+    state.mission4Selected = [];
+    state.mission4Evidence = [];
+    elements.mission4Phase.textContent = "獨立查證";
+    elements.mission4ActionTitle.textContent = "為了辨識真偽，你會進行哪兩項查證行動？";
+    elements.mission4Hint.textContent = "請選兩項；再次點選同一項可以取消。";
+    elements.mission4Check.hidden = false;
+    elements.mission4Check.disabled = true;
+    renderMission4Buttons(state.mission4.verification, toggleMission4Verification);
+  }
+
+  function toggleMission4Verification(actionId) {
+    const index = state.mission4Selected.indexOf(actionId);
+    if (index >= 0) state.mission4Selected.splice(index, 1);
+    else if (state.mission4Selected.length < 2) state.mission4Selected.push(actionId);
+    else {
+      elements.mission4Feedback.textContent = "一次先選兩項查證行動；若要更換，請先取消一項。";
+      return;
+    }
+    [...elements.mission4Actions.querySelectorAll("button")].forEach((button) => {
+      const selected = state.mission4Selected.includes(button.dataset.actionId);
+      button.classList.toggle("is-selected", selected);
+      button.classList.remove("is-danger");
+      button.setAttribute("aria-pressed", String(selected));
+    });
+    elements.mission4Check.disabled = state.mission4Selected.length !== 2;
+    elements.mission4Feedback.textContent = state.mission4Selected.length === 2
+      ? "已選兩項。執行後比較它們是否能獨立確認身分。"
+      : "至少要改用一個原本可信的聯絡管道。";
+  }
+
+  function checkMission4Verification() {
+    const actions = state.mission4Selected.map((id) => state.mission4.verification.find((item) => item.id === id));
+    const selectedIds = new Set(state.mission4Selected);
+    const hasCore = actions.some((item) => item.core);
+    const hasSupport = actions.some((item) => item.support);
+    const hasUnsafe = actions.some((item) => item.unsafe);
+    if (!hasCore || !hasSupport || hasUnsafe) {
+      const onlyIndirectSources = selectedIds.has("mutual_contact") && selectedIds.has("anti_fraud");
+      elements.mission4Feedback.textContent = onlyIndirectSources
+        ? "無法獨立確認，因可能共同親友無法提供狀況。選項已重設。"
+        : "無法獨立確認，因回撥的電話可能是詐騙的電話。選項已重設。";
+      state.mission4Selected = [];
+      [...elements.mission4Actions.querySelectorAll("button")].forEach((button) => {
+        button.classList.remove("is-selected", "is-danger");
+        button.setAttribute("aria-pressed", "false");
+      });
+      elements.mission4Check.disabled = true;
+      return;
+    }
+    state.mission4Evidence = actions;
+    elements.mission4Evidence.innerHTML = actions.map((item) => `<article><strong>${item.label}</strong><p>${item.result}</p></article>`).join("");
+    elements.mission4Feedback.textContent = "你的選項雖然有進行求證，但還需要進行最後的安全決定。";
+    renderMission4Final();
+  }
+
+  function renderMission4Final() {
+    state.mission4Phase = "final";
+    elements.mission4Phase.textContent = "安全決策";
+    elements.mission4ActionTitle.textContent = "根據查證結果，你要怎麼做？";
+    elements.mission4Hint.textContent = "不要用匯款測試對方；請選擇能停止損失並保護親友的行動。";
+    elements.mission4Check.hidden = true;
+    renderMission4Buttons(state.mission4.finalActions, chooseMission4Final);
+  }
+
+  function chooseMission4Final(actionId) {
+    const action = state.mission4.finalActions.find((item) => item.id === actionId);
+    elements.mission4Feedback.textContent = action.feedback;
+    if (!action.safe) {
+      markMission4Choice(actionId, "is-danger");
+      return;
+    }
+    markMission4Choice(actionId, "is-safe");
+    [...elements.mission4Actions.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
+    elements.mission4Hint.textContent = "請先閱讀安全提醒，4 秒後將進入全章行動總結。";
+    elements.mission4Complete.hidden = true;
+    window.setTimeout(completeMission4, 4000);
+  }
+
+  function renderMission4Buttons(actions, handler) {
+    const shuffled = [...actions];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+    }
+    elements.mission4Actions.innerHTML = "";
+    shuffled.forEach((action) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.actionId = action.id;
+      button.setAttribute("aria-pressed", "false");
+      button.textContent = action.label;
+      button.onclick = () => handler(action.id);
+      elements.mission4Actions.append(button);
+    });
+  }
+
+  function markMission4Choice(actionId, className) {
+    [...elements.mission4Actions.querySelectorAll("button")].forEach((button) => {
+      button.classList.remove("is-danger", "is-safe");
+      button.classList.toggle(className, button.dataset.actionId === actionId);
+    });
+  }
+
+  function completeMission4() {
+    document.querySelector("#mission4-title").textContent = "CH3 查核行動指揮中心";
+    elements.mission4Phase.textContent = "全章總結";
+    elements.mission4ActionTitle.textContent = "查核行動指揮中心｜全章行動總結";
+    elements.mission4Feedback.textContent = "你已完成從審視資訊、安排查核行動、選擇工具到安全決策的完整訓練。";
+    elements.mission4Hint.textContent = "面對任何可疑資訊，都可以再次運用這套查核行動。";
+    elements.mission4Complete.hidden = true;
+    document.querySelector(".response-console")?.classList.add("is-chapter-summary");
+    document.querySelector(".final-workspace")?.classList.add("is-summary");
+    elements.mission4Evidence.innerHTML = `
+      <div class="chapter-flow" aria-label="查核行動順序">
+        <article><span>先停</span><strong>審視資訊</strong><p>先停下來，不急著相信或轉傳；問誰說的、何時發布、合不合理。</p></article>
+        <b aria-hidden="true">→</b>
+        <article><span>看</span><strong>安排查核</strong><p>看清楚可疑之處與證據缺口，再決定要優先確認什麼。</p></article>
+        <b aria-hidden="true">→</b>
+        <article><span>查核</span><strong>調用工具</strong><p>依情境選用官方來源、查核平台、防詐管道或可信聯絡方式。</p></article>
+        <b aria-hidden="true">→</b>
+        <article><span>決策</span><strong>安全決策</strong><p>根據查核結果，決定停止轉傳、提醒他人、保留紀錄或通報。</p></article>
+      </div>`;
+    elements.mission4Actions.innerHTML = `<div class="final-complete-card"><span>CHAPTER COMPLETE</span><strong>數位安全守門員</strong><div class="chapter-final-reminder"><b>最後安全提醒</b><p>${state.mission4.completion}</p></div><div class="chapter-summary-actions"><button id="restart-mission4" class="secondary-button" type="button">重新挑戰綜合關卡</button><button id="restart-all" class="primary-button" type="button">回到首頁</button></div></div>`;
+    document.querySelector("#restart-mission4").addEventListener("click", startMission4);
+    document.querySelector("#restart-all").addEventListener("click", () => showScreen(elements.home));
   }
 
   function toggleSound() {
@@ -767,6 +963,9 @@
   });
   elements.mission3Check.addEventListener("click", checkMission3Tools);
   elements.mission3Next.addEventListener("click", nextMission3Case);
+  elements.continueMission4.addEventListener("click", startMission4);
+  elements.mission4Check.addEventListener("click", checkMission4Verification);
+  elements.mission4Complete.addEventListener("click", completeMission4);
   document.addEventListener("keydown", (event) => {
     if ((event.key === "Enter" || event.key === " ") && elements.story.classList.contains("is-active") && document.activeElement === document.body) {
       event.preventDefault();

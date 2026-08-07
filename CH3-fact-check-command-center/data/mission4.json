@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "title": "熟人視訊緊急求助",
+  "caller": "自稱表哥的聯絡人",
+  "openingMessage": "我出車禍了，現在不能多說！先幫我匯三萬元，拜託不要打給其他人，會來不及！",
+  "opening": [
+    { "id": "hang_up", "label": "先結束目前通話", "safe": true, "feedback": "你先離開對方持續催促的環境，重新拿回查證的主導權。" },
+    { "id": "passphrase", "label": "先詢問雙方約定的通關密語", "safe": false, "recoverable": true, "feedback": "對方可能會閃避問題，說出『現在不是問這個的時候』。這是警訊，但你仍在對方控制的通話中，應先結束通話。" },
+    { "id": "transfer", "label": "事情緊急，先匯款再確認", "safe": false, "feedback": "安全攔截：不要因為影像、聲音或催促就匯款。影像可能被偽造，匯款後很難追回。" },
+    { "id": "personal_data", "label": "提供帳號及個人資料協助處理", "safe": false, "feedback": "安全攔截：不要提供銀行帳號、驗證碼或個人資料。先結束通話，再改用可信管道查證。" }
+  ],
+  "verification": [
+    { "id": "stored_callback", "label": "撥打原本儲存的電話", "core": true, "result": "真正的表哥接起電話，表示自己很安全，也沒有要求任何人匯款。" },
+    { "id": "mutual_contact", "label": "聯絡共同親友確認狀況", "support": true, "result": "共同親友剛和表哥聯絡過，確認他沒有發生事故。" },
+    { "id": "anti_fraud", "label": "使用165全民防騙網／防詐騙諮詢專線", "support": true, "result": "165提醒：假冒親友並以事故催促匯款是常見詐騙手法，應停止聯絡與匯款。" },
+    { "id": "incoming_number", "label": "回撥來電畫面顯示的陌生號碼", "unsafe": true, "result": "回撥對方提供的號碼仍會回到可疑聯絡人，無法獨立確認身分。" }
+  ],
+  "finalActions": [
+    { "id": "stop_and_warn", "label": "不匯款，提醒家人有人冒用身分", "safe": true, "feedback": "你阻止了匯款，也讓親友提高警覺，避免可疑聯絡人繼續行騙。" },
+    { "id": "save_and_report", "label": "不匯款，保留紀錄並進行防詐諮詢", "safe": true, "feedback": "你保留可疑聯絡資訊並尋求防詐協助，有助於後續通報與保護自己。" },
+    { "id": "small_transfer", "label": "先匯少量金額測試對方反應", "safe": false, "feedback": "金額再小也不應用匯款測試身分，這會讓詐騙者確認你願意付款。" }
+  ],
+  "completion": "即使畫面和聲音很像本人，也不能只靠視訊判斷身分。先結束催促中的通話，再用原本已知的聯絡方式與其他獨立管道確認，才是可靠的防護方式。"
+}

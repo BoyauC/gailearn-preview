@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#e8e3d8">
-  <title>CH3｜查核行動指揮中心</title>
-  <link rel="stylesheet" href="./css/style.css">
+  <title>查核行動指揮中心</title>
+  <link rel="stylesheet" href="./css/style.css?v=20260807-4">
 </head>
 <body>
   <noscript>這份教材需要啟用 JavaScript 才能操作。</noscript>
@@ -243,6 +243,33 @@
             <p id="mission3-hint">四選二：點選工具即可加入或取消，不需要拖曳。</p>
             <button id="mission3-check" class="primary-button" type="button" disabled>執行查核</button>
             <button id="mission3-next" class="primary-button" type="button" hidden>下一件短案件</button>
+            <button id="continue-mission4" class="primary-button" type="button" hidden>進入綜合挑戰</button>
+          </footer>
+        </section>
+      </div>
+    </section>
+
+    <section id="mission4-screen" class="screen final-challenge-screen" aria-labelledby="mission4-title">
+      <header class="case-header final-header">
+        <div><p class="case-kicker">FINAL CHALLENGE · 安全應變</p><h2 id="mission4-title">熟人視訊緊急求助</h2></div>
+        <div id="mission4-phase" class="case-progress">通話進行中</div>
+      </header>
+      <div class="final-workspace">
+        <section class="video-call-panel" aria-label="模擬視訊通話">
+          <div class="call-status"><span></span><strong id="caller-name">自稱表哥的聯絡人</strong><b>連線不穩</b></div>
+          <div class="caller-visual" aria-hidden="true"><img src="./assets/images/video-caller-mosaic.png" alt=""><div class="signal-noise"></div><span>無視訊畫面</span></div>
+          <blockquote id="caller-message">我出車禍了，現在不能多說！先幫我匯三萬元，拜託不要打給其他人，會來不及！</blockquote>
+          <div class="pressure-signals"><span>要求立刻匯款</span><span>阻止向他人查證</span><span>影像與聲音不能單獨證明身分</span></div>
+        </section>
+        <section class="response-console" aria-labelledby="mission4-action-title">
+          <div class="response-heading"><span>你的決定</span><h3 id="mission4-action-title">面對催促，先做什麼？</h3></div>
+          <div id="mission4-evidence" class="final-evidence"><p>尚未取得獨立證據。</p></div>
+          <div id="mission4-feedback" class="safety-feedback" aria-live="polite"><strong>安全提醒</strong><p>不要因為看起來像本人，就跳過其他管道的確認。</p></div>
+          <div id="mission4-actions" class="final-actions"></div>
+          <footer class="final-footer">
+            <p id="mission4-hint">高風險選擇會被安全攔截，你仍可重新判斷。</p>
+            <button id="mission4-check" class="primary-button" type="button" hidden disabled>執行兩項查證行動</button>
+            <button id="mission4-complete" class="primary-button" type="button" hidden>完成本章任務</button>
           </footer>
         </section>
       </div>
@@ -253,6 +280,6 @@
     <strong>橫向體驗更完整</strong><span>目前仍可繼續操作。</span>
   </div>
 
-  <script src="./js/app.js" defer></script>
+  <script src="./js/app.js?v=20260807-4" defer></script>
 </body>
 </html>
