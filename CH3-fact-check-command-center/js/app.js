@@ -22,6 +22,7 @@
     mission2Judgment: null,
     mission2TransitionTimer: null,
     mission3Index: 0,
+    mission3Order: [],
     mission3Selected: [],
     mission3Solved: false,
     mission3History: [],
@@ -696,6 +697,11 @@
     if (!state.mission3) return;
     window.clearTimeout(state.mission3TransitionTimer);
     state.mission3Index = 0;
+    state.mission3Order = [...state.mission3.cases];
+    for (let index = state.mission3Order.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [state.mission3Order[index], state.mission3Order[randomIndex]] = [state.mission3Order[randomIndex], state.mission3Order[index]];
+    }
     state.mission3Selected = [];
     state.mission3Solved = false;
     state.mission3History = [];
@@ -704,7 +710,7 @@
   }
 
   function renderMission3Case() {
-    const item = state.mission3.cases[state.mission3Index];
+    const item = state.mission3Order[state.mission3Index];
     state.mission3Selected = [];
     state.mission3Solved = false;
     elements.mission3Step.textContent = String(state.mission3Index + 1);
@@ -727,7 +733,7 @@
   }
 
   function renderMission3Tools() {
-    const item = state.mission3.cases[state.mission3Index];
+    const item = state.mission3Order[state.mission3Index];
     const tools = item.options.map((id) => state.mission3.tools.find((tool) => tool.id === id));
     for (let index = tools.length - 1; index > 0; index -= 1) {
       const randomIndex = Math.floor(Math.random() * (index + 1));
@@ -767,7 +773,7 @@
   }
 
   function checkMission3Tools() {
-    const item = state.mission3.cases[state.mission3Index];
+    const item = state.mission3Order[state.mission3Index];
     const hasCore = state.mission3Selected.includes(item.core);
     const hasSupport = item.supports.some((id) => state.mission3Selected.includes(id));
     if (!hasCore || !hasSupport || state.mission3Selected.length !== 2) {
@@ -794,18 +800,18 @@
     elements.mission3Result.hidden = false;
     elements.mission3Hint.textContent = "工具能取得查核結果；最後仍要比較證據並說明判斷依據。";
     elements.mission3Check.hidden = true;
-    const isLastCase = state.mission3Index === state.mission3.cases.length - 1;
+    const isLastCase = state.mission3Index === state.mission3Order.length - 1;
     elements.mission3Next.hidden = isLastCase;
     elements.mission3Next.textContent = "下一件短案件";
     [...elements.mission3Tools.querySelectorAll("button")].forEach((button) => { button.disabled = true; });
     if (isLastCase) {
-      elements.mission3Hint.textContent = "請先閱讀 AI 引用的模擬查核結果，3 秒後進入任務總結。";
+      elements.mission3Hint.textContent = "請先閱讀這個情境的模擬查核結果，3 秒後進入任務總結。";
       state.mission3TransitionTimer = window.setTimeout(nextMission3Case, 3000);
     }
   }
 
   function nextMission3Case() {
-    if (state.mission3Index < state.mission3.cases.length - 1) {
+    if (state.mission3Index < state.mission3Order.length - 1) {
       state.mission3Index += 1;
       renderMission3Case();
       return;
