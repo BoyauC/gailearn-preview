@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102d35">
+  <title>打造我的全科 AI 學伴｜五日設計挑戰</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+  <main id="main-content" class="app" aria-live="polite">
+    <section id="cover-screen" class="screen cover-screen is-active" aria-labelledby="cover-title">
+      <div class="cover-copy">
+        <p class="eyebrow">AI COMPANION DESIGN LAB</p>
+        <h1 id="cover-title">打造我的<br><span>全科 AI 學伴</span></h1>
+        <p class="cover-lead">五天內完成參賽提案。功能要能用，也要守住資料、誠信與人的決定權。</p>
+        <div class="cover-actions">
+          <button id="new-game" class="primary-button" type="button">開始五日挑戰 <span aria-hidden="true">→</span></button>
+          <button id="continue-game" class="secondary-button" type="button" hidden>繼續上次進度</button>
+        </div>
+        <p class="cover-note">適合平板橫向操作 · 不需登入 · 進度保存在此裝置</p>
+      </div>
+      <div class="cover-lab" aria-hidden="true">
+        <div class="lab-grid"></div>
+        <div class="lab-monitor"><span>DESIGN CONTEST</span><strong>5</strong><small>DAYS LEFT</small></div>
+        <img class="cover-koko" src="./assets/characters/koko.png" alt="">
+        <img class="cover-sisi" src="./assets/characters/sisi.png" alt="">
+        <img class="cover-onick" src="./assets/characters/xingya.png?v=2" alt="">
+      </div>
+    </section>
+
+    <section id="story-screen" class="screen story-screen" aria-labelledby="story-title">
+      <header class="topbar">
+        <div class="brand" aria-hidden="true">AL</div>
+        <div class="mission-name"><p id="day-label">DAY 1／5</p><h2 id="story-title">先畫界線</h2></div>
+        <div class="metrics" aria-label="目前雙數值">
+          <div class="metric progress-metric"><span>專案進度</span><strong id="progress-value">0</strong><i><b id="progress-bar"></b></i></div>
+          <div class="metric risk-metric"><span>倫理風險</span><strong id="risk-value">20</strong><i><b id="risk-bar"></b></i></div>
+        </div>
+        <button id="settings-button" class="icon-button" type="button" aria-expanded="false" aria-controls="settings-panel">設定</button>
+      </header>
+
+      <div class="workspace">
+        <aside class="badge-rail" aria-label="五大倫理徽章">
+          <h3>倫理徽章</h3>
+          <div id="badge-list"></div>
+          <button id="log-button" class="rail-button" type="button" aria-expanded="false" aria-controls="log-panel">設計紀錄</button>
+        </aside>
+
+        <section class="stage" aria-label="AI 學伴設計實驗室場景">
+          <div class="stage-grid" aria-hidden="true"></div>
+          <div class="stage-screen" aria-hidden="true"><span id="stage-kicker">DAY BRIEFING</span><strong id="stage-display">5 DAYS LEFT</strong></div>
+          <div id="character-area" class="character-area" aria-hidden="true"></div>
+
+          <article id="intro-card" class="dialogue-card" hidden>
+            <span id="speaker-name" class="speaker-name">系統</span>
+            <p id="dialogue-text"></p>
+            <div class="dialogue-controls">
+              <button id="skip-intro" class="text-button" type="button">跳過開場</button>
+              <button id="next-dialogue" class="primary-button compact" type="button">繼續 <span aria-hidden="true">›</span></button>
+            </div>
+          </article>
+
+          <article id="event-card" class="event-card" hidden>
+            <header>
+              <p id="event-count">任務 1／5</p>
+              <h3 id="event-title"></h3>
+            </header>
+            <div id="interaction-preview" class="interaction-preview"></div>
+            <p id="event-text" class="event-text"></p>
+            <fieldset id="choice-list" class="choice-list">
+              <legend>你要怎麼設計？</legend>
+            </fieldset>
+          </article>
+
+          <article id="feedback-card" class="feedback-card" hidden tabindex="-1">
+            <div id="feedback-light" class="light-result"><span></span><strong></strong></div>
+            <div id="feedback-dialogue" class="feedback-dialogue"></div>
+            <p id="feedback-reason"></p>
+            <section class="recommendation"><strong>建議做法</strong><p id="feedback-recommendation"></p></section>
+            <div class="delta-row" aria-label="本次數值變化">
+              <span id="progress-delta"></span><span id="risk-delta"></span>
+            </div>
+            <div class="feedback-actions"><button id="feedback-next" class="primary-button" type="button">繼續設計</button></div>
+          </article>
+
+          <article id="day-summary" class="summary-card" hidden tabindex="-1">
+            <p class="eyebrow">DAY COMPLETE</p>
+            <h3 id="summary-title"></h3>
+            <p id="summary-text"></p>
+            <div class="summary-metrics"><span id="summary-progress"></span><span id="summary-risk"></span></div>
+            <button id="next-day" class="primary-button" type="button">進入下一天</button>
+          </article>
+        </section>
+
+        <aside class="status-panel" aria-label="團隊狀態">
+          <p class="panel-label">AI 學伴原型</p>
+          <div class="onick-core"><img src="./assets/characters/xingya.png?v=2" alt="星芽"><i></i></div>
+          <strong id="onick-mode">等待設定</strong>
+          <p id="objective-text">建立功能邊界卡。</p>
+          <div class="day-route" id="day-route" aria-label="五日進度"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="ending-screen" class="screen ending-screen" aria-labelledby="ending-title">
+      <div class="ending-wrap">
+        <div class="ending-copy">
+          <p class="eyebrow">DESIGN REVIEW COMPLETE</p>
+          <span id="ending-code" class="ending-code">結局 A</span>
+          <h2 id="ending-title"></h2>
+          <p id="ending-text"></p>
+          <div class="ending-metrics"><span id="ending-progress"></span><span id="ending-risk"></span></div>
+          <div id="ending-badges" class="ending-badges"></div>
+          <div class="ending-actions">
+            <button id="retry-day3" class="secondary-button" type="button">從第 3 天重試</button>
+            <button id="retry-day4" class="secondary-button" type="button">從第 4 天重試</button>
+            <button id="restart-game" class="primary-button" type="button">重新挑戰</button>
+          </div>
+        </div>
+        <div id="ending-cast" class="ending-cast" aria-hidden="true"></div>
+      </div>
+    </section>
+  </main>
+
+  <aside id="settings-panel" class="drawer" hidden aria-labelledby="settings-title">
+    <header><h2 id="settings-title">顯示設定</h2><button data-close="settings-panel" type="button">關閉</button></header>
+    <label><input id="reduce-motion" type="checkbox"> 減少動態效果</label>
+    <label><input id="high-contrast" type="checkbox"> 提高對比</label>
+    <label>文字大小 <select id="text-scale"><option value="1">標準</option><option value="1.15">放大</option><option value="1.3">最大</option></select></label>
+  </aside>
+
+  <aside id="log-panel" class="drawer log-drawer" hidden aria-labelledby="log-title">
+    <header><h2 id="log-title">設計紀錄</h2><button data-close="log-panel" type="button">關閉</button></header>
+    <ol id="history-list"></ol>
+  </aside>
+
+  <div id="live-region" class="sr-only" aria-live="polite"></div>
+  <script src="./js/app.js" defer></script>
+</body>
+</html>
