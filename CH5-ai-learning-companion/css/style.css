@@ -25,3 +25,21 @@ body.high-contrast{--panel:#fff;--paper:#fff;--ink:#10292f;--muted:#334b50;--lin
 .stage{background:radial-gradient(circle at 50% 8%,#f5dfa7 0%,#a9d2e8 43%,#d4a6b4 100%)}
 .stage-screen{border-color:rgba(255,250,241,.65);color:#fffaf1;background:rgba(112,107,104,.78)}
 .event-card,.feedback-card,.summary-card{background:rgba(255,250,241,.98)}
+
+/* 封面與前章節一致的平面手冊風格：清楚文字、實色區塊、低光暈 */
+:root{--night:#3f4829;--night2:#59653b;--panel:#f6f5ed;--paper:#fffef8;--ink:#30372b;--muted:#66705d;--line:rgba(63,72,41,.34);--coral:#c65446;--coral-dark:#98443a;--mint:#a8d59c;--mint-dark:#526337;--cyan:#cce1a0;--gold:#e2c85d;--lavender:#b9a8c8;--pink:#e5c3c2;--shadow:0 10px 24px rgba(63,72,41,.14)}
+body{background:#f6f5ed}.screen.is-active{animation:none}
+.cover-screen{background-color:#eff1df;background-image:linear-gradient(rgba(117,133,67,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(117,133,67,.18) 1px,transparent 1px);background-size:64px 64px}
+.cover-screen:before{opacity:.55;background-image:linear-gradient(90deg,transparent 0 5%,rgba(117,133,67,.08) 5% 29%,transparent 29% 71%,rgba(117,133,67,.08) 71% 95%,transparent 95%);mask-image:none}
+.cover-copy h1{color:#758543;line-height:.96;letter-spacing:-.045em;text-shadow:none}.cover-copy h1 span{color:inherit}
+.cover-subtitle{display:inline-block;margin:18px 0 0;padding:9px 15px;border-left:7px solid #758543;color:#3f4829;background:#cce1a0;font-size:clamp(24px,2.4vw,34px);font-weight:900;line-height:1.2}
+.cover-lead{margin-top:22px;color:#4f5947}.eyebrow{color:#68783c}.primary-button{background:#758543;box-shadow:none}.primary-button:hover{background:#68783c;filter:none}.secondary-button{border:2px solid #758543;color:#3f4829;background:#f6f5ed}
+.cover-lab{border:5px solid #758543;border-radius:22px;background-color:#cce1a0;background-image:linear-gradient(rgba(63,72,41,.34) 1px,transparent 1px),linear-gradient(90deg,rgba(63,72,41,.34) 1px,transparent 1px);background-size:33.333% 33.333%;box-shadow:8px 8px 0 rgba(117,133,67,.22)}
+.lab-grid{display:none}.lab-monitor{border:2px solid #758543;color:#3f4829;background:#f6f5ed}.lab-monitor strong{color:#758543}.cover-lab img{filter:none}
+.topbar{color:#fff;background:#758543}.brand{border-color:#e2c85d;color:#fff}.mission-name p{color:#e9efd2}.metric{border-color:rgba(255,255,255,.42);background:#68783c}.metric span{color:#f3f5e8}.icon-button{border-color:rgba(255,255,255,.55);background:#68783c}
+.workspace{gap:2px;background:#758543}.badge-rail,.status-panel{color:#f6f5ed;background:#3f4829}.badge-card,.rail-button{border-color:rgba(255,255,255,.3);background:#59653b}
+.stage{background:#dcebd5}.stage:after{display:none}.stage-grid{opacity:.42;background-image:linear-gradient(rgba(117,133,67,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(117,133,67,.2) 1px,transparent 1px)}
+.stage-screen{border:2px solid #758543;color:#3f4829;background:#f6f5ed}.stage-screen strong{color:#758543}
+.dialogue-card,.event-card,.feedback-card,.summary-card{border:2px solid #758543;background:#fffef8;box-shadow:6px 6px 0 rgba(117,133,67,.2);backdrop-filter:none}.dialogue-card{color:#30372b}.dialogue-card p{font-weight:700}.speaker-name{background:#758543}.choice-button{border:2px solid #d8dfc3;box-shadow:none}.choice-button:hover{border-color:#758543;transform:none}.choice-button:before{background:#758543}
+.interaction-preview{color:#3f4829;background:#e5eddf}.feedback-dialogue{border-left-color:#758543}.recommendation{background:#e5eddf}.delta-row span,.summary-metrics span,.ending-metrics span{background:#59653b}
+.onick-core:before{border-color:#a8d59c;animation:none}.ending-screen{background:#eff1df}.ending-wrap{border:3px solid #758543;background:#fffef8;box-shadow:8px 8px 0 rgba(117,133,67,.22)}
