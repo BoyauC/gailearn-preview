@@ -10,8 +10,8 @@
   const CHARACTERS = {
     system: { name: "系統", type: "none" }, host: { name: "主持人", type: "scene", file: "./assets/scenes/opening-host-stage.png" }, coco: { name: "可可", type: "image", file: "./assets/characters/koko.png" },
     jiji: { name: "吱吱", type: "image", file: "./assets/characters/jiji.png" }, sisi: { name: "思思", type: "image", file: "./assets/characters/sisi.png" },
-    onick: { name: "星芽", type: "image", file: "./assets/characters/xingya.png?v=2" }, teacher: { name: "指導老師", type: "sprite" },
-    judge: { name: "評審", type: "sprite" }, player: { name: "專案設計師", type: "none" }
+    onick: { name: "星芽", type: "image", file: "./assets/characters/xingya.png?v=2" }, teacher: { name: "指導老師", type: "scene", file: "./assets/scenes/teacher-lab-scene.png" },
+    judge: { name: "評審", type: "scene", file: "./assets/scenes/judge-final-scene.png" }, player: { name: "專案設計師", type: "none" }
   };
   const SPEAKER_KEYS = { 系統: "system", 主持人: "host", 可可: "coco", 吱吱: "jiji", 思思: "sisi", 星芽: "onick", 歐匿: "onick", 指導老師: "teacher", 評審: "judge", 玩家今日提示: "player" };
   const ENDINGS = {
@@ -44,7 +44,7 @@
     settingsButton: $("#settings-button"), logButton: $("#log-button"), historyList: $("#history-list"), live: $("#live-region"),
     reduceMotion: $("#reduce-motion"), highContrast: $("#high-contrast"), textScale: $("#text-scale"),
     endingCode: $("#ending-code"), endingTitle: $("#ending-title"), endingText: $("#ending-text"), endingProgress: $("#ending-progress"),
-    endingRisk: $("#ending-risk"), endingBadges: $("#ending-badges"), endingCast: $("#ending-cast"), retryDay3: $("#retry-day3"), retryDay4: $("#retry-day4"), restart: $("#restart-game")
+    endingRisk: $("#ending-risk"), endingProgressBar: $("#ending-progress-bar"), endingRiskBar: $("#ending-risk-bar"), endingBadges: $("#ending-badges"), endingCast: $("#ending-cast"), retryDay3: $("#retry-day3"), retryDay4: $("#retry-day4"), restart: $("#restart-game")
   };
 
   function blankState() {
@@ -281,9 +281,11 @@
     showScreen(elements.ending);
     const id = state.endingId || determineEnding(), ending = ENDINGS[id];
     elements.endingCode.textContent = `結局 ${id}`; elements.endingTitle.textContent = ending[0]; elements.endingText.textContent = ending[1];
-    elements.endingProgress.textContent = `專案進度 ${state.projectProgress}`; elements.endingRisk.textContent = `倫理風險 ${state.ethicalRisk}`;
-    elements.endingBadges.innerHTML = Object.entries(BADGES).map(([key, [, name]]) => `<span>${name}｜${badgeStatusLabel(getBadgeStatus(state.badges[key]))}</span>`).join("");
-    elements.endingCast.style.backgroundPosition = id === "F" ? "50% 0" : id === "A" ? "0 0" : "100% 0";
+    elements.endingProgress.textContent = state.projectProgress; elements.endingRisk.textContent = state.ethicalRisk;
+    elements.endingProgressBar.style.width = `${state.projectProgress}%`; elements.endingRiskBar.style.width = `${state.ethicalRisk}%`;
+    elements.endingProgressBar.dataset.level = metricLevel(state.projectProgress); elements.endingRiskBar.dataset.level = metricLevel(state.ethicalRisk);
+    elements.endingBadges.innerHTML = Object.entries(BADGES).map(([key, [, name]]) => badgeMarkup(key, name, getBadgeStatus(state.badges[key]))).join("");
+    elements.endingCast.style.backgroundImage = `url(./assets/endings/ending-${id.toLowerCase()}.png)`;
     elements.retryDay3.hidden = !state.checkpoints[3]; elements.retryDay4.hidden = !state.checkpoints[4];
   }
 
@@ -304,7 +306,7 @@
     renderTimeStrip();
     elements.objective.textContent = day.objective; elements.onickMode.textContent = onickMode();
     elements.badgeList.innerHTML = Object.entries(BADGES).map(([id, [short, name]]) => {
-      const status = getBadgeStatus(state.badges[id]); return `<button class="badge-card" type="button" data-status="${status}" aria-label="${name}：${badgeStatusLabel(status)}"><i>${short}</i><span>${name}<small>${badgeStatusLabel(status)}</small></span></button>`;
+      const status = getBadgeStatus(state.badges[id]); return badgeMarkup(id, name, status);
     }).join("");
     elements.dayRoute.innerHTML = content.days.map((item) => `<span class="${item.day < state.day ? "is-done" : item.day === state.day ? "is-current" : ""}">DAY ${item.day}｜${item.title.split("：")[0]}</span>`).join("");
   }
@@ -314,7 +316,7 @@
   function renderTimeStrip() {
     const remaining = 6 - state.day;
     elements.stageKicker.textContent = state.day === 5 ? "最後一天" : "剩餘時間";
-    elements.stageDisplay.innerHTML = `<span class="time-boxes" aria-hidden="true">${Array.from({ length: 5 }, (_, index) => `<i class="${index < remaining ? "is-full" : ""}"></i>`).join("")}</span><small>${remaining} 天</small>`;
+    elements.stageDisplay.innerHTML = `<span class="time-boxes" aria-hidden="true">${Array.from({ length: 5 }, (_, index) => `<i class="${index < remaining ? "is-full" : "is-used"}"></i>`).join("")}</span><small>${remaining} 天</small>`;
     window.requestAnimationFrame(renderDayRecord);
   }
 
@@ -340,6 +342,10 @@
 
   function getBadgeStatus(badge) { if (!badge?.active) return "inactive"; if (badge.score >= 2 && badge.cap !== "yellow") return "green"; if (badge.score <= -2) return "red"; return "yellow"; }
   function badgeStatusLabel(status) { return ({ inactive: "尚未測試", green: "綠色", yellow: "黃色", red: "紅色" })[status]; }
+  function badgeMarkup(key, name, status) {
+    const icons = { fairness: '<span class="people-ring"><i></i><i></i><i></i><i></i><i></i><i></i></span>', transparency: '<span class="badge-symbol">▣</span>', accountability: '<span class="badge-symbol">✓</span>', privacy: '<span class="badge-symbol">▤</span>', humanAgency: '<span class="badge-symbol">◉</span>' };
+    return `<span class="ethics-seal" data-status="${status}" aria-label="${name}：${badgeStatusLabel(status)}"><i class="seal-icon">${icons[key]}</i><b>${name}</b><em aria-hidden="true">${status === "inactive" ? "—" : "★"}</em></span>`;
+  }
   function setCharacter(key) {
     const character = CHARACTERS[key] || CHARACTERS.onick; elements.characterArea.innerHTML = "";
     if (character.type === "none") return;

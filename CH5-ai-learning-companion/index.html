@@ -113,7 +113,10 @@
           <span id="ending-code" class="ending-code">結局 A</span>
           <h2 id="ending-title"></h2>
           <p id="ending-text"></p>
-          <div class="ending-metrics"><span id="ending-progress"></span><span id="ending-risk"></span></div>
+          <div class="ending-metrics" aria-label="最終雙數值">
+            <div class="ending-metric progress-result"><span>專案進度</span><strong id="ending-progress"></strong><i><b id="ending-progress-bar"></b></i></div>
+            <div class="ending-metric risk-result"><span>倫理風險</span><strong id="ending-risk"></strong><i><b id="ending-risk-bar"></b></i></div>
+          </div>
           <div id="ending-badges" class="ending-badges"></div>
           <div class="ending-actions">
             <button id="retry-day3" class="secondary-button" type="button">從第 3 天重試</button>
