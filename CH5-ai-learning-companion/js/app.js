@@ -33,7 +33,7 @@
     screens: [...document.querySelectorAll(".screen")], cover: $("#cover-screen"), story: $("#story-screen"), ending: $("#ending-screen"),
     newGame: $("#new-game"), continueGame: $("#continue-game"), dayLabel: $("#day-label"), storyTitle: $("#story-title"),
     progressValue: $("#progress-value"), progressBar: $("#progress-bar"), riskValue: $("#risk-value"), riskBar: $("#risk-bar"),
-    badgeList: $("#badge-list"), stageKicker: $("#stage-kicker"), stageDisplay: $("#stage-display"), characterArea: $("#character-area"),
+    badgeList: $("#badge-list"), stage: $(".stage"), stageKicker: $("#stage-kicker"), stageDisplay: $("#stage-display"), characterArea: $("#character-area"),
     introCard: $("#intro-card"), speaker: $("#speaker-name"), dialogue: $("#dialogue-text"), nextDialogue: $("#next-dialogue"), skipIntro: $("#skip-intro"),
     eventCard: $("#event-card"), eventCount: $("#event-count"), eventTitle: $("#event-title"), eventText: $("#event-text"),
     interaction: $("#interaction-preview"), choiceList: $("#choice-list"), feedbackCard: $("#feedback-card"), feedbackLight: $("#feedback-light"),
@@ -234,12 +234,16 @@
 
   function renderSummary() {
     state.mode = "summary"; hideCards(); updateChrome();
+    elements.stage.classList.add("summary-mode");
     const day = currentDay(), start = state.dayStarts[state.day];
     elements.daySummary.hidden = false;
     elements.summaryTitle.textContent = `第 ${state.day} 天完成`;
     elements.summaryText.textContent = day.closing.find((line) => line.startsWith("日結旁白"))?.replace(/^日結旁白：?「?|」$/g, "") || "今日設計紀錄已保存。";
-    elements.summaryProgress.textContent = `專案進度 ${signed(state.projectProgress - start.projectProgress)}｜目前 ${state.projectProgress}`;
-    elements.summaryRisk.textContent = `倫理風險 ${signed(state.ethicalRisk - start.ethicalRisk)}｜目前 ${state.ethicalRisk}`;
+    const dayProgress = state.projectProgress - start.projectProgress, dayRisk = state.ethicalRisk - start.ethicalRisk;
+    elements.summaryProgress.className = `summary-metric ${dayProgress >= 0 ? "is-good" : "is-bad"}`;
+    elements.summaryRisk.className = `summary-metric ${dayRisk <= 0 ? "is-good" : "is-bad"}`;
+    elements.summaryProgress.innerHTML = `<small>專案進度</small><strong>${signed(dayProgress)}</strong><em>目前 ${state.projectProgress}</em><i><b style="width:${state.projectProgress}%"></b></i>`;
+    elements.summaryRisk.innerHTML = `<small>倫理風險</small><strong>${signed(dayRisk)}</strong><em>目前 ${state.ethicalRisk}</em><i><b style="width:${state.ethicalRisk}%"></b></i>`;
     elements.nextDay.textContent = state.day === 5 ? "查看評審結果" : "進入下一天";
     setCharacter(state.day === 5 ? "judge" : "onick");
     elements.daySummary.focus({ preventScroll: true }); save();
@@ -354,7 +358,7 @@
     const img = document.createElement("img"); img.className = "portrait"; img.src = character.file; img.alt = ""; elements.characterArea.appendChild(img);
   }
 
-  function hideCards() { clearTyping(); [elements.introCard, elements.eventCard, elements.feedbackCard, elements.daySummary].forEach((item) => { item.hidden = true; }); }
+  function hideCards() { clearTyping(); elements.stage?.classList.remove("summary-mode"); [elements.introCard, elements.eventCard, elements.feedbackCard, elements.daySummary].forEach((item) => { item.hidden = true; }); }
   function typeText(text) {
     clearTyping();
     if (state.settings.reducedMotion) { elements.dialogue.textContent = text; return; }
