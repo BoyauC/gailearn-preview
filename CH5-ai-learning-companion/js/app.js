@@ -222,6 +222,7 @@
     elements.riskDelta.textContent = `倫理風險 ${signed(state.lastDelta.r)}`;
     elements.progressDelta.className = `delta-value ${state.lastDelta.p >= 0 ? "is-good" : "is-bad"}`;
     elements.riskDelta.className = `delta-value ${state.lastDelta.r <= 0 ? "is-good" : "is-bad"}`;
+    elements.feedbackNext.textContent = state.day === 5 && state.eventIndex === dayEvents().length - 1 ? "繼續" : "繼續設計";
     setCharacter(choice.feedback?.[0]?.speaker || "onick");
     elements.live.textContent = `專案進度${spokenDelta(state.lastDelta.p)}，現在 ${state.projectProgress}。倫理風險${spokenDelta(state.lastDelta.r)}，現在 ${state.ethicalRisk}。`;
     elements.feedbackCard.focus({ preventScroll: true });
@@ -272,7 +273,7 @@
     const highRisk = has("ai_major_decision", "unsafe_high_risk_advice") && !has("high_risk_boundary_proven");
     const badgeStatus = (id) => getBadgeStatus(state.badges[id]);
     if (privacyCritical && (state.ethicalRisk >= 70 || badgeStatus("privacy") === "red" || has("data_necessity_unanswered", "unreleased_exam_uploaded"))) return "C";
-    if ((state.projectProgress >= 80 && badgeStatus("humanAgency") === "red" && learningDependency) || (has("answer_machine_positioning") && has("demo_only_no_learning_evidence"))) return "B";
+    if (state.projectProgress >= 80 && ((badgeStatus("humanAgency") === "red" && learningDependency) || (has("answer_machine_positioning") && has("demo_only_no_learning_evidence")))) return "B";
     if (hallucination && (badgeStatus("accountability") === "red" || has("hallucination_reconfirmed", "math_process_error_ignored"))) return "D";
     if (transparency || (badgeStatus("transparency") === "red" && !has("ai_use_fully_disclosed", "limitations_disclosed"))) return "E";
     const greenBadges = Object.values(state.badges).filter((badge) => getBadgeStatus(badge) === "green").length;
