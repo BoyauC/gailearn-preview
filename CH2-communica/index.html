@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>國小｜CH2｜提問魔法師｜GAILearn</title>
+  <link rel="stylesheet" href="css/style.css?v=1" />
+
+    <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0GVBHS5B6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('set', {
+      'material_id': 'ES-CH2-01',
+      'manual_chapter': 'CH2',
+      'school_level': 'elementary'
+    });
+    gtag('config', 'G-H0GVBHS5B6', {
+      'page_title': '國小｜CH2｜提問魔法師｜GAILearn',
+      'content_group': '國小互動式教材'
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <!-- 直向提示（手機方向錯誤時顯示） -->
+  <div id="orientation-overlay">
+    <div class="icon">📱</div>
+    <p>請將裝置橫向擺放<br>以獲得最佳體驗</p>
+  </div>
+
+  <!-- 通用提示 toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- 載入錯誤對話框 -->
+  <div id="load-error" style="display:none;position:fixed;inset:0;background:rgba(40,35,25,.6);z-index:9000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:18px;padding:24px;max-width:420px;text-align:center;">
+      <h3 style="color:#b65656;margin-bottom:10px;">題庫載入失敗</h3>
+      <p style="font-size:.92rem;color:#5b5853;line-height:1.6;">
+        請用本地伺服器開啟（例如 <code>python -m http.server</code>），<br>
+        瀏覽器無法直接讀取本機 CSV 檔。
+      </p>
+      <p id="load-error-detail" style="font-size:.78rem;color:#8a857d;margin-top:8px;"></p>
+    </div>
+  </div>
+
+  <div id="app">
+
+    <!-- ═════ 頂部 HUD（遊戲中顯示） ═════ -->
+    <div class="top-bar" id="top-bar" style="display:none;">
+      <div class="chapter-tag">📗 提問魔法師</div>
+      <div class="hud-chips">
+        <div class="chip">⭐ 得分 <strong id="score-val">0</strong></div>
+        <div class="chip">🎬 情境 <strong id="scene-count">1 / 3</strong></div>
+      </div>
+    </div>
+
+    <!-- ═════ 進度條（遊戲中顯示） ═════ -->
+    <div class="progress-row" id="progress-row" style="display:none;"></div>
+
+    <!-- ═════ 主要內容區 ═════ -->
+    <div class="main-area">
+
+      <!-- ───── 0：開始 / 遊戲說明頁 ───── -->
+      <section class="screen active" id="screen-start">
+        <div class="start-card">
+          <h1 class="start-title">🪄 提問魔法師</h1>
+          <p class="start-subtitle">怎麼和 AI 溝通？AI 才能真的「聽懂」並幫到你</p>
+
+          <div class="start-section-title">遊戲怎麼玩？</div>
+          <div class="flow-grid">
+            <div class="flow-step">
+              <div class="num">1</div>
+              <div class="label">選一位 AI 學習夥伴</div>
+              <div class="desc">每位夥伴的個性與題目風格都不一樣</div>
+            </div>
+            <div class="flow-step">
+              <div class="num">2</div>
+              <div class="label">看情境並選最佳提問</div>
+              <div class="desc">情境題會告訴你遇到的學習困難</div>
+            </div>
+            <div class="flow-step">
+              <div class="num">3</div>
+              <div class="label">查看 AI 回應與評分</div>
+              <div class="desc">了解為什麼這個提問方式最有效</div>
+            </div>
+            <div class="flow-step">
+              <div class="num">4</div>
+              <div class="label">完成 3 個情境</div>
+              <div class="desc">最後得到學習回饋總結</div>
+            </div>
+          </div>
+
+          <div class="start-section-title">計分與規則</div>
+          <div class="rules-list">
+            <div class="rule-item">
+              <span class="icon">🎯</span>
+              <span>每個情境會出現 <strong>2～3 個</strong>提問選項，其中只有一個是最佳答案。</span>
+            </div>
+            <div class="rule-item">
+              <span class="icon">🌟</span>
+              <span>第一次就答對得 <strong>2 分</strong>，第二次答對得 <strong>1 分</strong>。</span>
+            </div>
+            <div class="rule-item">
+              <span class="icon">💪</span>
+              <span>答錯時會出現「再加油」鼓勵語並 <strong>提供再一次機會</strong>，仔細想想再選。</span>
+            </div>
+            <div class="rule-item">
+              <span class="icon">📊</span>
+              <span>三個情境結束後，會看到 <strong>學習回饋總結</strong>，幫你把秘訣記起來。</span>
+            </div>
+          </div>
+
+          <div class="start-btn-wrap">
+            <button class="btn-primary" id="btn-start">開始挑戰</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── 1：選擇 AI 學習夥伴 ───── -->
+      <section class="screen" id="screen-char">
+        <div class="char-heading">
+          <h2>選一位 AI 學習夥伴</h2>
+          <p>每位夥伴擁有不同的個性，提供的情境風格也不同</p>
+        </div>
+        <div class="char-grid" id="char-grid"></div>
+
+        <div class="char-confirm-row">
+          <button class="btn-ghost" id="btn-back-start">← 回說明</button>
+          <button class="btn-primary" id="btn-confirm-char" disabled>請先選一位夥伴</button>
+        </div>
+      </section>
+
+      <!-- ───── 2：場景介紹 ───── -->
+      <section class="screen" id="screen-scene">
+        <div class="scene-card">
+          <span class="scene-badge" id="scene-badge">情境 1 / 3</span>
+          <div class="scene-title-row">
+            <span class="scene-icon-big" id="scene-icon-big">📚</span>
+            <div class="scene-title" id="scene-title">情境標題</div>
+          </div>
+          <div class="scene-mission-label">📝 你遇到的狀況</div>
+          <div class="scene-mission" id="scene-mission">情境描述內容...</div>
+
+          <div class="character-says">
+            <div class="says-avatar-wrap">
+              <img id="says-avatar" src="" alt="角色頭像" />
+            </div>
+            <div>
+              <div class="says-name" id="says-name">夥伴說：</div>
+              <div class="says-bubble" id="says-bubble">夥伴對話內容</div>
+            </div>
+          </div>
+
+          <div class="scene-actions">
+            <button class="btn-primary" id="btn-go-options">選擇提問方式 →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── 3：選項與回饋 ───── -->
+      <section class="screen" id="screen-options">
+        <div class="opt-header">
+          <span class="icon" id="opt-icon">📚</span>
+          <div>
+            <div class="label" id="opt-badge">情境 1 / 3</div>
+            <div class="text" id="opt-mission">情境描述</div>
+          </div>
+        </div>
+
+        <p class="opt-question">哪一個 <strong>提問方式</strong> 能讓 AI 最精準地幫到你？</p>
+
+        <div class="options-list" id="options-list"></div>
+
+        <div class="feedback-area" id="feedback-area"></div>
+        <div class="action-row" id="action-row"></div>
+      </section>
+
+      <!-- ───── 4：結算 ───── -->
+      <section class="screen" id="screen-end">
+        <div class="end-card">
+          <div class="end-trophy" id="end-trophy">🏆</div>
+          <div class="end-title" id="end-title">挑戰完成！</div>
+          <div class="end-score-big" id="end-score-big">0 <span>/ 6 分</span></div>
+          <div class="end-msg" id="end-msg"></div>
+
+          <div class="end-summary" id="end-summary"></div>
+
+          <div class="end-tips">
+            <h4>✨ 提問三大秘訣</h4>
+            <ol>
+              <li>說明你的 <strong>身份或年級</strong>，讓 AI 知道用什麼程度回答</li>
+              <li>說清楚你要的 <strong>格式、字數或目標</strong>，AI 才能精準幫忙</li>
+              <li>限定 AI <strong>給方向而不是代寫</strong>，學習才會留在你身上</li>
+            </ol>
+          </div>
+
+          <div class="end-btn-row">
+            <button class="btn-primary" id="btn-retry-end">換一位夥伴 ↻</button>
+            <button class="btn-ghost" id="btn-exit-end">回說明頁</button>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /main-area -->
+  </div><!-- /app -->
+
+  <script src="js/csv-parser.js?v=1"></script>
+  <script src="js/data-fallback.js?v=1"></script>
+  <script src="js/game.js?v=1"></script>
+
+  <!-- iframe 高度同步（保留與其他章節相同的整合方式） -->
+  <script>
+    (function () {
+      function rh() {
+        try {
+          window.parent.postMessage({ type: 'iframeHeight', height: document.documentElement.scrollHeight }, '*');
+        } catch (e) {}
+      }
+      rh();
+      window.addEventListener('resize', rh);
+    })();
+  </script>
+</body>
+</html>

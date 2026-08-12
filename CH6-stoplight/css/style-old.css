@@ -1,0 +1,519 @@
+/* =========================================================
+   AI 三色燈判斷遊戲 — 視覺樣式
+   - Mobile / 平板 first
+   - Basic 關卡：溫暖、安心（奶油、桃色、米色）
+   - Advanced 關卡：活潑、挑戰感（藍紫 / 珊瑚）
+   ========================================================= */
+
+/* ---------- 全域變數：Basic (預設) ---------- */
+:root {
+  --bg-1: #FFF4E3;
+  --bg-2: #FFE1C4;
+  --card-bg: #ffffffee;
+  --card-shadow: 0 8px 24px rgba(180, 120, 60, 0.18);
+  --text: #5B3A29;
+  --text-soft: #8a6a55;
+  --primary: #F28E3B;
+  --primary-dark: #D97520;
+  --accent: #E6B77D;
+  --chip-bg: #fff;
+  --chip-text: #7a5036;
+  --ring: rgba(242, 142, 59, 0.3);
+
+  /* 燈色（跨關卡共用） */
+  --red:    #E63946;
+  --red-d:  #B11D2A;
+  --yellow: #F4C430;
+  --yellow-d:#C99400;
+  --green:  #2EB67D;
+  --green-d:#1B8458;
+
+  --star-gold:#FFD24D;
+  --star-gray:#D9D2C5;
+  --cup-gold: #F4B63F;
+  --cup-gray: #D0CBC1;
+}
+
+/* ---------- Advanced 關卡色系 ---------- */
+body[data-level="advanced"] {
+  --bg-1: #4B6CB7;
+  --bg-2: #182848;
+  --card-bg: #ffffffee;
+  --card-shadow: 0 10px 30px rgba(15, 25, 60, 0.45);
+  --text: #1b2340;
+  --text-soft: #4a5072;
+  --primary: #FF6B6B;
+  --primary-dark: #E04B4B;
+  --accent: #6C5CE7;
+  --chip-bg: #ffffffdd;
+  --chip-text: #2a3157;
+  --ring: rgba(255, 107, 107, 0.35);
+}
+
+/* ---------- 基礎 Reset ---------- */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  background-attachment: fixed;
+  transition: background 0.6s ease;
+}
+
+#app {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- 畫面切換 ---------- */
+.screen {
+  display: none;
+  animation: fadeUp 0.35s ease both;
+}
+.screen--active { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- 通用元件 ---------- */
+.title {
+  font-size: clamp(26px, 5vw, 36px);
+  margin: 0 0 8px 0;
+  color: var(--text);
+  line-height: 1.25;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-soft);
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  padding: 14px 22px;
+  font-size: 17px;
+  font-weight: 700;
+  border-radius: 14px;
+  cursor: pointer;
+  min-height: 48px;
+  min-width: 48px;
+  transition: transform .12s ease, box-shadow .2s ease, background .2s ease;
+  font-family: inherit;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 6px 16px var(--ring);
+}
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 2px solid var(--text-soft);
+}
+
+.chip {
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+.chip--muted { background: transparent; color: var(--text-soft); box-shadow: none; }
+.chip--score { background: #fff; color: var(--primary-dark); }
+
+.hidden { display: none !important; }
+
+/* ---------- ① 開始頁 ---------- */
+.start-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 28px 22px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  margin: auto 0;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 8px 0;
+}
+.legend-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: #fff8;
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+.legend-item strong { font-size: 16px; }
+.legend-item p { margin: 2px 0 0; font-size: 14px; color: var(--text-soft); line-height: 1.5; }
+.dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: inline-block;
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);
+}
+.dot-red    { background: var(--red); }
+.dot-yellow { background: var(--yellow); }
+.dot-green  { background: var(--green); }
+
+.note {
+  background: #fff7ea;
+  border-left: 4px solid var(--accent);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.6;
+  border-radius: 8px;
+  margin: 0;
+}
+
+/* ---------- ② 遊戲頁 ---------- */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hud-left, .hud-right {
+  display: flex; gap: 8px; align-items: center;
+}
+
+/* 倒數計時環 */
+.timer {
+  position: relative;
+  width: 52px; height: 52px;
+}
+.timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-ring__bg, .timer-ring__fg {
+  fill: none;
+  stroke-width: 3.5;
+}
+.timer-ring__bg { stroke: #ffffff55; }
+.timer-ring__fg {
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+body[data-level="advanced"] .timer-ring__fg { stroke: #FFE066; }
+.timer-ring__fg.warn { stroke: #FF6B6B !important; }
+#timer-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 題目卡 */
+.scenario-card {
+  background: var(--card-bg);
+  border-radius: 22px;
+  padding: 22px 20px;
+  box-shadow: var(--card-shadow);
+  min-height: 180px;
+  max-height: 46vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.scenario-eyebrow {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-soft);
+  letter-spacing: 0.05em;
+}
+.scenario-text {
+  margin: 0;
+  font-size: clamp(18px, 3.2vw, 22px);
+  line-height: 1.7;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* 三色燈 */
+.traffic-lights {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: auto;
+  padding-bottom: 8px;
+}
+
+.light {
+  appearance: none;
+  border: none;
+  background: var(--card-bg);
+  border-radius: 22px;
+  padding: 16px 8px 14px;
+  min-height: 140px;
+  min-width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  transition: transform .12s ease, box-shadow .2s ease;
+  font-family: inherit;
+  color: var(--text);
+  touch-action: manipulation;
+}
+.light:active { transform: scale(0.96); }
+.light[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+.light-orb {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: block;
+  box-shadow:
+    inset 0 -8px 14px rgba(0,0,0,0.22),
+    inset 0 6px 10px rgba(255,255,255,0.35),
+    0 4px 10px rgba(0,0,0,0.12);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.light--red    .light-orb { background: radial-gradient(circle at 35% 30%, #ff7a85, var(--red) 55%, var(--red-d)); }
+.light--yellow .light-orb { background: radial-gradient(circle at 35% 30%, #ffe58a, var(--yellow) 55%, var(--yellow-d)); }
+.light--green  .light-orb { background: radial-gradient(circle at 35% 30%, #8ee4bf, var(--green) 55%, var(--green-d)); }
+
+.light-label {
+  font-weight: 800;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.3;
+}
+.light-label small { font-size: 12px; color: var(--text-soft); font-weight: 500; }
+
+.light.is-pulse .light-orb { animation: pulseOrb .5s ease; }
+@keyframes pulseOrb {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); box-shadow:
+    inset 0 -8px 14px rgba(0,0,0,0.22),
+    inset 0 6px 10px rgba(255,255,255,0.5),
+    0 0 20px 6px rgba(255,255,255,0.55); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- ③ 過場頁 ---------- */
+.transition-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 28px 22px;
+  box-shadow: var(--card-shadow);
+  margin: auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.transition-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- ④ 結算頁 ---------- */
+.result-card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 26px 20px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: auto 0;
+}
+.result-block {
+  background: #fff8;
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+}
+.result-block--advanced { background: linear-gradient(160deg, #fff5d6, #fde4b1); }
+.result-block--basic    { background: linear-gradient(160deg, #fff2e2, #ffe0c2); }
+.result-block h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--text);
+}
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.icon-row svg { width: 52px; height: 52px; }
+.icon-row .icon {
+  animation: pop .4s ease both;
+}
+@keyframes pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  80%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.icon-row .icon:nth-child(1) { animation-delay: 0.05s; }
+.icon-row .icon:nth-child(2) { animation-delay: 0.15s; }
+.icon-row .icon:nth-child(3) { animation-delay: 0.25s; }
+.icon-row .icon:nth-child(4) { animation-delay: 0.35s; }
+.icon-row .icon:nth-child(5) { animation-delay: 0.45s; }
+
+.caption {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font-size: 14px;
+}
+.closing {
+  text-align: center;
+  line-height: 1.7;
+  color: var(--text-soft);
+  margin: 0;
+}
+
+/* ---------- 對話框 ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 15, 10, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 100;
+  animation: overlayFade .25s ease both;
+}
+@keyframes overlayFade { from { opacity: 0; } to { opacity: 1; } }
+
+.dialog {
+  background: #fffdf8;
+  color: var(--text);
+  border-radius: 22px;
+  padding: 24px 22px 18px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  position: relative;
+  animation: dialogPop .35s cubic-bezier(.18,.89,.32,1.28) both;
+}
+/* 答對：畫面中央擴散圈 */
+#correct-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 6px solid #FFD700;
+  pointer-events: none;
+  z-index: 300;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+#correct-ring.is-active {
+  animation: ringBurst 0.7s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+}
+@keyframes ringBurst {
+  0%   { opacity: 1;   transform: translate(-50%, -50%) scale(0.2); }
+  60%  { opacity: 0.8; }
+  100% { opacity: 0;   transform: translate(-50%, -50%) scale(4.5); }
+}
+@keyframes dialogPop {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.dialog h3 {
+  margin: 6px 0 12px;
+  text-align: center;
+  font-size: 20px;
+  color: var(--primary-dark);
+}
+.dialog-badge {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #FFE8CC, #FFC48A);
+  display: grid; place-items: center;
+  font-size: 30px;
+  margin: -44px auto 4px;
+  box-shadow: 0 6px 16px rgba(217, 117, 32, 0.4);
+}
+.dialog-body {
+  line-height: 1.75;
+  font-size: 16px;
+  margin: 6px 0;
+  color: #3a2a1f;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.dialog-correct {
+  text-align: center;
+  font-weight: 700;
+  color: var(--green-d);
+  margin: 4px 0 8px;
+}
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  justify-content: center;
+}
+.dialog-foot {
+  font-size: 12px;
+  color: var(--text-soft);
+  text-align: center;
+  margin: 10px 0 0;
+}
+
+/* ---------- 大螢幕（平板以上）微調 ---------- */
+@media (min-width: 720px) {
+  #app { padding: 24px; }
+  .scenario-card { min-height: 220px; padding: 28px; }
+  .light { min-height: 170px; }
+  .light-orb { width: 80px; height: 80px; }
+  .light-label { font-size: 18px; }
+  .transition-actions { flex-direction: row; justify-content: center; }
+  .icon-row svg { width: 64px; height: 64px; }
+}
+
+/* ---------- 無障礙：尊重減少動畫 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

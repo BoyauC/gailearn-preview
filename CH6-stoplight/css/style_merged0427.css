@@ -1,0 +1,635 @@
+/* =========================================================
+   AI 三色燈判斷遊戲 — 混搭版樣式 v3
+   來源：
+     A 原版 style.css     → 燈色語義、結構排版
+     B CSS_styleGemini    → 插畫感粗邊框、硬陰影、Nunito 字型、網點背景
+     C 教材封面角色插圖   → 底色、網點、分數chip、進階卡片色
+   色彩原則：
+     ● 外層底色 #D6C9B8 + 網點 #8A7A5A：初階/進階共用（取自角色背景）
+     ● 分數 chip #C87890：初階/進階共用（取自角色蝴蝶結粉）
+     ● 初階卡片：米白 #FDF8EE + 深藍邊框 #2D4198
+     ● 進階卡片：淡橄欖綠 #C8DCA8 + 橄欖邊框 #6A8A48（取自角色身體色）
+     ● 三色燈球語義色兩版完全一致
+   移除（Vibe coding 特徵）：
+     × 模糊 box-shadow → 硬邊 0px blur
+     × 漸層背景 → 單色 + 網點紋理
+     × glassmorphism 卡片
+     × 平板無效的 hover 灰階效果
+   ========================================================= */
+
+/* =========================================================
+   1. 設計變數 (Design Tokens)
+   ========================================================= */
+:root {
+  /* 外層底色：取自角色插圖背景粉橘暖灰（初階、進階共用） */
+  --bg-outer:  #D6C9B8;
+  /* 網點色：取自角色輪廓暖棕（初階、進階共用） */
+  --dot-color: #8A7A5A;
+
+  /* 初階卡片底：米白 */
+  --bg-paper:  #FDF8EE;
+
+  /* 文字 */
+  --text-main: #2D4198;
+  --text-muted: #877666;
+
+  /* 分數 chip：取自角色蝴蝶結粉（初階、進階共用） */
+  --primary:      #C87890;
+  --primary-dark: #A85E78;
+
+  /* 三色燈（語義飽和色，兩版不變） */
+  --red:    #E63946;
+  --red-d:  #B11D2A;
+  --yellow: #F4C430;
+  --yellow-d: #C99400;
+  --green:  #2EB67D;
+  --green-d: #1B8458;
+
+  /* 結算圖示 */
+  --star-gold: #FFD24D;
+  --star-gray: #D9D2C5;
+  --cup-gold:  #F4B63F;
+  --cup-gray:  #D0CBC1;
+
+  /* 結構 */
+  --radius-card: 16px;
+  --radius-btn:  12px;
+  --border-ink:  3px solid var(--text-main);
+  --shadow-hard: 4px 4px 0px var(--text-main);
+  --shadow-light: 3px 3px 0px var(--text-main);
+}
+
+/* ── Advanced 關卡：底色/網點與初階一致，卡片換淡橄欖綠系 ── */
+body[data-level="advanced"] {
+  /* bg-outer、dot-color 不覆寫，與初階共用 */
+  --bg-paper:    #C8DCA8;   /* 淡橄欖綠，角色身體色 */
+  --text-main:   #3D5A1A;   /* 深橄欖 */
+  --text-muted:  #7A6848;   /* 暖棕 */
+  /* primary（分數chip）不覆寫，與初階共用 #C87890 */
+  --primary-dark: #A85E78;
+  --border-ink:   3px solid #6A8A48;
+  --shadow-hard:  4px 4px 0px #6A8A48;
+  --shadow-light: 3px 3px 0px #6A8A48;
+}
+
+/* =========================================================
+   2. 基礎 Reset + 排版
+   ========================================================= */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', 'Noto Sans TC', 'PingFang TC', sans-serif;
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  line-height: 1.6;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-outer);
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 0);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+  transition: background-color 0.4s ease;
+}
+
+/* 進階底色/網點與初階完全相同，無需覆寫 */
+
+#app {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   3. 畫面切換
+   ========================================================= */
+.screen { display: none; }
+.screen--active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   4. 通用文字
+   ========================================================= */
+.title {
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 900;
+  color: var(--text-main);
+  margin: 0 0 6px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.hidden { display: none !important; }
+
+/* =========================================================
+   5. 核心卡片 — 插畫感粗邊框 + 硬陰影
+   ========================================================= */
+.start-card,
+.scenario-card,
+.result-card,
+.transition-card,
+.dialog {
+  background-color: var(--bg-paper);
+  border: var(--border-ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 1.75rem;
+  position: relative;
+}
+
+/* =========================================================
+   6. 按鈕 — 實體下壓感，無模糊陰影
+   ========================================================= */
+.btn {
+  appearance: none;
+  border: var(--border-ink);
+  border-radius: var(--radius-btn);
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 900;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  min-height: 48px;
+  background-color: var(--bg-paper);
+  color: var(--text-main);
+  box-shadow: var(--shadow-hard);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  user-select: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--text-main);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-main);
+}
+
+/* =========================================================
+   7. HUD 標籤
+   ========================================================= */
+.chip {
+  background: var(--bg-paper);
+  color: var(--text-main);
+  border: var(--border-ink);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-light);
+}
+.chip--muted {
+  border: none;
+  box-shadow: none;
+  color: var(--text-muted);
+  background: transparent;
+}
+.chip--score {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* =========================================================
+   8. 開始頁
+   ========================================================= */
+.start-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  margin: auto 0;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: rgba(255,255,255,0.5);
+  border: var(--border-ink);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+}
+.legend-item strong { font-size: 15px; }
+.legend-item p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: var(--border-ink);
+  display: inline-block;
+  box-shadow: inset -3px -3px 0px rgba(0,0,0,0.18),
+              inset 2px 2px 0px rgba(255,255,255,0.25);
+}
+.dot-red    { background: var(--red); }
+.dot-yellow { background: var(--yellow); }
+.dot-green  { background: var(--green); }
+
+.note {
+  background: rgba(255,255,255,0.5);
+  border-left: 4px solid var(--text-main);
+  border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================================================
+   9. 遊戲頁
+   ========================================================= */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hud-left, .hud-right { display: flex; gap: 8px; align-items: center; }
+
+/* 倒數計時環 */
+.timer {
+  position: relative;
+  width: 52px; height: 52px;
+}
+.timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-ring__bg, .timer-ring__fg {
+  fill: none;
+  stroke-width: 3.5;
+}
+.timer-ring__bg { stroke: rgba(200,120,144,0.2); }
+.timer-ring__fg {
+  stroke: var(--primary);
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.timer-ring__fg.warn { stroke: var(--red) !important; }
+#timer-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--text-main);
+}
+
+/* 題目卡 */
+.scenario-card {
+  min-height: 160px;
+  max-height: 46vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.scenario-eyebrow {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.scenario-text {
+  margin: 0;
+  font-size: clamp(17px, 3vw, 21px);
+  line-height: 1.75;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* =========================================================
+   10. 三色燈按鈕
+   ========================================================= */
+.traffic-lights {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.light {
+  appearance: none;
+  border: var(--border-ink);
+  background-color: var(--bg-paper);
+  border-radius: var(--radius-card);
+  padding: 16px 8px 14px;
+  min-height: 140px;
+  min-width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-light);
+  /* 平板優先：預設全色常亮，不依賴 hover */
+  filter: none;
+  opacity: 1;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  font-family: inherit;
+  color: var(--text-main);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 按下時的物理下壓感（桌機滑鼠 + 平板 touch 均有效） */
+.light:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--text-main);
+}
+
+/* 作答後禁用：維持全色，僅鎖定互動 */
+.light[disabled] {
+  opacity: 1;
+  cursor: default;
+  filter: none;
+  pointer-events: none;
+}
+
+/* 進階關卡燈格底色：跟隨 --bg-paper（已覆寫為 #EFF5E0 奶綠） */
+body[data-level="advanced"] .light {
+  background-color: #EFF5E0;
+}
+
+/* 燈球：保留語義飽和色 + 插畫感內陰影立體感 */
+.light-orb {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: var(--border-ink);
+  display: block;
+  box-shadow:
+    inset -5px -5px 0px rgba(0,0,0,0.2),
+    inset 4px 4px 0px rgba(255,255,255,0.25);
+  transition: transform 0.15s ease;
+}
+
+.light--red    .light-orb { background: var(--red); }
+.light--yellow .light-orb { background: var(--yellow); }
+.light--green  .light-orb { background: var(--green); }
+
+.light-label {
+  font-weight: 900;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+.light-label small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* 答題動畫 */
+.light.is-pulse .light-orb {
+  animation: pulseOrb 0.45s ease;
+}
+@keyframes pulseOrb {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* =========================================================
+   11. 過場頁
+   ========================================================= */
+.transition-card {
+  margin: auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.transition-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================================================
+   12. 結算頁
+   ========================================================= */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: auto 0;
+}
+.result-block {
+  background: rgba(255,255,255,0.5);
+  border: var(--border-ink);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  text-align: center;
+}
+.result-block h3 { margin: 0 0 10px; font-size: 16px; color: var(--text-main); }
+
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.icon-row svg { width: 52px; height: 52px; }
+.icon-row .icon { animation: pop 0.4s ease both; }
+@keyframes pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  80%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.icon-row .icon:nth-child(1) { animation-delay: 0.05s; }
+.icon-row .icon:nth-child(2) { animation-delay: 0.15s; }
+.icon-row .icon:nth-child(3) { animation-delay: 0.25s; }
+.icon-row .icon:nth-child(4) { animation-delay: 0.35s; }
+.icon-row .icon:nth-child(5) { animation-delay: 0.45s; }
+
+.caption { margin: 6px 0 0; color: var(--text-muted); font-size: 13px; }
+.closing {
+  text-align: center;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* =========================================================
+   13. 回饋對話框
+   ========================================================= */
+.overlay {
+  /* fixed 由 game.js 控制顯示，保持原邏輯 */
+  position: fixed;
+  inset: 0;
+  background: rgba(20,15,10,0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 100;
+  animation: overlayFade 0.2s ease both;
+}
+@keyframes overlayFade { from { opacity: 0; } to { opacity: 1; } }
+
+.dialog {
+  background: var(--bg-paper);
+  color: var(--text-main);
+  border: var(--border-ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 24px 22px 18px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  animation: dialogPop 0.3s cubic-bezier(.18,.89,.32,1.28) both;
+}
+@keyframes dialogPop {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.dialog-badge {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--bg-paper);
+  border: var(--border-ink);
+  box-shadow: var(--shadow-light);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  margin: -48px auto 6px;
+}
+
+.dialog h3 {
+  margin: 4px 0 10px;
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-main);
+}
+
+.dialog-body {
+  line-height: 1.75;
+  font-size: 15px;
+  margin: 6px 0;
+  color: var(--text-main);
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.dialog-correct {
+  text-align: center;
+  font-weight: 900;
+  color: var(--green-d);
+  margin: 4px 0 8px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.dialog-foot {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 10px 0 0;
+}
+
+/* 答對擴散圈 */
+#correct-ring {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 5px solid var(--yellow);
+  pointer-events: none;
+  z-index: 300;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.2);
+}
+#correct-ring.is-active {
+  animation: ringBurst 0.65s cubic-bezier(0.2,0.8,0.4,1) forwards;
+}
+@keyframes ringBurst {
+  0%   { opacity: 1;   transform: translate(-50%,-50%) scale(0.2); }
+  60%  { opacity: 0.7; }
+  100% { opacity: 0;   transform: translate(-50%,-50%) scale(4); }
+}
+
+/* =========================================================
+   14. 載入錯誤提示
+   ========================================================= */
+#load-error .dialog-body code {
+  font-family: monospace;
+  background: rgba(0,0,0,0.06);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   15. 大螢幕微調
+   ========================================================= */
+@media (min-width: 720px) {
+  #app { padding: 28px; }
+  .scenario-card { min-height: 200px; padding: 24px; }
+  .light { min-height: 170px; }
+  .light-orb { width: 80px; height: 80px; }
+  .light-label { font-size: 17px; }
+  .transition-actions { flex-direction: row; justify-content: center; }
+  .icon-row svg { width: 64px; height: 64px; }
+}
+
+/* =========================================================
+   16. 無障礙：尊重減少動畫
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

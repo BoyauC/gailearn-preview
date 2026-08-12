@@ -1,0 +1,39 @@
+key,text
+app_title,AI 共創工作坊
+app_subtitle,你是創作的主人，AI 是輔助的畫筆
+stage1_intro,在這裡，AI 是你的畫筆，而你是決定畫什麼的藝術家。
+stage1_button,開始體驗
+stage2_title,挑選 4 個關鍵字
+stage2_hint,每個區塊各挑 1 個：角色、場景、配件、心情
+stage2_btn_send,發射靈感
+stage2_onee,現在要生成的這張圖，你要做什麼用呢？
+stage2_purpose_school,學校作業
+stage2_purpose_personal,個人創作
+stage2_purpose_present,送給家人朋友
+stage2_purpose_practice,純粹練習
+stage3_title,AI 正在融合你的靈感與目標…
+stage3_subtitle,AI 並不是無中生有，它會依據你的關鍵字組合、檢索素材後再呈現。
+stage4_title,檢視 AI 的初稿
+stage4_subtitle,圖片會先以模糊狀態出現，請選擇你想要的敘述語氣。
+stage4_btn_default,直接採用
+stage4_btn_playful,😜 微調為活潑
+stage4_btn_epic,⚔️ 微調為史詩
+stage4_next,下一步：倫理檢核
+stage5_title,倫理守門員
+stage5_subtitle,完成創作前，請勾選下列正確的觀念：
+stage5_check1,我了解產出結果需明確標示有 AI 的參與
+stage5_check2,本圖由 AI 生成
+stage5_distractor,AI 創作完全屬於我，不需要說明來源
+stage5_btn,完成檢核
+stage5_pass,做得好！你落實了創作者的基本功——誠實標註。
+stage5_fail,再想想看：標註 AI 參與是負責任創作者的重要一步。
+stage6_title,你的共創成果
+stage6_hint,圖片已解除霧化，並蓋上了「本圖由 AI 生成」浮水印。
+stage6_btn_save,儲存我的作品
+stage6_btn_restart,再玩一次
+stage6_creator_label,創作者
+watermark_text,✔️ 本圖由 AI 生成 ｜ 創作者：{name}
+group_character,角色
+group_scene,場景
+group_prop,配件
+group_emotion,心情/動作
