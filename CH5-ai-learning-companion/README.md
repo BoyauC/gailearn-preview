@@ -20,9 +20,13 @@ npx --yes serve .
 - `data/events.json`：由最新版 Obsidian 劇本產生的 25 個事件與 75 個選項
 - `scripts/build-events.mjs`：從工作區劇本副本重新產生事件資料
 - `assets/characters/`：角色圖像
+- `assets/scenes/`：主持人、指導老師與評審橫式場景
+- `assets/badges/`：五大倫理徽章正式圖像
+- `assets/endings/`：A～G 七種結局的星芽圖像
 
 ## 操作與裝置
 
 - 平板橫向優先，兼容桌面、平板直向與手機。
 - 所有任務可用點擊或鍵盤操作，不需要拖曳。
+- 每次開始新挑戰會隨機排列選項；同一次挑戰重新整理後會維持原順序。
 - 支援減少動態、高對比、文字放大及本機進度保存。

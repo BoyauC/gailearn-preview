@@ -51,7 +51,7 @@
     return {
       version: 1, day: 1, eventIndex: 0, openingIndex: 0, mode: "intro", workPoints: 0, milestoneProgress: 0,
       reworkPenalty: 0, projectProgress: 0, ethicalRisk: 20, flags: {}, badges: Object.fromEntries(Object.keys(BADGES).map((id) => [id, { score: 0, active: false, cap: null }])),
-      history: [], selectedRecordDay: 1, dayStarts: { 1: { projectProgress: 0, ethicalRisk: 20 } }, checkpoints: {}, companionBonusDays: [], settings: { reducedMotion: false, highContrast: false, textScale: "1" }
+      history: [], choiceOrders: {}, selectedRecordDay: 1, dayStarts: { 1: { projectProgress: 0, ethicalRisk: 20 } }, checkpoints: {}, companionBonusDays: [], settings: { reducedMotion: false, highContrast: false, textScale: "1" }
     };
   }
 
@@ -152,13 +152,29 @@
     elements.eventText.textContent = event.eventText;
     elements.interaction.innerHTML = interactionMarkup(event);
     elements.choiceList.querySelectorAll("button").forEach((button) => button.remove());
-    event.choices.forEach((choice) => {
+    orderedChoices(event).forEach((choice, index) => {
       const button = document.createElement("button");
-      button.type = "button"; button.className = "choice-button"; button.dataset.key = choice.key; button.textContent = choice.label;
+      button.type = "button"; button.className = "choice-button"; button.dataset.key = String.fromCharCode(65 + index); button.textContent = choice.label;
       button.addEventListener("click", () => choose(choice));
       elements.choiceList.appendChild(button);
     });
     save();
+  }
+
+  function orderedChoices(event) {
+    state.choiceOrders ||= {};
+    if (!state.choiceOrders[event.id]) {
+      const ids = event.choices.map((choice) => choice.id);
+      for (let index = ids.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [ids[index], ids[swapIndex]] = [ids[swapIndex], ids[index]];
+      }
+      state.choiceOrders[event.id] = ids;
+    }
+    const byId = new Map(event.choices.map((choice) => [choice.id, choice]));
+    const ordered = state.choiceOrders[event.id].map((id) => byId.get(id)).filter(Boolean);
+    event.choices.forEach((choice) => { if (!ordered.includes(choice)) ordered.push(choice); });
+    return ordered;
   }
 
   function eventSpeaker(event) {
