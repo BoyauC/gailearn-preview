@@ -348,8 +348,8 @@
   function getBadgeStatus(badge) { if (!badge?.active) return "inactive"; if (badge.score >= 2 && badge.cap !== "yellow") return "green"; if (badge.score <= -2) return "red"; return "yellow"; }
   function badgeStatusLabel(status) { return ({ inactive: "尚未測試", green: "綠色", yellow: "黃色", red: "紅色" })[status]; }
   function badgeMarkup(key, name, status) {
-    const icons = { fairness: '<span class="people-ring"><i></i><i></i><i></i><i></i><i></i><i></i></span>', transparency: '<span class="badge-symbol">▣</span>', accountability: '<span class="badge-symbol">✓</span>', privacy: '<span class="badge-symbol">▤</span>', humanAgency: '<span class="badge-symbol">◉</span>' };
-    return `<span class="ethics-seal" data-status="${status}" aria-label="${name}：${badgeStatusLabel(status)}"><i class="seal-icon">${icons[key]}</i><b>${name}</b><em aria-hidden="true">${status === "inactive" ? "—" : "★"}</em></span>`;
+    const files = { fairness: "fairness", transparency: "transparency", accountability: "accountability", privacy: "privacy", humanAgency: "human-agency" };
+    return `<span class="ethics-seal" data-status="${status}" aria-label="${name}：${badgeStatusLabel(status)}"><i class="seal-icon"><img src="./assets/badges/${files[key]}.png" alt=""></i><b>${name}</b><em aria-hidden="true">${status === "inactive" ? "—" : "★"}</em></span>`;
   }
   function setCharacter(key) {
     const character = CHARACTERS[key] || CHARACTERS.onick; elements.characterArea.innerHTML = "";
