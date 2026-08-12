@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    
+        <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0GVBHS5B6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('set', {
+            'material_id': 'JH-CH2-01',
+            'manual_chapter': 'CH2',
+            'school_level': 'junior_high'
+        });
+        gtag('config', 'G-H0GVBHS5B6', {
+            'page_title': '國中｜CH2｜AI 提問大冒險｜GAILearn',
+            'content_group': '國中互動式教材'
+        });
+    </script>
+          
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>國中｜CH2｜AI 提問大冒險｜GAILearn</title>
+    <style>
+        /* =========================================
+           1. 顏色與全域變數設定 (柔和、明亮、科技感)
+        ========================================= */
+        :root {
+            --color-bg: #F4F7FF;         /* 網頁背景色 (極淺藍紫) */
+            --color-primary: #8892D6;    /* 柔和藍紫色 (主要按鈕、標題) */
+            --color-secondary: #FFD166;  /* 柔和黃色 (強調、星星、金牌) */
+            --color-tertiary: #FF9AA2;   /* 柔和粉色 (警告或次要按鈕) */
+            --color-quaternary: #A8E6CF; /* 薄荷綠 (成功、完成狀態) */
+            --color-text: #4A4A4A;       /* 深灰色文字 */
+            --color-white: #FFFFFF;
+            --color-gray: #E0E0E0;
+            --radius-card: 25px;         /* 卡片圓角大小 */
+            --radius-btn: 35px;          /* 按鈕圓角大小 */
+            --font-main: 'Nunito', 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+
+        /* =========================================
+           2. 基礎樣式重置與整體設定
+        ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            background-attachment: fixed;
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0 10px;
+            -webkit-user-select: none; /* 防止 iPad 上長按選取文字 */
+            user-select: none;
+            font-size: 20px; /* 基礎文字大小調大 */
+        }
+
+        /* 主容器：限制最大寬度，置中顯示，依要求調整為螢幕的 85% 大小 */
+        .container {
+            width: 85%; /* 寬度佔螢幕的 85% */
+            max-width: 1600px; /* 放寬最大寬度，讓大螢幕能大幅展開 */
+            min-height: 85vh; /* 最小高度佔螢幕的 85%，讓整體畫面更平衡 */
+            margin: 3vh auto; /* 讓容器在畫面上方留一點空間並置中 */
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            padding-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================================
+           3. 頂部標題與進度條
+        ========================================= */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 35px 20px;
+            text-align: center;
+        }
+        header h1 { font-size: 42px; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        header p { font-size: 22px; opacity: 0.9; }
+
+        .progress-container {
+            width: 90%;
+            margin: 20px auto 0;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 20px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--color-secondary);
+            width: 0%;
+            transition: width 0.5s ease-in-out;
+            border-radius: 20px;
+        }
+
+        .creator-info-method1 {
+            text-align: right;    /* 這是讓文字靠右對齊的關鍵 */
+    
+        /* 以下是建議搭配的樣式，你可以視需求調整 */
+            color: #ffffff;       /* 設定你剛剛想要的白色字體 */
+            font-size: 0.8em;     /* 設定稍微縮小的字體，視覺上更和諧 */
+            margin-bottom: 8px;   /* 讓文字跟下方的進度條保持一點距離 */
+            padding-right: 10px;  /* (可選) 如果文字太貼齊右邊緣，可以加一點內距 */
+        }
+
+        /* =========================================
+           4. 導覽列 (關卡切換)
+        ========================================= */
+        nav {
+            display: flex;
+            overflow-x: auto;
+            background: var(--color-white);
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            -webkit-overflow-scrolling: touch; /* iPad 滑動順暢 */
+        }
+        nav button {
+            flex: 0 0 auto;
+            background: none;
+            border: 3px solid transparent;
+            padding: 15px 25px;
+            margin: 0 8px;
+            border-radius: var(--radius-btn);
+            font-size: 20px; /* 導覽列字體放大 */
+            font-weight: bold;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        nav button.active {
+            background-color: var(--color-quaternary);
+            color: #2b7a5a;
+            border-color: #75c9aa;
+        }
+        nav button:hover:not(.active) { background-color: var(--color-bg); }
+        nav::-webkit-scrollbar { display: none; }
+
+        /* =========================================
+           5. 主要內容區塊與卡片設計
+        ========================================= */
+        .content-area { 
+            padding: 50px; /* 加大內容區塊內距，適應大螢幕 */
+            flex-grow: 1; /* 自動填滿剩餘高度 */
+        }
+        .section { display: none; animation: fadeIn 0.5s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { color: var(--color-primary); margin-bottom: 25px; font-size: 36px; text-align: center; } /* 標題放大 */
+        .intro-text { text-align: center; font-size: 22px; margin-bottom: 30px; color: #666; } /* 說明文字放大 */
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 卡片寬度加寬 */
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: var(--color-white);
+            border: 4px solid var(--color-gray);
+            border-radius: var(--radius-card);
+            padding: 30px; /* 增加內距 */
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        .card:hover { transform: translateY(-8px); border-color: var(--color-primary); }
+        .card.selected {
+            border-color: var(--color-secondary);
+            background-color: #FFFDF5;
+            box-shadow: 0 0 20px rgba(255, 209, 102, 0.6);
+        }
+        .card-icon { font-size: 80px; margin-bottom: 15px; } /* emoji圖示放大 */
+        .card h3 { font-size: 26px; margin-bottom: 10px; }
+        .card p { font-size: 20px; color: #666; }
+
+        /* =========================================
+           6. 快速點選按鈕與元件 (降低打字量)
+        ========================================= */
+        .quick-badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 12px 0 20px 0;
+            padding: 15px;
+            background: #f7f9fc;
+            border-radius: 15px;
+        }
+        .quick-badge {
+            background-color: var(--color-white);
+            border: 2px solid var(--color-primary);
+            color: var(--color-text);
+            padding: 12px 20px; /* 快速輸入按鈕放大 */
+            border-radius: 30px;
+            font-size: 18px; /* 快速輸入文字放大 */
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-badge:hover {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        .quick-badge.active {
+            background-color: var(--color-quaternary);
+            border-color: #75c9aa;
+            color: #2b7a5a;
+        }
+
+        .form-group { margin-bottom: 30px; background: #fff; padding: 25px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 12px; color: var(--color-primary); font-size: 22px; } /* 標籤文字放大 */
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 15px 20px; /* 輸入框內距放大 */
+            border: 3px solid var(--color-gray);
+            border-radius: 15px;
+            font-size: 20px; /* 輸入框文字放大 */
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background-color: #fafafa;
+        }
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            background-color: var(--color-white);
+        }
+        textarea { min-height: 150px; }
+
+        /* 遊戲按鈕 */
+        .btn-primary {
+            display: block;
+            width: 100%;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 20px; /* 按鈕內距放大 */
+            font-size: 26px; /* 按鈕文字放大 */
+            font-weight: bold;
+            border-radius: var(--radius-btn);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(136, 146, 214, 0.4); }
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: #8c6b00;
+            border: none;
+            padding: 15px 30px;
+            border-radius: var(--radius-btn);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* =========================================
+           7. 關卡專屬趣味拼圖/連連看/記憶卡樣式
+        ========================================= */
+        /* 結果顯示區 */
+        .result-box {
+            background-color: #F8F9FA;
+            border-left: 8px solid var(--color-secondary);
+            padding: 25px;
+            border-radius: 0 20px 20px 0;
+            margin-top: 25px;
+            font-size: 22px; /* 輸出結果文字放大 */
+            white-space: pre-wrap;
+            display: none;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: var(--color-quaternary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        /* 第三關：情境追問配對 */
+        .scenario-box {
+            background: #FFF;
+            border: 3px solid #E0E0E0;
+            border-radius: var(--radius-card);
+            padding: 25px; /* 內距放大 */
+            margin-bottom: 25px;
+        }
+        .scenario-box h3 { font-size: 24px; margin-bottom: 10px; }
+        .scenario-box p { font-size: 18px; }
+        .scenario-box.correct {
+            border-color: var(--color-quaternary);
+            background-color: #F0FFF9;
+        }
+        .option-select {
+            margin-top: 15px;
+            background-color: #FFFDF5;
+            border: 3px dashed var(--color-secondary);
+        }
+
+        /* 第五關：翻牌記憶遊戲 */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px auto;
+            max-width: 800px; /* 記憶卡片遊戲區塊放大 */
+        }
+        .memory-card {
+            aspect-ratio: 1;
+            background-color: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px; /* 記憶卡文字放大 */
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            padding: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .memory-card.flipped {
+            background-color: var(--color-secondary);
+            color: #5d4300;
+            transform: rotateY(0deg);
+        }
+        .memory-card.matched {
+            background-color: var(--color-quaternary) !important;
+            color: #1e5a42 !important;
+            cursor: default;
+        }
+        
+        .checkbox-item { font-size: 20px; margin-bottom: 15px; display: flex; align-items: center; }
+        .checkbox-item input { width: 30px; height: 30px; margin-right: 15px; }
+
+        /* 第六關：偵探任務設計 */
+        .detective-case {
+            background: #FFF;
+            border: 4px solid var(--color-primary);
+            border-radius: var(--radius-card);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .case-title {
+            background: var(--color-primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 22px; /* 偵探標題放大 */
+        }
+
+        /* 總結卡片 */
+        .summary-box { background: #fff; border: 3px dashed var(--color-primary); padding: 30px; border-radius: 25px; margin-bottom: 30px; font-size: 20px; }
+        .summary-item { margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .summary-item h4 { color: var(--color-primary); margin-bottom: 10px; font-size: 24px; }
+
+        /* =========================================
+           8. 提示訊息 (Toast)
+        ========================================= */
+        #toast {
+            visibility: hidden;
+            min-width: 350px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 40px;
+            padding: 20px 30px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-50%);
+            font-size: 22px; /* Toast文字放大 */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        /* 響應式微調 (避免小螢幕破版) */
+        @media (max-width: 800px) {
+            .container { width: 95%; } 
+            .memory-game { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+            .content-area { padding: 25px; }
+            body { font-size: 16px; }
+            header h1 { font-size: 32px; }
+            .btn-primary { font-size: 20px; }
+            .card-icon { font-size: 60px; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 頂部標題與進度條 -->
+     <header>
+            <h1>🎮 Prompt Quest 🤖</h1>
+            <p>用 RTBF 公式，完成你的 AI 素養闖關任務</p>
+            
+            <div class="creator-info-method1">
+                 臺北市立陽明高級中學國中部 陳政川教師 提供
+            </div>
+                       
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+        </header>
+
+    <!-- 關卡導覽列 -->
+    <nav id="topNav">
+        <button onclick="navTo('home')" class="active">首頁</button>
+        <button onclick="navTo('level1')">關卡一</button>
+        <button onclick="navTo('level2')">關卡二</button>
+        <button onclick="navTo('level3')">關卡三</button>
+        <button onclick="navTo('level4')">關卡四</button>
+        <button onclick="navTo('level5')">關卡五</button>
+        <button onclick="navTo('level6')">關卡六</button>
+        <button onclick="navTo('summary')">任務卡</button>
+    </nav>
+
+    <div class="content-area">
+        <!-- ================= 首頁 ================= -->
+        <div id="home" class="section active">
+            <h2>歡迎來到 AI 提問冒險！</h2>
+            <div style="text-align: center; font-size: 24px; line-height: 1.8;">
+                <p>準備好掌握與 AI 溝通的魔法了嗎？</p>
+                <p>這是一個專為國中生設計的零壓力免打字提問闖關！</p>
+                <p>點選魔法方塊，輕鬆解鎖「AI 小偵探徽章」吧！</p>
+                <br>
+                <div style="font-size: 80px; margin: 25px 0;">🗺️ ⚙️ 🗣️ 🖼️ ✍️ 🕵️‍♂️</div>
+                <button class="btn-primary" onclick="navTo('level1')" style="max-width: 400px; margin: 0 auto;">開啟探險 🚀</button>
+                <br>
+                <button class="btn-secondary" onclick="resetAllData()" style="background: #ffcccc; color: #cc0000; font-size: 18px; padding: 10px 25px;">⚠️ 重置所有資料</button>
+            </div>
+        </div>
+
+        <!-- ================= 第一關：任務選擇 ================= -->
+        <div id="level1" class="section">
+            <h2>第一關：選擇你的冒險路線 🗺️</h2>
+            <p class="intro-text">請點擊卡片，選擇一個你想挑戰的角色。這會決定後續關卡推薦給你的神奇咒語按鈕喔！</p>
+            <div class="card-grid">
+                <div class="card" id="card-game" onclick="selectRole('🎮 遊戲玩家：AI 角色鍛造師', 'card-game')">
+                    <div class="card-icon">🎮</div>
+                    <h3>遊戲玩家</h3>
+                    <p>AI 角色鍛造師</p>
+                </div>
+                <div class="card" id="card-art" onclick="selectRole('🎨 創作愛好者：故事角色設計師', 'card-art')">
+                    <div class="card-icon">🎨</div>
+                    <h3>創作愛好者</h3>
+                    <p>故事角色設計師</p>
+                </div>
+                <div class="card" id="card-study" onclick="selectRole('📚 學習高手：AI 學習解謎員', 'card-study')">
+                    <div class="card-icon">📚</div>
+                    <h3>學習高手</h3>
+                    <p>AI 學習解謎員</p>
+                </div>
+            </div>
+            <p id="role-msg" style="text-align: center; font-weight: bold; color: var(--color-primary); min-height: 30px; font-size: 24px;"></p>
+            <button class="btn-primary" onclick="navTo('level2')">前往下一關 ➡️</button>
+        </div>
+
+        <!-- ================= 第二關：RTBF 組裝機 ================= -->
+        <div id="level2" class="section">
+            <h2>第二關：RTBF Prompt 組裝機 ⚙️</h2>
+            <p class="intro-text">給 AI 清楚的指令，就像念咒語一樣！點選下方系統為你準備的【咒語積木】，一鍵拼裝咒語！</p>
+            
+            <div class="form-group">
+                <label>R (Role) 角色：請 AI 扮演誰？</label>
+                <input type="text" id="rtbf-r" placeholder="可自行修改..." oninput="saveData()">
+                <div class="quick-badge-container" id="r-badges"></div>
+            </div>
+            <div class="form-group">
+                <label>T (Task) 任務：要 AI 幫你做什麼？</label>
+                <input type="text" id="rtbf-t" placeholder="可自行修改..." oninput="saveData()">
+                <div class="quick-badge-container" id="t-badges"></div>
+            </div>
+            <div class="form-group">
+                <label>B (Background) 背景：補充情境與限制</label>
+                <input type="text" id="rtbf-b" placeholder="可自行修改..." oninput="saveData()">
+                <div class="quick-badge-container" id="b-badges"></div>
+            </div>
+            <div class="form-group">
+                <label>F (Format) 格式：希望 AI 怎麼輸出？</label>
+                <input type="text" id="rtbf-f" placeholder="可自行修改..." oninput="saveData()">
+                <div class="quick-badge-container" id="f-badges"></div>
+            </div>
+            
+            <button class="btn-primary" onclick="generateRTBF()">✨ 生成我的 RTBF Prompt</button>
+            
+            <div id="rtbf-result" class="result-box">
+                <button class="copy-btn" onclick="copyText('rtbf-output')">複製</button>
+                <div id="rtbf-output"></div>
+            </div>
+            <br>
+            <button class="btn-primary" onclick="navTo('level3')" style="background-color: var(--color-secondary); color: #333;">前往下一關 ➡️</button>
+        </div>
+
+        <!-- ================= 第三關：三輪追問挑戰 ================= -->
+        <div id="level3" class="section">
+            <h2>第三關：三輪追問挑戰 🗣️</h2>
+            <p class="intro-text">AI 的第一次回答往往不夠完美。試著選出最佳的【追問策略】，讓 AI 給出黃金解答！</p>
+
+            <!-- 第一輪 -->
+            <div class="scenario-box" id="scen-1">
+                <h3>第一輪：AI 的回答太籠統了，資訊不夠多！</h3>
+                <p style="color: #666; margin: 8px 0;">💡 此時應使用「具體反饋」或「深挖法」要求細節。</p>
+                <select id="q1-select" class="option-select" onchange="checkLevel3Match(1)">
+                    <option value="">-- 請選擇最適合的追問對話 --</option>
+                    <option value="1">「請你再多講一點，我想要聽故事。」(不夠具體)</option>
+                    <option value="correct">「我覺得你剛才提到的第二點很有趣，能不能針對那個部分補充具體案例？」(⭐ 具體反饋與深挖)</option>
+                    <option value="2">「謝謝你，那我再問別的喔！」(結束對話)</option>
+                </select>
+                <p id="scen-1-msg" style="margin-top: 10px; font-weight: bold;"></p>
+            </div>
+
+            <!-- 第二輪 -->
+            <div class="scenario-box" id="scen-2">
+                <h3>第二輪：想看看不同角度，或是更專業的建議！</h3>
+                <p style="color: #666; margin: 8px 0;">💡 此時最適合使用「角色切換法」。</p>
+                <select id="q2-select" class="option-select" onchange="checkLevel3Match(2)">
+                    <option value="">-- 請選擇最適合的追問對話 --</option>
+                    <option value="correct">「如果你現在是一位挑惕的評審，你會怎麼修改剛才這個提案？」(⭐ 角色切換法)</option>
+                    <option value="1">「請你當作沒說過，重新回答一次。」(重試，非角色切換)</option>
+                    <option value="2">「你覺得我的意見對不對？」(流於主觀)</option>
+                </select>
+                <p id="scen-2-msg" style="margin-top: 10px; font-weight: bold;"></p>
+            </div>
+
+            <!-- 第三輪 -->
+            <div class="scenario-box" id="scen-3">
+                <h3>第三輪：希望 AI 自動幫我們做深度的總結！</h3>
+                <p style="color: #666; margin: 8px 0;">💡 此時可採用「結構式追問法」。</p>
+                <select id="q3-select" class="option-select" onchange="checkLevel3Match(3)">
+                    <option value="">-- 請選擇最適合的追問對話 --</option>
+                    <option value="1">「請幫我縮短，越短越好。」(流失深度)</option>
+                    <option value="2">「直接給我結論，不用廢話。」(過於簡略)</option>
+                    <option value="correct">「請將以上的討論整理成一個比較優缺點的表格，並提供下一步的具體建議。」(⭐ 結構深度整理)</option>
+                </select>
+                <p id="scen-3-msg" style="margin-top: 10px; font-weight: bold;"></p>
+            </div>
+
+            <button class="btn-primary" onclick="navTo('level4')">前往下一關 ➡️</button>
+        </div>
+
+        <!-- ================= 關卡四：圖像 Prompt 魔法工坊 ================= -->
+        <div id="level4" class="section">
+            <h2>第四關：圖像 Prompt 魔法工坊 🖼️</h2>
+            <p class="intro-text">像點選裝備一樣，點擊下方的屬性卡片，一秒拼湊出大師級的圖像詠唱詞！</p>
+
+            <div class="form-group">
+                <label>👾 角色外觀：</label>
+                <input type="text" id="img-appearance" placeholder="請點選下方按鈕或手動輸入..." oninput="saveData()">
+                <div class="quick-badge-container">
+                    <span class="quick-badge" onclick="setImgField('img-appearance', '一個閃爍藍色光芒的未來機器人')">🤖 藍光機器人</span>
+                    <span class="quick-badge" onclick="setImgField('img-appearance', '一隻穿著魔法長袍的可愛橘貓')">🐱 魔法橘貓</span>
+                    <span class="quick-badge" onclick="setImgField('img-appearance', '一位神氣十足的太空探險家')">🧑‍🚀 太空探險家</span>
+                    <span class="quick-badge" onclick="setImgField('img-appearance', '一頭在雲朵上奔跑的發光獨角獸')">🦄 雲朵獨角獸</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>👘 服裝與道具：</label>
+                <input type="text" id="img-clothes" placeholder="請點選下方按鈕或手動輸入..." oninput="saveData()">
+                <div class="quick-badge-container">
+                    <span class="quick-badge" onclick="setImgField('img-clothes', '穿著亮面金屬盔甲，拿著激光劍')">🛡️ 金屬盔甲與雷射劍</span>
+                    <span class="quick-badge" onclick="setImgField('img-clothes', '頭戴星光王冠，披著發光的紅色披風')">👑 星光王冠與披風</span>
+                    <span class="quick-badge" onclick="setImgField('img-clothes', '背著裝滿彩色水晶的魔法背包')">🎒 魔法水晶背包</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>🎬 動作與表情：</label>
+                <input type="text" id="img-expression" placeholder="請點選下方按鈕或手動輸入..." oninput="saveData()">
+                <div class="quick-badge-container">
+                    <span class="quick-badge" onclick="setImgField('img-expression', '充滿自信地微笑，高舉右手')">😎 自信微笑舉手</span>
+                    <span class="quick-badge" onclick="setImgField('img-expression', '驚奇地睜大眼睛，認真讀著一本發光的古書')">📖 驚訝看發光書</span>
+                    <span class="quick-badge" onclick="setImgField('img-expression', '開心地跳躍在空中，背景有彩虹')">🌈 開心騰空跳躍</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>🌌 背景場景：</label>
+                <input type="text" id="img-bg" placeholder="請點選下方按鈕或手動輸入..." oninput="saveData()">
+                <div class="quick-badge-container">
+                    <span class="quick-badge" onclick="setImgField('img-bg', '漂浮在繁星點點的賽博龐克未來霓虹都市中')">🌃 霓虹未來都市</span>
+                    <span class="quick-badge" onclick="setImgField('img-bg', '在一座長滿發光巨大蘑菇的奇幻森林裡')">🌲 奇幻蘑菇森林</span>
+                    <span class="quick-badge" onclick="setImgField('img-bg', '漂浮在半空中、由粉紅雲朵組成的天空城堡')">🏰 粉紅雲朵城堡</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>🎨 圖像風格：</label>
+                <input type="text" id="img-style" placeholder="請點選下方按鈕或手動輸入..." oninput="saveData()">
+                <div class="quick-badge-container">
+                    <span class="quick-badge" onclick="setImgField('img-style', '3D 皮克斯動畫風格，色彩溫暖飽和')">🧸 皮克斯3D風</span>
+                    <span class="quick-badge" onclick="setImgField('img-style', '新海誠日系動漫風格，具有極美的手繪光效')">☄️ 日系新海誠風</span>
+                    <span class="quick-badge" onclick="setImgField('img-style', '懷舊復古 8-bit 像素遊戲美術風格')">👾 復古像素風</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>📐 圖片比例：</label>
+                <select id="img-ratio" onchange="saveData()">
+                    <option value="--ar 16:9">16:9 (橫式大螢幕)</option>
+                    <option value="--ar 1:1">1:1 (正方形頭像)</option>
+                    <option value="--ar 9:16">9:16 (手機直式桌布)</option>
+                </select>
+            </div>
+
+            <button class="btn-primary" onclick="generateImagePrompt()">🪄 生成圖像 Prompt</button>
+            
+            <div id="img-result" class="result-box">
+                <button class="copy-btn" onclick="copyText('img-output')">複製</button>
+                <div id="img-output"></div>
+            </div>
+            <br>
+            <button class="btn-primary" onclick="navTo('level5')" style="background-color: var(--color-secondary); color: #333;">前往下一關 ➡️</button>
+        </div>
+
+        <!-- ================= 關卡五：我的成果重述 ================= -->
+        <div id="level5" class="section">
+            <h2>第五關：AI 素養翻牌對對碰 ✍️</h2>
+            <p class="intro-text">不靠打字，我們來挑戰「AI 使用觀念記憶卡」！翻開紫色卡片，並找出與它配對的薄荷綠說明卡吧！</p>
+
+            <div class="memory-game" id="memoryBoard">
+                <!-- 由 JavaScript 動態生成 8 張卡片 (4組配對) -->
+            </div>
+
+            <div style="text-align: center; margin: 25px 0;">
+                <p id="memory-status" style="font-weight: bold; color: var(--color-primary); font-size: 24px;">進度：配對成功 0/4 組</p>
+            </div>
+
+            <!-- 自動生成的成果結論區 -->
+            <div id="rewrite-section" style="display:none; transition: all 0.5s;">
+                <div style="background-color: #e8f5e9; color: #2e7d32; padding: 25px; border-radius: 20px; margin-bottom: 20px; text-align: center; font-size: 22px;">
+                    🎉 <strong>解鎖成功！已自動幫你生成學會的 AI 素養宣言：</strong>
+                </div>
+                <textarea id="rewrite-text" readonly style="height: 150px; background-color: #fff; border-color: var(--color-quaternary);">
+「我學會了正確使用 AI 的方法：不直接複製 AI 的回覆，而是用自己理解後的說法重新詮釋，並有信心能把 AI 給的資訊清晰、有邏輯地解釋給班上同學聽！」</textarea>
+            </div>
+
+            <div class="checkbox-group" style="margin-top: 25px;">
+                <label class="checkbox-item"><input type="checkbox" id="cb1" checked disabled> 我有改成自己的話</label>
+                <label class="checkbox-item"><input type="checkbox" id="cb2" checked disabled> 我看得懂自己寫的內容</label>
+                <label class="checkbox-item"><input type="checkbox" id="cb3" checked disabled> 我可以跟同學解釋一次</label>
+            </div>
+
+            <button class="btn-primary" onclick="navTo('level6')">前往下一關 ➡️</button>
+        </div>
+
+        <!-- ================= 關卡六：AI 查證偵探任務 ================= -->
+        <div id="level6" class="section">
+            <h2>第六關：AI 查證偵探任務 🕵️‍♂️</h2>
+            <p class="intro-text">AI 不一定全對，甚至有時候會胡言亂語（幻覺）。化身小偵探，破解這宗「AI 謠言案」！</p>
+
+            <div class="detective-case">
+                <span class="case-title">🔍 今日偵辦案件：草莓種子之謎</span>
+                <p style="background: #FFF9E6; padding: 20px; border-radius: 15px; margin-bottom: 25px; font-weight: bold; color: #856404; font-size: 22px; line-height: 1.6;">
+                    🚨 AI 說法：「草莓紅色的果肉其實是它的肚子，而草莓表面的黃色小顆粒是草莓的種子，所以草莓不是真正的果實。」
+                </p>
+
+                <div class="form-group">
+                    <label>🕵️ 偵探指定查證工具：</label>
+                    <select id="fc-source" onchange="checkDetectiveAnswer()">
+                        <option value="">-- 請選擇最有效的查證方法 --</option>
+                        <option value="correct">💡 對比多方權威來源 (如：自然課本、農業改良場官方網站、植物百科)</option>
+                        <option value="wrong1">📱 到社群媒體 (如：抖音、IG) 發問看大家怎麼說</option>
+                        <option value="wrong2">🤖 換另外一台 AI 再問一次，並完全相信它</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>⚖️ 偵探判決結論：</label>
+                    <select id="fc-result" onchange="checkDetectiveAnswer()">
+                        <option value="">-- 請下判決 --</option>
+                        <option value="✅ 正確">✅ 說法完全正確無誤</option>
+                        <option value="correct">⚠️ 不完整且有誤導 (紅肉是花托膨大，小顆粒是真正的「果實」而非單純種子)</option>
+                        <option value="❌ 有誤">❌ 雖然有趣但完全是胡編的</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 結案偵查說明：</label>
+                    <input type="text" id="fc-explanation" readonly placeholder="請完成上述選擇以自動產生說明..." style="background-color:#eee; font-size: 18px;">
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="navTo('summary')">完成任務！看總結 🎉</button>
+        </div>
+
+        <!-- ================= 總結頁：任務卡 ================= -->
+        <div id="summary" class="section">
+            <h2>🏆 我的 AI 素養任務卡 🏆</h2>
+            <p class="intro-text">太棒了！你完成了所有的提問冒險挑戰！</p>
+            
+            <div id="summary-content" class="summary-box" style="background-color: #fafafa;">
+                <!-- 內容由 JS 自動填入 -->
+            </div>
+
+            <button class="btn-primary" onclick="downloadTXT()">💾 下載任務卡 (TXT 檔)</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Toast 提示區 -->
+<div id="toast">提示訊息</div>
+
+<!-- =========================================
+     9. JavaScript 邏輯控制
+========================================= -->
+<script>
+    // 預設關卡狀態
+    let appData = {
+        role: '',
+        rtbf: { r: '', t: '', b: '', f: '', generated: '' },
+        q1: { text: '', matched: false },
+        q2: { text: '', matched: false },
+        q3: { text: '', matched: false },
+        img: { appearance: '', clothes: '', expression: '', bg: '', light: '', style: '', ratio: '--ar 16:9', generated: '' },
+        rewrite: { text: '', cb1: true, cb2: true, cb3: true, gameCompleted: false },
+        factcheck: { claim: '草莓紅色的果肉其實是它的肚子，而草莓表面的黃色小顆粒是草莓的種子，所以草莓不是真正的果實。', source: '', result: '', explanation: '', solved: false },
+        progress: 0
+    };
+
+    // 關卡切換清單
+    const sections = ['home', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'summary'];
+
+    // 不同角色對應的快捷積木數據
+    const roleBadges = {
+        '🎮 遊戲玩家：AI 角色鍛造師': {
+            r: ['RPG 遊戲大師', '卡牌遊戲數值策劃師', '反派角色編劇', '動漫NPC配音導演'],
+            t: ['幫我設計一個擁有雷電屬性的 Boss', '規劃一個冒險者營地的支線任務劇本', '寫出三句反派登場時的霸氣台詞', '幫我設計一套卡牌怪物的技能數值與弱點'],
+            b: ['背景為克蘇魯風格的末日世界', '限制字數在 300 字以內，語氣要中二熱血', '適合國中生遊玩的輕小說風格', '需要包含生命值、魔法值與技能詳細數值'],
+            f: ['使用精美 Markdown 表格輸出', '用一問一答的對話腳本格式呈現', '列點式 (1, 2, 3) 說明', '用 JSON 程式碼格式輸出']
+        },
+        '🎨 創作愛好者：故事角色設計師': {
+            r: ['童話故事繪本作家', '奇幻小說家', '動漫人設原畫師', '電影編劇'],
+            t: ['幫我構思一個住在蘑菇屋的精靈背景故事', '描寫一段主角初次進入魔法學院的場景', '設計一個亦正亦邪的神秘客角色台詞', '提供三個充滿冒險感的小說章節名稱'],
+            b: ['色調偏向溫暖、治癒與夢幻', '加入一些幽默的笑點，不要太嚴肅', '世界觀是蒸汽龐克與魔法共存的時代', '主角是一位剛學會飛行的膽小幼龍'],
+            f: ['以小說第一人稱視角描寫', '用條列式的視覺特徵清單', '一段 200 字的分鏡大綱', '精美的心智圖大綱格式']
+        },
+        '📚 學習高手：AI 學習解謎員': {
+            r: ['幽默的國中理化老師', '會講故事的歷史學家', '英文口說教練', '科普雜誌總編輯'],
+            t: ['幫我把「光學折射」原理用生活例子解釋', '幫我用圖像記憶法背熟「八國聯軍」歷史順序', '寫一個關於「光合作用」的趣味選擇題組', '推薦 5 個適合國一新生的科學實驗'],
+            b: ['不要使用太艱深的學術專有名詞', '對象是完全沒有基礎的國小或國一學生', '加上豐富的 Emoji 表情符號增加易讀性', '必須用幽默好笑的語氣進行說明'],
+            f: ['用 QA 對答的形式列出', '分為「名詞解釋」、「口訣」、「生活應用」三部分', '整理成重點整理表格', '用一段生動的短片腳本格式']
+        }
+    };
+
+    // =========================================
+    // 網頁初始化與資料載入
+    // =========================================
+    window.onload = function() {
+        loadData();
+        updateUIFromData();
+        updateProgress();
+        initMemoryGame();
+    };
+
+    function navTo(sectionId) {
+        document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        
+        document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+        const btnIndex = sections.indexOf(sectionId);
+        if(btnIndex !== -1) {
+            document.querySelectorAll('nav button')[btnIndex].classList.add('active');
+        }
+
+        if (sectionId === 'summary') {
+            generateSummary();
+        }
+
+        // 記錄與更新進度
+        if (btnIndex > appData.progress && btnIndex <= 6) {
+            appData.progress = btnIndex;
+            saveData();
+            updateProgress();
+        }
+    }
+
+    function updateProgress() {
+        const percent = (appData.progress / 6) * 100;
+        document.getElementById('progressBar').style.width = percent + '%';
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.innerText = message;
+        toast.className = "show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+    }
+
+    // =========================================
+    // 關卡一：選擇路線
+    // =========================================
+    function selectRole(roleName, cardId) {
+        appData.role = roleName;
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+        document.getElementById(cardId).classList.add('selected');
+        document.getElementById('role-msg').innerText = "你選擇了：" + roleName;
+        saveData();
+
+        // 根據選擇的角色更換第二關的快速積木
+        renderQuickBadges(roleName);
+        
+        showToast("角色選擇成功！解鎖你的專屬積木咒語囉 🚀");
+    }
+
+    // =========================================
+    // 關卡二：RTBF 點選組裝機
+    // =========================================
+    function renderQuickBadges(roleName) {
+        // 如果未選，預設用遊戲玩家的資料
+        const targetRole = roleName || '🎮 遊戲玩家：AI 角色鍛造師';
+        const badges = roleBadges[targetRole] || roleBadges['🎮 遊戲玩家：AI 角色鍛造師'];
+
+        const setupBadges = (containerId, list, fieldId) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            list.forEach(text => {
+                const badge = document.createElement('span');
+                badge.className = 'quick-badge';
+                badge.innerText = text;
+                badge.onclick = () => {
+                    document.getElementById(fieldId).value = text;
+                    // 標記 active
+                    container.querySelectorAll('.quick-badge').forEach(b => b.classList.remove('active'));
+                    badge.classList.add('active');
+                    saveData();
+                };
+                container.appendChild(badge);
+            });
+        };
+
+        setupBadges('r-badges', badges.r, 'rtbf-r');
+        setupBadges('t-badges', badges.t, 'rtbf-t');
+        setupBadges('b-badges', badges.b, 'rtbf-b');
+        setupBadges('f-badges', badges.f, 'rtbf-f');
+    }
+
+    function generateRTBF() {
+        appData.rtbf.r = document.getElementById('rtbf-r').value;
+        appData.rtbf.t = document.getElementById('rtbf-t').value;
+        appData.rtbf.b = document.getElementById('rtbf-b').value;
+        appData.rtbf.f = document.getElementById('rtbf-f').value;
+
+        let prompt = "";
+        if(appData.rtbf.r) prompt += `【Role 角色】請你扮演：${appData.rtbf.r}\n`;
+        if(appData.rtbf.t) prompt += `【Task 任務】你需要做：${appData.rtbf.t}\n`;
+        if(appData.rtbf.b) prompt += `【Background 背景】補充條件：${appData.rtbf.b}\n`;
+        if(appData.rtbf.f) prompt += `【Format 格式】輸出格式：${appData.rtbf.f}\n`;
+
+        if(prompt.trim() === "") {
+            showToast("請至少填寫或點選一個欄位喔！");
+            return;
+        }
+
+        appData.rtbf.generated = prompt;
+        document.getElementById('rtbf-output').innerText = prompt;
+        document.getElementById('rtbf-result').style.display = 'block';
+        saveData();
+        showToast("你的 Prompt 開始有靈魂了！積木拼裝成功！✨");
+    }
+
+    // =========================================
+    // 關卡三：三輪追問挑戰 (情境選擇與配對)
+    // =========================================
+    function checkLevel3Match(round) {
+        const selectEl = document.getElementById(`q${round}-select`);
+        const msgEl = document.getElementById(`scen-${round}-msg`);
+        const boxEl = document.getElementById(`scen-${round}`);
+
+        if (selectEl.value === 'correct') {
+            msgEl.innerHTML = "🎉 答對了！這招非常精準！點亮一星 ⭐";
+            msgEl.style.color = "#2e7d32";
+            boxEl.classList.add('correct');
+            appData['q' + round].matched = true;
+            appData['q' + round].text = selectEl.options[selectEl.selectedIndex].text;
+        } else {
+            msgEl.innerHTML = "❌ 這招還有進步空間，再想想看別招！";
+            msgEl.style.color = "#c62828";
+            boxEl.classList.remove('correct');
+            appData['q' + round].matched = false;
+            appData['q' + round].text = '未完成';
+        }
+        saveData();
+
+        // 檢查是否三星全亮
+        if (appData.q1.matched && appData.q2.matched && appData.q3.matched) {
+            showToast("多輪對話高手解鎖！三星入袋！⭐⭐⭐");
+        }
+    }
+
+    // =========================================
+    // 關卡四：圖像 Prompt 魔法工坊
+    // =========================================
+    function setImgField(fieldId, value) {
+        document.getElementById(fieldId).value = value;
+        saveData();
+    }
+
+    function generateImagePrompt() {
+        appData.img.appearance = document.getElementById('img-appearance').value;
+        appData.img.clothes = document.getElementById('img-clothes').value;
+        appData.img.expression = document.getElementById('img-expression').value;
+        appData.img.bg = document.getElementById('img-bg').value;
+        appData.img.style = document.getElementById('img-style').value;
+        appData.img.ratio = document.getElementById('img-ratio').value;
+
+        let parts = [
+            appData.img.appearance,
+            appData.img.clothes,
+            appData.img.expression,
+            appData.img.bg,
+            appData.img.style
+        ].filter(p => p.trim() !== '');
+
+        let prompt = parts.join(", ") + " " + appData.img.ratio;
+        
+        if (parts.length === 0) {
+            showToast("請點選或輸入一些特徵徽章喔！");
+            return;
+        }
+
+        appData.img.generated = prompt;
+        document.getElementById('img-output').innerText = prompt;
+        document.getElementById('img-result').style.display = 'block';
+        saveData();
+        showToast("魔法詠唱完成！圖像詠唱詞拼裝完畢！🎨");
+    }
+
+    // =========================================
+    // 關卡五：記憶翻牌遊戲 (AI 素養核心理念)
+    // =========================================
+    const memoryCardsData = [
+        { id: 1, text: "不能直接複製", pair: "A" },
+        { id: 2, text: "要用自己的話", pair: "A" },
+        { id: 3, text: "能跟同學解釋", pair: "B" },
+        { id: 4, text: "代表你真理解", pair: "B" },
+        { id: 5, text: "AI 也會胡說", pair: "C" },
+        { id: 6, text: "需要動手查證", pair: "C" },
+        { id: 7, text: "用 RTBF 提問", pair: "D" },
+        { id: 8, text: "回答會更精準", pair: "D" }
+    ];
+
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let matchedPairsCount = 0;
+
+    function initMemoryGame() {
+        const board = document.getElementById('memoryBoard');
+        board.innerHTML = '';
+        
+        // 隨機打亂卡片
+        const shuffled = [...memoryCardsData].sort(() => 0.5 - Math.random());
+        
+        shuffled.forEach(data => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.id = data.id;
+            card.dataset.pair = data.pair;
+            card.innerText = "❓\n翻開我";
+            card.onclick = () => flipCard(card, data.text);
+            board.appendChild(card);
+        });
+    }
+
+    function flipCard(cardElement, text) {
+        if (lockBoard) return;
+        if (cardElement === firstCard) return;
+        if (cardElement.classList.contains('matched')) return;
+
+        cardElement.classList.add('flipped');
+        cardElement.innerText = text;
+
+        if (!firstCard) {
+            firstCard = cardElement;
+            return;
+        }
+
+        secondCard = cardElement;
+        lockBoard = true;
+
+        checkMatch();
+    }
+
+    function checkMatch() {
+        let isMatch = firstCard.dataset.pair === secondCard.dataset.pair;
+        if (isMatch) {
+            disableCards();
+        } else {
+            unflipCards();
+        }
+    }
+
+    function disableCards() {
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+        
+        matchedPairsCount++;
+        document.getElementById('memory-status').innerText = `進度：配對成功 ${matchedPairsCount}/4 組`;
+
+        if (matchedPairsCount === 4) {
+            document.getElementById('rewrite-section').style.display = 'block';
+            appData.rewrite.gameCompleted = true;
+            saveData();
+            showToast("配對大成功！解鎖你的素養宣言！🎉");
+        }
+
+        resetBoard();
+    }
+
+    function unflipCards() {
+        setTimeout(() => {
+            firstCard.classList.remove('flipped');
+            secondCard.classList.remove('flipped');
+            firstCard.innerText = "❓\n再試一次";
+            secondCard.innerText = "❓\n再試一次";
+            resetBoard();
+        }, 1200);
+    }
+
+    function resetBoard() {
+        [firstCard, secondCard] = [null, null];
+        lockBoard = false;
+    }
+
+    // =========================================
+    // 關卡六：AI 查證偵探任務 (偵探破案選擇題)
+    // =========================================
+    function checkDetectiveAnswer() {
+        const sourceVal = document.getElementById('fc-source').value;
+        const resultVal = document.getElementById('fc-result').value;
+        const expEl = document.getElementById('fc-explanation');
+
+        if (sourceVal === 'correct' && resultVal === 'correct') {
+            expEl.value = "【查證報告】草莓的可食肉質部分是由花托發育而成，並非真正的果實。表面的小點點才是植物學定義下的真正「瘦果」果實！";
+            appData.factcheck.solved = true;
+            appData.factcheck.source = "對比多方權威來源 (如：自然課本、農業改良場)";
+            appData.factcheck.result = "⚠️ 不完整且有誤導";
+            appData.factcheck.explanation = expEl.value;
+            showToast("恭喜破案！獲得【AI 小偵探徽章】🕵️‍♂️");
+        } else {
+            expEl.value = "偵查中...尚未尋找到足夠證據。";
+            appData.factcheck.solved = false;
+        }
+        saveData();
+    }
+
+    // =========================================
+    // 成果報告生成與下載
+    // =========================================
+    function generateSummary() {
+        const container = document.getElementById('summary-content');
+        
+        // 徽章清單
+        let badges = ["🎒 新手冒險家"];
+        if (appData.rtbf.generated) badges.push("⚙️ RTBF 咒語師");
+        if (appData.q1.matched && appData.q2.matched && appData.q3.matched) badges.push("⭐ 三星追問大師");
+        if (appData.img.generated) badges.push("🎨 圖像詠唱家");
+        if (appData.rewrite.gameCompleted) badges.push("🧠 AI 素養資優生");
+        if (appData.factcheck.solved) badges.push("🕵️‍♂️ AI 小偵探");
+
+        let html = `
+            <div class="summary-item"><h4>🏅 已獲得徽章</h4><p style="font-size:22px;">${badges.join(' | ')}</p></div>
+            <div class="summary-item"><h4>🎯 選擇冒險路線</h4><p>${appData.role || '未選擇'}</p></div>
+            <div class="summary-item"><h4>⚙️ RTBF Prompt 咒語</h4><pre style="white-space: pre-wrap; font-family:inherit; background:#eee; padding:15px; border-radius:15px; font-size: 18px;">${appData.rtbf.generated || '尚未生成'}</pre></div>
+            <div class="summary-item">
+                <h4>🗣️ 模擬多輪對話挑戰</h4>
+                <p><strong>第一輪：</strong> ${appData.q1.text || '未挑戰'}</p>
+                <p><strong>第二輪：</strong> ${appData.q2.text || '未挑戰'}</p>
+                <p><strong>第三輪：</strong> ${appData.q3.text || '未挑戰'}</p>
+            </div>
+            <div class="summary-item"><h4>🖼️ 圖像 Prompt 魔法詞</h4><p style="background:#eee; padding:15px; border-radius:15px; font-size: 18px;">${appData.img.generated || '尚未生成'}</p></div>
+            <div class="summary-item"><h4>✍️ 我的 AI 學習宣言</h4><p>${appData.rewrite.gameCompleted ? '【已成功解鎖】我學會了不複製 AI 回覆、用自己話理解、並隨時準備向同學解釋！' : '尚未解鎖 (需完成翻牌配對遊戲)'}</p></div>
+            <div class="summary-item">
+                <h4>🕵️‍♂️ 查證結論：${appData.factcheck.solved ? '🎉 偵破成功' : '尚未偵破'}</h4>
+                <p><strong>查證來源：</strong> ${appData.factcheck.source || '無'}</p>
+                <p><strong>查證說明：</strong> ${appData.factcheck.explanation || '無'}</p>
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
+    function downloadTXT() {
+        let text = `====== 🏆 我的 AI 素養任務卡 🏆 ======\n\n`;
+        text += `🎯 【我的冒險路線】\n${appData.role || '未選擇'}\n\n`;
+        text += `⚙️ 【RTBF Prompt 咒語】\n${appData.rtbf.generated || '尚未產生'}\n\n`;
+        text += `🗣️ 【三輪對話追問選擇】\n`;
+        text += `- 第一輪: ${appData.q1.text || '無'}\n`;
+        text += `- 第二輪: ${appData.q2.text || '無'}\n`;
+        text += `- 第三輪: ${appData.q3.text || '無'}\n\n`;
+        text += `🖼️ 【圖像 Prompt 提示詞】\n${appData.img.generated || '尚未產生'}\n\n`;
+        text += `✍️ 【AI 使用觀念宣言】\n${appData.rewrite.gameCompleted ? '已成功解鎖並宣誓完成！' : '尚未解鎖'}\n\n`;
+        text += `🕵️‍♂️ 【查證任務結果】\n`;
+        text += `- 查證來源：${appData.factcheck.source || '無'}\n`;
+        text += `- 判定結果：${appData.factcheck.result || '無'}\n`;
+        text += `- 結案說明：${appData.factcheck.explanation || '無'}\n`;
+        
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "我的AI提問冒險任務卡.txt";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("成果報告下載成功！🎉");
+    }
+
+    // =========================================
+    // 共用工具：一鍵複製與 localStorage 儲存
+    // =========================================
+    function copyText(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showToast("咒語複製成功！📋 可直接貼給 AI 體驗效果！");
+        } catch (err) {
+            showToast("複製失敗，請手動複製");
+        }
+        document.body.removeChild(textarea);
+    }
+
+    function saveData() {
+        localStorage.setItem('promptQuestData_v2', JSON.stringify(appData));
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem('promptQuestData_v2');
+        if (saved) {
+            try {
+                appData = JSON.parse(saved);
+            } catch(e) { console.error("資料載入失敗", e); }
+        }
+    }
+
+    function updateUIFromData() {
+        // 第一關卡選取狀態
+        if(appData.role) {
+            document.getElementById('role-msg').innerText = "你選擇了：" + appData.role;
+            if(appData.role.includes('遊戲玩家')) document.getElementById('card-game').classList.add('selected');
+            if(appData.role.includes('創作愛好者')) document.getElementById('card-art').classList.add('selected');
+            if(appData.role.includes('學習高手')) document.getElementById('card-study').classList.add('selected');
+            renderQuickBadges(appData.role);
+        } else {
+            renderQuickBadges('');
+        }
+
+        // 第二關卡
+        document.getElementById('rtbf-r').value = appData.rtbf.r || '';
+        document.getElementById('rtbf-t').value = appData.rtbf.t || '';
+        document.getElementById('rtbf-b').value = appData.rtbf.b || '';
+        document.getElementById('rtbf-f').value = appData.rtbf.f || '';
+        if(appData.rtbf.generated) {
+            document.getElementById('rtbf-output').innerText = appData.rtbf.generated;
+            document.getElementById('rtbf-result').style.display = 'block';
+        }
+
+        // 第三關卡
+        if(appData.q1.matched) {
+            document.getElementById('q1-select').value = 'correct';
+            document.getElementById('scen-1').classList.add('correct');
+            document.getElementById('scen-1-msg').innerText = "🎉 答對了！這招非常精準！點亮一星 ⭐";
+            document.getElementById('scen-1-msg').style.color = "#2e7d32";
+        }
+        if(appData.q2.matched) {
+            document.getElementById('q2-select').value = 'correct';
+            document.getElementById('scen-2').classList.add('correct');
+            document.getElementById('scen-2-msg').innerText = "🎉 答對了！這招非常精準！點亮二星 ⭐⭐";
+            document.getElementById('scen-2-msg').style.color = "#2e7d32";
+        }
+        if(appData.q3.matched) {
+            document.getElementById('q3-select').value = 'correct';
+            document.getElementById('scen-3').classList.add('correct');
+            document.getElementById('scen-3-msg').innerText = "🎉 答對了！這招非常精準！點亮三星 ⭐⭐⭐";
+            document.getElementById('scen-3-msg').style.color = "#2e7d32";
+        }
+
+        // 第四關卡
+        document.getElementById('img-appearance').value = appData.img.appearance || '';
+        document.getElementById('img-clothes').value = appData.img.clothes || '';
+        document.getElementById('img-expression').value = appData.img.expression || '';
+        document.getElementById('img-bg').value = appData.img.bg || '';
+        document.getElementById('img-style').value = appData.img.style || '';
+        document.getElementById('img-ratio').value = appData.img.ratio || '--ar 16:9';
+        if(appData.img.generated) {
+            document.getElementById('img-output').innerText = appData.img.generated;
+            document.getElementById('img-result').style.display = 'block';
+        }
+
+        // 第五關卡
+        if (appData.rewrite.gameCompleted) {
+            document.getElementById('rewrite-section').style.display = 'block';
+        }
+
+        // 第六關卡
+        if (appData.factcheck.solved) {
+            document.getElementById('fc-source').value = 'correct';
+            document.getElementById('fc-result').value = 'correct';
+            document.getElementById('fc-explanation').value = appData.factcheck.explanation;
+        }
+    }
+
+    function resetAllData() {
+        if(confirm("確定要重置所有闖關紀錄嗎？這將無法復原喔！")) {
+            localStorage.removeItem('promptQuestData_v2');
+            location.reload();
+        }
+    }
+
+</script>
+</body>
+</html>
