@@ -51,7 +51,7 @@
 
         <section class="stage" aria-label="AI 學伴設計實驗室場景">
           <div class="stage-grid" aria-hidden="true"></div>
-          <div class="stage-screen" aria-hidden="true"><span id="stage-kicker">DAY BRIEFING</span><strong id="stage-display">5 DAYS LEFT</strong></div>
+          <div class="stage-screen time-strip" aria-label="比賽剩餘時間"><span id="stage-kicker">剩餘時間</span><strong id="stage-display"></strong></div>
           <div id="character-area" class="character-area" aria-hidden="true"></div>
 
           <article id="intro-card" class="dialogue-card" hidden>
@@ -95,12 +95,13 @@
           </article>
         </section>
 
-        <aside class="status-panel" aria-label="團隊狀態">
-          <p class="panel-label">AI 學伴原型</p>
+        <aside class="status-panel" aria-label="星芽設計紀錄">
+          <p class="panel-label">星芽設計紀錄</p>
           <div class="onick-core"><img src="./assets/characters/xingya.png?v=2" alt="星芽"><i></i></div>
           <strong id="onick-mode">等待設定</strong>
           <p id="objective-text">建立功能邊界卡。</p>
-          <div class="day-route" id="day-route" aria-label="五日進度"></div>
+          <div class="day-route" id="day-route" aria-label="五日設計紀錄"></div>
+          <section id="day-record" class="day-record" aria-live="polite"></section>
         </aside>
       </div>
     </section>

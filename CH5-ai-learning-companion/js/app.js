@@ -8,12 +8,12 @@
     privacy: ["隱", "隱私保護"], humanAgency: ["人", "人類主導"]
   };
   const CHARACTERS = {
-    system: { name: "系統", type: "none" }, coco: { name: "可可", type: "image", file: "./assets/characters/koko.png" },
+    system: { name: "系統", type: "none" }, host: { name: "主持人", type: "scene", file: "./assets/scenes/opening-host-stage.png" }, coco: { name: "可可", type: "image", file: "./assets/characters/koko.png" },
     jiji: { name: "吱吱", type: "image", file: "./assets/characters/jiji.png" }, sisi: { name: "思思", type: "image", file: "./assets/characters/sisi.png" },
     onick: { name: "星芽", type: "image", file: "./assets/characters/xingya.png?v=2" }, teacher: { name: "指導老師", type: "sprite" },
     judge: { name: "評審", type: "sprite" }, player: { name: "專案設計師", type: "none" }
   };
-  const SPEAKER_KEYS = { 系統: "system", 可可: "coco", 吱吱: "jiji", 思思: "sisi", 星芽: "onick", 歐匿: "onick", 指導老師: "teacher", 評審: "judge", 玩家今日提示: "player" };
+  const SPEAKER_KEYS = { 系統: "system", 主持人: "host", 可可: "coco", 吱吱: "jiji", 思思: "sisi", 星芽: "onick", 歐匿: "onick", 指導老師: "teacher", 評審: "judge", 玩家今日提示: "player" };
   const ENDINGS = {
     A: ["負責任的全科 AI 學伴", "星芽不是最快交答案的學伴，卻能讓學生知道怎麼想、資料去了哪裡、錯了找誰修。評審通過公開測試，並邀請團隊進行校內試用。"],
     B: ["高效率答案機器", "展示跑得飛快，現場新題卻沒有人能說明。評審退回學習功能，要求把答案鍵改成提示與練習流程。"],
@@ -40,7 +40,7 @@
     feedbackDialogue: $("#feedback-dialogue"), feedbackReason: $("#feedback-reason"), feedbackRecommendation: $("#feedback-recommendation"),
     progressDelta: $("#progress-delta"), riskDelta: $("#risk-delta"), feedbackNext: $("#feedback-next"), daySummary: $("#day-summary"),
     summaryTitle: $("#summary-title"), summaryText: $("#summary-text"), summaryProgress: $("#summary-progress"), summaryRisk: $("#summary-risk"),
-    nextDay: $("#next-day"), onickMode: $("#onick-mode"), objective: $("#objective-text"), dayRoute: $("#day-route"),
+    nextDay: $("#next-day"), onickMode: $("#onick-mode"), objective: $("#objective-text"), dayRoute: $("#day-route"), dayRecord: $("#day-record"),
     settingsButton: $("#settings-button"), logButton: $("#log-button"), historyList: $("#history-list"), live: $("#live-region"),
     reduceMotion: $("#reduce-motion"), highContrast: $("#high-contrast"), textScale: $("#text-scale"),
     endingCode: $("#ending-code"), endingTitle: $("#ending-title"), endingText: $("#ending-text"), endingProgress: $("#ending-progress"),
@@ -51,7 +51,7 @@
     return {
       version: 1, day: 1, eventIndex: 0, openingIndex: 0, mode: "intro", workPoints: 0, milestoneProgress: 0,
       reworkPenalty: 0, projectProgress: 0, ethicalRisk: 20, flags: {}, badges: Object.fromEntries(Object.keys(BADGES).map((id) => [id, { score: 0, active: false, cap: null }])),
-      history: [], dayStarts: { 1: { projectProgress: 0, ethicalRisk: 20 } }, checkpoints: {}, companionBonusDays: [], settings: { reducedMotion: false, highContrast: false, textScale: "1" }
+      history: [], selectedRecordDay: 1, dayStarts: { 1: { projectProgress: 0, ethicalRisk: 20 } }, checkpoints: {}, companionBonusDays: [], settings: { reducedMotion: false, highContrast: false, textScale: "1" }
     };
   }
 
@@ -123,13 +123,12 @@
     elements.speaker.textContent = parsed.name;
     setCharacter(parsed.key);
     typeText(parsed.text);
-    elements.stageKicker.textContent = `DAY ${state.day} BRIEFING`;
-    elements.stageDisplay.textContent = state.day === 5 ? "PRESENTATION DAY" : `${6 - state.day} DAYS LEFT`;
+    renderTimeStrip();
     save();
   }
 
   function parseLine(line) {
-    const match = line.match(/^(系統|可可|吱吱|思思|星芽|歐匿|指導老師|評審|玩家今日提示)：?「?(.+?)」?$/);
+    const match = line.match(/^(系統|主持人|可可|吱吱|思思|星芽|歐匿|指導老師|評審|玩家今日提示)：?「?(.+?)」?$/);
     if (!match) return { key: "system", name: "系統", text: line };
     return { key: SPEAKER_KEYS[match[1]] || "system", name: match[1], text: match[2] };
   }
@@ -159,8 +158,6 @@
       button.addEventListener("click", () => choose(choice));
       elements.choiceList.appendChild(button);
     });
-    elements.stageKicker.textContent = `EVENT ${event.id}`;
-    elements.stageDisplay.textContent = event.title;
     save();
   }
 
@@ -223,6 +220,8 @@
     elements.feedbackRecommendation.textContent = choice.recommendation;
     elements.progressDelta.textContent = `專案進度 ${signed(state.lastDelta.p)}`;
     elements.riskDelta.textContent = `倫理風險 ${signed(state.lastDelta.r)}`;
+    elements.progressDelta.className = `delta-value ${state.lastDelta.p >= 0 ? "is-good" : "is-bad"}`;
+    elements.riskDelta.className = `delta-value ${state.lastDelta.r <= 0 ? "is-good" : "is-bad"}`;
     setCharacter(choice.feedback?.[0]?.speaker || "onick");
     elements.live.textContent = `專案進度${spokenDelta(state.lastDelta.p)}，現在 ${state.projectProgress}。倫理風險${spokenDelta(state.lastDelta.r)}，現在 ${state.ethicalRisk}。`;
     elements.feedbackCard.focus({ preventScroll: true });
@@ -300,11 +299,37 @@
     elements.dayLabel.textContent = `DAY ${state.day}／5`; elements.storyTitle.textContent = day.title.split("：")[0];
     elements.progressValue.textContent = state.projectProgress; elements.progressBar.style.width = `${state.projectProgress}%`;
     elements.riskValue.textContent = state.ethicalRisk; elements.riskBar.style.width = `${state.ethicalRisk}%`;
+    elements.progressBar.dataset.level = metricLevel(state.projectProgress);
+    elements.riskBar.dataset.level = metricLevel(state.ethicalRisk);
+    renderTimeStrip();
     elements.objective.textContent = day.objective; elements.onickMode.textContent = onickMode();
     elements.badgeList.innerHTML = Object.entries(BADGES).map(([id, [short, name]]) => {
       const status = getBadgeStatus(state.badges[id]); return `<button class="badge-card" type="button" data-status="${status}" aria-label="${name}：${badgeStatusLabel(status)}"><i>${short}</i><span>${name}<small>${badgeStatusLabel(status)}</small></span></button>`;
     }).join("");
     elements.dayRoute.innerHTML = content.days.map((item) => `<span class="${item.day < state.day ? "is-done" : item.day === state.day ? "is-current" : ""}">DAY ${item.day}｜${item.title.split("：")[0]}</span>`).join("");
+  }
+
+  function metricLevel(value) { return value < 40 ? "low" : value < 70 ? "medium" : "high"; }
+
+  function renderTimeStrip() {
+    const remaining = 6 - state.day;
+    elements.stageKicker.textContent = state.day === 5 ? "最後一天" : "剩餘時間";
+    elements.stageDisplay.innerHTML = `<span class="time-boxes" aria-hidden="true">${Array.from({ length: 5 }, (_, index) => `<i class="${index < remaining ? "is-full" : ""}"></i>`).join("")}</span><small>${remaining} 天</small>`;
+    window.requestAnimationFrame(renderDayRecord);
+  }
+
+  function renderDayRecord() {
+    if (!state.selectedRecordDay || state.selectedRecordDay > state.day) state.selectedRecordDay = state.day;
+    elements.dayRoute.innerHTML = content.days.map((item) => `<button type="button" data-day="${item.day}" ${item.day > state.day ? "disabled" : ""} class="${item.day < state.day ? "is-done" : item.day === state.day ? "is-current" : ""}">DAY ${item.day}｜${escapeHtml(item.title)}</button>`).join("");
+    elements.dayRoute.querySelectorAll("button:not(:disabled)").forEach((button) => button.addEventListener("click", () => { state.selectedRecordDay = Number(button.dataset.day); renderDayRecord(); save(); }));
+    const selectedDay = state.selectedRecordDay;
+    const day = content.days.find((item) => item.day === selectedDay);
+    const records = state.history.filter((item) => item.day === selectedDay);
+    elements.dayRoute.querySelectorAll("button").forEach((button) => button.classList.toggle("is-selected", Number(button.dataset.day) === selectedDay));
+    if (!records.length) { elements.dayRecord.innerHTML = `<h4>DAY ${selectedDay}｜${escapeHtml(day.title)}</h4><p>尚未完成正式選擇。</p>`; return; }
+    const totalP = records.reduce((sum, item) => sum + item.pAfter - item.pBefore, 0);
+    const totalR = records.reduce((sum, item) => sum + item.rAfter - item.rBefore, 0);
+    elements.dayRecord.innerHTML = `<h4>DAY ${selectedDay}｜${escapeHtml(day.title)}</h4><div class="record-total"><span class="${totalP >= 0 ? "is-good" : "is-bad"}">進度 ${signed(totalP)}</span><span class="${totalR <= 0 ? "is-good" : "is-bad"}">風險 ${signed(totalR)}</span></div><ol>${records.map((item) => `<li><strong>${escapeHtml(item.eventTitle)}</strong><p>${escapeHtml(item.choiceLabel)}</p><div><em class="light-${item.light}">${({ green: "綠燈", yellow: "黃燈", red: "紅燈" })[item.light]}</em><span class="${item.pAfter - item.pBefore >= 0 ? "is-good" : "is-bad"}">進度 ${signed(item.pAfter - item.pBefore)}</span><span class="${item.rAfter - item.rBefore <= 0 ? "is-good" : "is-bad"}">風險 ${signed(item.rAfter - item.rBefore)}</span></div></li>`).join("")}</ol>`;
   }
 
   function onickMode() {
@@ -318,6 +343,7 @@
   function setCharacter(key) {
     const character = CHARACTERS[key] || CHARACTERS.onick; elements.characterArea.innerHTML = "";
     if (character.type === "none") return;
+    if (character.type === "scene") { const img = document.createElement("img"); img.className = "portrait scene-portrait"; img.src = character.file; img.alt = ""; elements.characterArea.appendChild(img); return; }
     if (character.type === "sprite") { const div = document.createElement("div"); div.className = `portrait sprite ${key}`; elements.characterArea.appendChild(div); return; }
     const img = document.createElement("img"); img.className = "portrait"; img.src = character.file; img.alt = ""; elements.characterArea.appendChild(img);
   }

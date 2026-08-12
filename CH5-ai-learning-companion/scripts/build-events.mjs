@@ -105,6 +105,14 @@ for (const raw of lines) {
 }
 
 for (const day of days) day.objective = day.objective.trim();
+const dayOne = days.find((day) => day.day === 1);
+if (dayOne) dayOne.opening = [
+  "主持人：「全科 AI 學伴設計大賽，隊伍報到完成。請在五天內交出可測試的提案。」",
+  "吱吱：「五天而已？那我們的 AI 學伴就叫星芽吧，讓他什麼都會，連作業也一起包了！」",
+  "可可：「等一下，什麼都會，跟什麼都替你做，不是同一件事喔。」",
+  "思思：「如果 AI 星芽直接告訴我答案，我應該會很喜歡……但那有算學會嗎？」",
+  "星芽：「請設定我的第一條規則：我應該幫到哪裡？」"
+];
 const result = { version: 1, generatedFrom: path.basename(source), days, events };
 fs.writeFileSync(output, `${JSON.stringify(result, null, 2)}\n`, "utf8");
 console.log(`Generated ${events.length} events and ${events.reduce((sum, item) => sum + item.choices.length, 0)} choices.`);
