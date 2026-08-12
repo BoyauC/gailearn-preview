@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>CH3・AI 共創工作坊</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=1" />
+</head>
+<body>
+  <main id="app">
+
+    <!-- 共用 Header -->
+    <header class="app-header">
+      <h1 class="app-title">🎨 AI 共創工作坊</h1>
+      <span id="stage-chip" class="app-stage">階段 1 / 6</span>
+    </header>
+
+    <!-- 進度條 -->
+    <div id="progress-bar" class="progress-bar" aria-hidden="true">
+      <span class="progress-step is-active"></span>
+      <span class="progress-step"></span>
+      <span class="progress-step"></span>
+      <span class="progress-step"></span>
+      <span class="progress-step"></span>
+      <span class="progress-step"></span>
+    </div>
+
+    <!-- ① 階段一：歡迎 -->
+    <section id="screen-welcome" class="screen screen--active">
+      <div class="card welcome-card">
+        <h2 class="title">歡迎來到 AI 共創工作坊</h2>
+        <p class="subtitle">用「正確標註」與「責任歸屬」的觀念，一起體驗 AI 的輔助創作</p>
+
+        <div class="onee-row">
+          <img class="onee-portrait" src="assets/sprites/onee.png" alt="小精靈 歐逆" />
+          <div class="onee-bubble" id="welcome-quote">在這裡，AI 是你的畫筆，而你是決定畫什麼的藝術家。</div>
+        </div>
+
+        <div class="welcome-points">
+          <div class="welcome-point"><span class="icon">①</span><p>挑選 4 個關鍵字（角色、場景、配件、心情），決定 AI 要做什麼。</p></div>
+          <div class="welcome-point"><span class="icon">②</span><p>檢視 AI 給你的初稿，調整敘述語氣、選出最喜歡的版本。</p></div>
+          <div class="welcome-point"><span class="icon">③</span><p>勾選正確的倫理觀念，蓋上「本圖由 AI 生成」浮水印。</p></div>
+          <div class="welcome-point"><span class="icon">④</span><p>下載屬於你的共創作品，分享給家人朋友。</p></div>
+        </div>
+
+        <button type="button" id="btn-start" class="btn btn-primary btn-hero">開始體驗</button>
+      </div>
+    </section>
+
+    <!-- ② 階段二：關鍵字 -->
+    <section id="screen-tags" class="screen">
+      <div class="card">
+        <h2 class="title">挑選 4 個關鍵字</h2>
+        <p class="subtitle">每個區塊各挑 1 個：角色、場景、配件、心情</p>
+        <div id="tag-section" class="tag-section">
+          <!-- JS 動態渲染 4 組 -->
+        </div>
+
+        <!-- 即時主軸平衡條：讓玩家看到自己選的關鍵字票投給哪個主軸 -->
+        <div class="theme-balance">
+          <p class="theme-balance-title">📊 主軸投票看板（角色/場景 +2、配件 +1）</p>
+          <div class="theme-bars" id="theme-bars">
+            <div class="theme-bar" data-theme="scifi">
+              <span class="theme-bar-label">🪐 科幻</span>
+              <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+              <span class="theme-bar-value">0</span>
+            </div>
+            <div class="theme-bar" data-theme="campus">
+              <span class="theme-bar-label">🏫 校園</span>
+              <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+              <span class="theme-bar-value">0</span>
+            </div>
+            <div class="theme-bar" data-theme="fairy">
+              <span class="theme-bar-label">🏰 童話</span>
+              <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+              <span class="theme-bar-value">0</span>
+            </div>
+            <div class="theme-bar" data-theme="nature">
+              <span class="theme-bar-label">🌲 自然</span>
+              <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+              <span class="theme-bar-value">0</span>
+            </div>
+          </div>
+          <p class="theme-hint" id="theme-hint">提示：AI 只認得這 16 張圖。同主軸的關鍵字選越多，AI 越能準確畫出你想要的內容！</p>
+        </div>
+
+        <div class="btn-row" style="margin-top: 14px;">
+          <button type="button" id="btn-shoot" class="btn btn-accent" disabled>🚀 發射靈感</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 階段三：運算 -->
+    <section id="screen-processing" class="screen">
+      <div class="card processing-card">
+        <h2 class="title">AI 正在融合你的靈感與目標…</h2>
+        <p class="subtitle">AI 並不是無中生有，它正在依據你的關鍵字組合、檢索素材後再呈現。</p>
+        <div class="processing-spinner" aria-hidden="true"></div>
+        <div class="processing-bar"><div id="processing-fill" class="processing-bar-fill"></div></div>
+        <p id="processing-status" class="processing-status">解析關鍵字…</p>
+
+        <!-- 主軸投票過程動畫 -->
+        <div class="processing-vote" id="processing-vote">
+          <div class="theme-bar" data-theme="scifi">
+            <span class="theme-bar-label">🪐 科幻</span>
+            <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+            <span class="theme-bar-value">0</span>
+          </div>
+          <div class="theme-bar" data-theme="campus">
+            <span class="theme-bar-label">🏫 校園</span>
+            <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+            <span class="theme-bar-value">0</span>
+          </div>
+          <div class="theme-bar" data-theme="fairy">
+            <span class="theme-bar-label">🏰 童話</span>
+            <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+            <span class="theme-bar-value">0</span>
+          </div>
+          <div class="theme-bar" data-theme="nature">
+            <span class="theme-bar-label">🌲 自然</span>
+            <span class="theme-bar-track"><span class="theme-bar-fill"></span></span>
+            <span class="theme-bar-value">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 階段四：檢視 / 微調 -->
+    <section id="screen-review" class="screen">
+      <div class="card">
+        <h2 class="title">檢視 AI 的初稿</h2>
+        <p class="subtitle">圖片以模糊方式呈現；選擇你最喜歡的敘述語氣再進入下一步。</p>
+
+        <!-- 替換通知（僅在主軸 fallback 時顯示） -->
+        <div class="swap-notice hidden" id="swap-notice">
+          <img class="onee-portrait" src="assets/sprites/onee.png" alt="小精靈" />
+          <div class="swap-text" id="swap-text"></div>
+        </div>
+
+        <div class="review-grid">
+          <div class="image-frame">
+            <img id="review-image" class="ai-image-preview" alt="AI 初稿" />
+            <div class="fog-tag" id="fog-tag">霧化中・尚未確認</div>
+          </div>
+          <div class="narrative-card">
+            <div id="narrative-text" class="narrative-text">敘述文字將顯示在這裡…</div>
+            <div class="tone-row" id="tone-row">
+              <button type="button" class="tone-btn selected" data-tone="default">📝 預設</button>
+              <button type="button" class="tone-btn" data-tone="playful">😜 活潑</button>
+              <button type="button" class="tone-btn" data-tone="epic">⚔️ 史詩</button>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top: 14px;">
+          <button type="button" id="btn-to-ethics" class="btn btn-primary">下一步：倫理檢核</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑤ 階段五：倫理檢核 -->
+    <section id="screen-ethics" class="screen">
+      <div class="card">
+        <h2 class="title">倫理守門員</h2>
+        <p class="subtitle">完成創作前，請勾選正確的觀念（共 2 項）</p>
+
+        <div class="review-grid">
+          <div class="image-frame">
+            <img id="ethics-image" class="ai-image-preview" alt="AI 圖片預覽" />
+            <div class="fog-tag">霧化中・等待倫理檢核</div>
+          </div>
+          <div>
+            <div class="checklist" id="ethics-checklist">
+              <label class="check-item" data-key="ok1">
+                <span class="check-box">✔</span>
+                <span>我了解產出結果需明確標示有 AI 的參與。</span>
+              </label>
+              <label class="check-item" data-key="ok2">
+                <span class="check-box">✔</span>
+                <span>本圖由 AI 生成。</span>
+              </label>
+              <label class="check-item distractor" data-key="bad">
+                <span class="check-box">✔</span>
+                <span>AI 創作完全屬於我，不需要說明來源。</span>
+              </label>
+            </div>
+            <div id="ethics-feedback" class="feedback-banner hidden"></div>
+            <div class="btn-row" style="margin-top: 12px;">
+              <button type="button" id="btn-ethics-confirm" class="btn btn-primary">完成檢核</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑥ 階段六：解鎖成果 -->
+    <section id="screen-result" class="screen">
+      <div class="card result-stage">
+        <h2 class="title">你的共創成果 🎉</h2>
+        <p class="subtitle">圖片已解除霧化，並蓋上「本圖由 AI 生成」浮水印</p>
+        <div class="creator-input-row">
+          <label for="creator-name" style="font-weight:800;">創作者：</label>
+          <input id="creator-name" class="creator-input" type="text" maxlength="12" placeholder="輸入暱稱（最多 12 字）" />
+          <button type="button" id="btn-redraw-watermark" class="btn">更新浮水印</button>
+        </div>
+        <div class="result-canvas-wrap">
+          <canvas id="resultCanvas" width="800" height="600"></canvas>
+        </div>
+        <div class="btn-row">
+          <button type="button" id="btn-save" class="btn btn-success">💾 儲存我的作品</button>
+          <button type="button" id="btn-restart" class="btn btn-ghost">🔁 再玩一次</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 小精靈互動視窗（階段二發射後） -->
+  <div id="onee-modal" class="onee-modal hidden" role="dialog" aria-modal="true">
+    <div class="onee-dialog">
+      <div class="onee-row">
+        <img class="onee-portrait" src="assets/sprites/onee.png" alt="小精靈 歐逆" />
+        <div class="onee-bubble">現在要生成的這張圖，你要做什麼用呢？</div>
+      </div>
+      <div class="purpose-row" id="purpose-row">
+        <button type="button" class="purpose-chip" data-purpose="school">📚 學校作業</button>
+        <button type="button" class="purpose-chip" data-purpose="personal">🎨 個人創作</button>
+        <button type="button" class="purpose-chip" data-purpose="present">🎁 送給家人朋友</button>
+        <button type="button" class="purpose-chip" data-purpose="practice">✏️ 純粹練習</button>
+      </div>
+      <div class="btn-row">
+        <button type="button" id="btn-purpose-confirm" class="btn btn-primary" disabled>確定發射</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 載入失敗提示 -->
+  <div id="load-error" class="error-banner hidden">
+    題庫載入失敗。請使用本地伺服器開啟（例：在資料夾執行 <code>python -m http.server</code>），瀏覽器無法直接讀取本機 CSV 檔。
+  </div>
+
+  <script src="js/csv-parser.js?v=1"></script>
+  <script src="js/game.js?v=1"></script>
+</body>
+</html>

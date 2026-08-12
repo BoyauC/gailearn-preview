@@ -1,0 +1,53 @@
+category,tag_id,label,emoji,theme,en_phrase,zh_phrase
+theme,scifi,科幻,🪐,scifi,sci-fi theme,科幻主題
+theme,campus,校園,🏫,campus,school campus theme,校園主題
+theme,fairy,童話,🏰,fairy,fairy tale theme,童話主題
+theme,nature,自然,🌲,nature,nature theme,自然主題
+character,robot,機器人,🤖,scifi,a cute friendly robot,可愛的小機器人
+character,astronaut,太空人,👨‍🚀,scifi,a young astronaut in a white spacesuit,穿著太空衣的太空人
+character,alien,外星人,👽,scifi,a small green friendly alien,綠綠的外星人小朋友
+character,scientist,科學家,🧑‍🔬,scifi,a clever young scientist with glasses,戴眼鏡的小科學家
+character,student,學生,🎒,campus,a cheerful young student in school uniform,穿制服的小學生
+character,teacher,老師,👩‍🏫,campus,a friendly young teacher,親切的老師
+character,librarian,圖書管理員,🦉,campus,a kind librarian with reading glasses,和藹的圖書管理員
+character,athlete,運動員,🏃,campus,a sporty student athlete in jersey,活力滿滿的小運動員
+character,wizard,魔法師,🧙,fairy,a cute young wizard with starry hat,戴星空帽的小魔法師
+character,knight,騎士,🛡️,fairy,a brave little knight in shiny armor,穿著閃亮盔甲的小騎士
+character,princess,公主,👸,fairy,a kind young princess in flowing dress,穿長裙的小公主
+character,dragon,友善小龍,🐉,fairy,a cute friendly baby dragon,可愛的小龍寶寶
+character,explorer,探險家,🧭,nature,a young explorer with safari hat,戴探險帽的小探險家
+character,bear,小棕熊,🐻,nature,a cute little brown bear,圓滾滾的小棕熊
+character,deer,小鹿,🦌,nature,a graceful little spotted deer,身上有斑點的小鹿
+character,forest_kid,森林小孩,🌿,nature,a curious child of the forest,森林裡的小朋友
+scene,spaceship,太空船,🚀,scifi,inside a futuristic spaceship control room,在未來太空船的控制室裡
+scene,cybercity,賽博城市,🏙️,scifi,on a neon cyberpunk city street,在霓虹閃爍的賽博城市街道上
+scene,moonbase,月球基地,🌕,scifi,at a moon base with the Earth in the sky,在月球基地，遠遠看著地球
+scene,lab,實驗室,🧪,scifi,inside a bright scientific laboratory,在明亮的科學實驗室裡
+scene,classroom,教室,🏫,campus,inside a colorful elementary classroom,在色彩繽紛的教室裡
+scene,playground,操場,🏟️,campus,on a sunny school playground,在出大太陽的操場上
+scene,library,圖書館,📚,campus,inside a cozy school library,在溫馨的學校圖書館裡
+scene,cafeteria,餐廳,🍱,campus,in a school cafeteria with delicious food,在飄著飯菜香的學校餐廳
+scene,castle,城堡,🏰,fairy,in front of a grand fairytale castle,在雄偉的童話城堡前
+scene,ruins,古代遺跡,🗿,fairy,exploring ancient glowing ruins in the forest,在森林裡發光的古代遺跡中探險
+scene,glade,魔法森林,🌳,fairy,in an enchanted glowing forest glade,在閃著光的魔法森林空地上
+scene,tower,魔法塔,🗼,fairy,at the foot of a tall magical tower,在高聳的魔法塔下
+scene,forest,森林,🌳,nature,in a lush green sunny forest,在綠意盎然的陽光森林裡
+scene,snow,雪山,⛄,nature,in front of a beautiful snowy mountain,在白雪皚皚的雪山前
+scene,lake,湖泊,🏞️,nature,by a calm sparkling blue lake,在波光粼粼的藍色湖邊
+scene,meadow,草原,🌾,nature,on a wide grassy meadow with wildflowers,在開滿野花的廣闊草原上
+prop,glasses,炫光眼鏡,🕶️,scifi,wearing high-tech glowing glasses,戴著一副會發光的高科技眼鏡
+prop,laser,雷射劍,🗡️,scifi,holding a glowing laser sword,手裡握著一把發光的雷射劍
+prop,holopad,全息平板,📱,scifi,looking at a floating holographic tablet,看著浮在空中的全息平板
+prop,jetpack,噴射背包,🎒,scifi,wearing a small flame-trailing jetpack,背著一個會噴火的小噴射背包
+prop,book,神奇課本,📖,campus,holding an open colorful book,手裡捧著一本繽紛的課本
+prop,whistle,口哨,😗,campus,holding a shiny silver whistle,脖子上掛著一個亮晶晶的口哨
+prop,brush,畫筆,🖌️,campus,holding a paintbrush dripping rainbow paint,拿著一支沾滿彩虹顏料的畫筆
+prop,ball,籃球,🏀,campus,holding an orange basketball,手裡抱著一顆橘色的籃球
+prop,wand,魔法棒,🪄,fairy,holding a sparkling magic wand,揮舞著一支閃閃發亮的魔法棒
+prop,crystal,水晶,💎,fairy,holding a glowing magical crystal,捧著一顆會發光的魔法水晶
+prop,spellbook,魔法書,📖,fairy,holding a thick glowing spellbook,翻著一本會發光的厚厚魔法書
+prop,sparkles,仙塵,✨,fairy,surrounded by floating golden sparkles,身邊飄著金色的仙塵
+prop,backpack,登山背包,🎒,nature,wearing a sturdy hiking backpack,背著一個結實的登山背包
+prop,torch,火把,🔥,nature,holding a wooden torch with warm fire,舉著一支熊熊燃燒的木火把
+prop,telescope,望遠鏡,🔭,nature,holding a small brass telescope,舉著一支銅色的小望遠鏡
+prop,net,捕蟲網,🦋,nature,holding a butterfly net,手裡拿著一支捕蟲網

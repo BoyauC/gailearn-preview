@@ -1,0 +1,19 @@
+scenario_id,character_id,source_message_order,display_name,avatar,is_correct,response_text,voice
+s1,teacher,3,王老師（班導）,assets/images/characters/s1_teacher.webp,true,"哎呀，這個停課快訊是假的！\n教育部有停課通知，學校依定會公告在學校網頁或正式官方管道發布，\n不會只靠新聞網路截圖或LINE群組傳遞。\n你剛剛發現的 3 個破綻：\n❌ 沒有官方標誌（只有緊急快訊）\n❌ 文字排版亂七八糟\n❌ 時間戳記不合邏輯\n這些都是 AI 假造圖片的典型特徵！\n以後看到停課消息，記得直接查「學校官網」或打電話確認喔！",assets/audio/voices/s1_correct.mp3
+s1,teacher,4,王老師（班導）,assets/images/characters/s1_teacher.webp,true,"這個校長公告是假的！\n你看，左上角的頭像是灰色轉傳圖示，不是學校或校長的官方帳號。\n真正的學校公告一定會有：校徽、正式公文格式、並透過校務系統發出，不會用這種截圖流傳。\n❌ 來源頭像非官方，可信度幾乎是零！\n記住：看到停課訊息，先問老師或查學校官網，不要只看群組截圖！",assets/audio/voices/s1_correct.mp3
+s1,classmate,3,小明（LINE 同學）,assets/images/characters/s1_classmate.webp,false,"天啊！我也有看到這個消息！我媽媽群組也在傳！\n那明天真的不用上課嗎？好棒喔！我要去睡到中午！",assets/audio/voices/s1_classmate.mp3
+s1,classmate,4,小明（LINE 同學）,assets/images/characters/s1_classmate.webp,false,"啊這個校長公告我看起來很正常耶⋯\n那明天還是要去上課嗎？好可惜⋯",assets/audio/voices/s1_classmate.mp3
+s1,netizen,3,神秘網友,assets/images/characters/s1_netizen.webp,false,"感覺好像是真的耶...最近颱風確實很多。\n我認識的人也說可能會停課，我們就等等看吧！",assets/audio/voices/s1_netizen.mp3
+s1,netizen,4,神秘網友,assets/images/characters/s1_netizen.webp,false,"校長發的應該是真的吧？學校不會騙人啊⋯\n我覺得這個看起來蠻正式的，應該沒問題吧？",assets/audio/voices/s1_netizen.mp3
+s2,director,2,李主任（學務）,assets/images/characters/s2_director.webp,true,"哇，這個『捐贈新聞』是假的！\n你想想看：如果真的有企業要捐 1000 臺平板，學校會收到正式的公文、邀請函，不會只是網路上的一張圖片。\n你發現的這 3 個破綻：\n❌ 企業 LOGO 模糊不清楚\n❌ 學生手指異常\n❌ 背景櫃子邊界模糊、像是 P 上去的\n這明顯是 AI 合成的假新聞，目的是騙你點連結，可能被盜個資！\n以後看到『太好的事』，先冷靜想：這合理嗎？",assets/audio/voices/s2_correct.mp3
+s2,director,4,李主任（學務）,assets/images/characters/s2_director.webp,true,"這個填表單活動看起來超可疑！\n你發現的 3 個破綻讓我非常警覺：\n❌ 要求填身分證號、家長電話、住址⋯這遠超過正常活動需要的資料\n❌ 主辦單位只寫「愛心企業」，查不到任何公司名稱或統編\n❌ 沒有隱私政策說明，根本不知道你的資料會被怎麼用\n這種表單就是在偷你的個資！填了可能會被詐騙電話騷擾，甚至被盜用身份！\n記住：正式活動一定有清楚的主辦單位和隱私權政策！",assets/audio/voices/s2_correct.mp3
+s2,classmate,2,小華（同學）,assets/images/characters/s2_classmate.webp,false,"哇！這企業好好心喔！\n我也想要那個平板，我們學校算不算偏鄉啊？\n我去申請看看！你也快去填表！",assets/audio/voices/s2_classmate.mp3
+s2,classmate,4,小華（同學）,assets/images/characters/s2_classmate.webp,false,"咦這個表單要填好多資料耶⋯\n但是如果真的可以得到禮物的話，填一填也沒關係吧？\n反正又不收錢，試試看嘛！",assets/audio/voices/s2_classmate.mp3
+s2,fake_company,2,『公司』官方,assets/images/characters/s2_fake_company.webp,false,"您好！感謝您的關注！\n我們確實有此活動，請點擊連結填寫資料，即可獲得平板！\n名額有限！",assets/audio/voices/s2_fake_company.mp3
+s2,fake_company,4,『公司』官方,assets/images/characters/s2_fake_company.webp,false,"您好！感謝您的熱情參與！\n請放心填寫表單，您的資料只會用於活動通知，絕對安全！\n活動名額即將截止，請盡快完成填寫！",assets/audio/voices/s2_fake_company.mp3
+s3,officer,2,張警官（社區警察）,assets/images/characters/s3_officer.webp,true,"小朋友，這個 100% 是詐騙！\n你找到的這 3 個破綻很關鍵：\n❌ 『限時 24 小時』是逼你衝動點擊的話術，真實活動不會這樣催促\n❌ 刻意強調『不需費用』反而是警訊，正常活動不會特別說這句\n❌ 只有一個 QR Code，沒有公司名稱、聯絡方式、活動細則\n詐騙者用這種方式：① 騙你掃 QR Code → 下載病毒 ② 騙你填個資 → 盜用身份\n記住：陌生 QR Code 絕對不要掃！有疑問就問家長或老師！",assets/audio/voices/s3_correct.mp3
+s3,officer,4,張警官（社區警察）,assets/images/characters/s3_officer.webp,true,"這個『清倉跳水價』是詐騙的經典手法！\n你找到的破綻完全揭穿它：\n❌ 要加入官方LINE才能問優惠跟價格是要引導你加入私人管道進行詐騙\n❌ 『數量有限』是製造緊張感逼你衝動行動\n❌ 『房東不續租，清倉3折價』⋯想想看，房東不續租的話，原廠物品也能正常賣吧？\n你幫忙分享 → 更多人被騙 → 對方騙到個資或病毒傳播\n記住：太便宜的商品，十之八九有問題！天下沒有白吃的午餐！",assets/audio/voices/s3_correct.mp3
+s3,classmate,2,阿潔（同學）,assets/images/characters/s3_classmate.webp,false,"欸欸！這個我朋友也收到了！\n他說可能是真的耶！我也想要 iPhone 17！\n我們一起點點看？說不定真的可以領取！",assets/audio/voices/s3_classmate.mp3
+s3,classmate,4,阿潔（同學）,assets/images/characters/s3_classmate.webp,false,"哇！清倉大拍賣耶，我正巧缺 iPad！\n你也要一起買嗎？\n這種活動錯過就沒了，快一起來詢問優惠！",assets/audio/voices/s3_classmate.mp3
+s3,netizen,2,匿名（網路評論）,assets/images/characters/s3_netizen.webp,false,"我朋友的朋友真的領到了！\n你看那個禮物盒多漂亮，應該是真的吧！\n反正點個連結也不會怎樣，試試看嘛！",assets/audio/voices/s3_netizen.mp3
+s3,netizen,4,匿名（網路評論）,assets/images/characters/s3_netizen.webp,false,"我也看到這個了！好多人都在分享耶⋯\n大家都說是真的，那麼多人分享應該不會假吧？\n你就加入官方LINE詢問，萬一是真的不就賺到了？",assets/audio/voices/s3_netizen.mp3

@@ -1,0 +1,816 @@
+/* =========================================================
+   AI 三色燈判斷遊戲 — 混搭版樣式 v3
+   來源：
+     A 原版 style.css     → 燈色語義、結構排版
+     B CSS_styleGemini    → 插畫感粗邊框、硬陰影、Nunito 字型、網點背景
+     C 教材封面角色插圖   → 底色、網點、分數chip、進階卡片色
+   色彩原則：
+     ● 外層底色 #D6C9B8 + 網點 #8A7A5A：初階/進階共用（取自角色背景）
+     ● 分數 chip #C87890：初階/進階共用（取自角色蝴蝶結粉）
+     ● 初階卡片：米白 #FDF8EE + 深藍邊框 #2D4198
+     ● 進階卡片：淡橄欖綠 #C8DCA8 + 橄欖邊框 #6A8A48（取自角色身體色）
+     ● 三色燈球語義色兩版完全一致
+   移除（Vibe coding 特徵）：
+     × 模糊 box-shadow → 硬邊 0px blur
+     × 漸層背景 → 單色 + 網點紋理
+     × glassmorphism 卡片
+     × 平板無效的 hover 灰階效果
+   ========================================================= */
+
+/* =========================================================
+   1. 設計變數 (Design Tokens)
+   ========================================================= */
+:root {
+  /* 外層底色：取自角色插圖背景粉橘暖灰（初階、進階共用） */
+  --bg-outer:  #D6C9B8;
+  /* 網點色：取自角色輪廓暖棕（初階、進階共用） */
+  --dot-color: #8A7A5A;
+
+  /* 初階卡片底：米白 */
+  --bg-paper:  #FDF8EE;
+
+  /* 文字 */
+  --text-main: #2D4198;
+  --text-muted: #877666;
+
+  /* 分數 chip：取自角色蝴蝶結粉（初階、進階共用） */
+  --primary:      #C87890;
+  --primary-dark: #A85E78;
+
+  /* 三色燈（語義飽和色，兩版不變） */
+  --red:    #E63946;
+  --red-d:  #B11D2A;
+  --yellow: #F4C430;
+  --yellow-d: #C99400;
+  --green:  #2EB67D;
+  --green-d: #1B8458;
+
+  /* 結算圖示 */
+  --star-gold: #FFD24D;
+  --star-gray: #D9D2C5;
+  --cup-gold:  #F4B63F;
+  --cup-gray:  #D0CBC1;
+
+  /* 結構 */
+  --radius-card: 16px;
+  --radius-btn:  12px;
+  --border-ink:  3px solid var(--text-main);
+  --shadow-hard: 4px 4px 0px var(--text-main);
+  --shadow-light: 3px 3px 0px var(--text-main);
+}
+
+/* ── Advanced 關卡：底色/網點與初階一致，卡片換淡橄欖綠系 ── */
+body[data-level="advanced"] {
+  /* bg-outer、dot-color 不覆寫，與初階共用 */
+  --bg-paper:    #C8DCA8;   /* 淡橄欖綠，角色身體色 */
+  --text-main:   #3D5A1A;   /* 深橄欖 */
+  --text-muted:  #7A6848;   /* 暖棕 */
+  /* primary（分數chip）不覆寫，與初階共用 #C87890 */
+  --primary-dark: #A85E78;
+  --border-ink:   3px solid #6A8A48;
+  --shadow-hard:  4px 4px 0px #6A8A48;
+  --shadow-light: 3px 3px 0px #6A8A48;
+}
+
+/* =========================================================
+   2. 基礎 Reset + 排版
+   ========================================================= */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito', 'Noto Sans TC', 'PingFang TC', sans-serif;
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  line-height: 1.6;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-outer);
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 0);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+  transition: background-color 0.4s ease;
+}
+
+/* 進階底色/網點與初階完全相同，無需覆寫 */
+
+#app {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   3. 畫面切換
+   ========================================================= */
+.screen { display: none; }
+.screen--active {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   4. 通用文字
+   ========================================================= */
+.title {
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 900;
+  color: var(--text-main);
+  margin: 0 0 6px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.hidden { display: none !important; }
+
+/* =========================================================
+   5. 核心卡片 — 插畫感粗邊框 + 硬陰影
+   ========================================================= */
+.start-card,
+.scenario-card,
+.result-card,
+.transition-card,
+.dialog {
+  background-color: var(--bg-paper);
+  border: var(--border-ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 1.75rem;
+  position: relative;
+}
+
+/* =========================================================
+   6. 按鈕 — 實體下壓感，無模糊陰影
+   ========================================================= */
+.btn {
+  appearance: none;
+  border: var(--border-ink);
+  border-radius: var(--radius-btn);
+  padding: 12px 22px;
+  font-size: 1rem;
+  font-weight: 900;
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  min-height: 48px;
+  background-color: var(--bg-paper);
+  color: var(--text-main);
+  box-shadow: var(--shadow-hard);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  user-select: none;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--text-main);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-main);
+}
+
+/* 主視覺「開始」按鈕：較一般 .btn 大 1.5 倍 */
+.btn-start-hero {
+  padding: 18px 32px;
+  font-size: 1.5rem;       /* 約 1rem × 1.5 */
+  min-height: 72px;        /* 48 × 1.5 */
+  border-radius: 18px;     /* 12 × 1.5 */
+  letter-spacing: 0.4em;
+  align-self: center;
+  min-width: 60%;
+  box-shadow: 6px 6px 0 var(--text-main);
+}
+.btn-start-hero:active {
+  transform: translate(6px, 6px);
+  box-shadow: 0 0 0 var(--text-main);
+}
+
+/* =========================================================
+   7. HUD 標籤
+   ========================================================= */
+.chip {
+  background: var(--bg-paper);
+  color: var(--text-main);
+  border: var(--border-ink);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow-light);
+}
+.chip--muted {
+  border: none;
+  box-shadow: none;
+  color: var(--text-muted);
+  background: transparent;
+}
+.chip--score {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* =========================================================
+   8. 開始頁
+   ========================================================= */
+.start-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  margin: auto 0;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: rgba(255,255,255,0.5);
+  border: var(--border-ink);
+  border-radius: var(--radius-btn);
+  padding: 10px 12px;
+}
+.legend-item strong { font-size: 15px; }
+.legend-item p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: var(--border-ink);
+  display: inline-block;
+  box-shadow: inset -3px -3px 0px rgba(0,0,0,0.18),
+              inset 2px 2px 0px rgba(255,255,255,0.25);
+}
+.dot-red    { background: var(--red); }
+.dot-yellow { background: var(--yellow); }
+.dot-green  { background: var(--green); }
+
+.note {
+  background: rgba(255,255,255,0.5);
+  border-left: 4px solid var(--text-main);
+  border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* =========================================================
+   9. 遊戲頁
+   ========================================================= */
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hud-left, .hud-right { display: flex; gap: 8px; align-items: center; }
+
+/* 倒數計時環 */
+.timer {
+  position: relative;
+  width: 52px; height: 52px;
+}
+.timer-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-ring__bg, .timer-ring__fg {
+  fill: none;
+  stroke-width: 3.5;
+}
+.timer-ring__bg { stroke: rgba(200,120,144,0.2); }
+.timer-ring__fg {
+  stroke: var(--primary);
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s;
+}
+.timer-ring__fg.warn { stroke: var(--red) !important; }
+#timer-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--text-main);
+}
+
+/* 題目卡 */
+.scenario-card {
+  min-height: 160px;
+  max-height: 46vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.scenario-eyebrow {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.scenario-text {
+  margin: 0;
+  font-size: clamp(17px, 3vw, 21px);
+  line-height: 1.75;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* =========================================================
+   10. 三色燈按鈕
+   ========================================================= */
+.traffic-lights {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.light {
+  appearance: none;
+  border: var(--border-ink);
+  background-color: var(--bg-paper);
+  border-radius: var(--radius-card);
+  padding: 16px 8px 14px;
+  min-height: 140px;
+  min-width: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-light);
+  /* 平板優先：預設全色常亮，不依賴 hover */
+  filter: none;
+  opacity: 1;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  font-family: inherit;
+  color: var(--text-main);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 按下時的物理下壓感（桌機滑鼠 + 平板 touch 均有效） */
+.light:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--text-main);
+}
+
+/* 作答後禁用：維持全色，僅鎖定互動 */
+.light[disabled] {
+  opacity: 1;
+  cursor: default;
+  filter: none;
+  pointer-events: none;
+}
+
+/* 進階關卡燈格底色：跟隨 --bg-paper（已覆寫為 #EFF5E0 奶綠） */
+body[data-level="advanced"] .light {
+  background-color: #EFF5E0;
+}
+
+/* 燈球：保留語義飽和色 + 插畫感內陰影立體感 */
+.light-orb {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: var(--border-ink);
+  display: block;
+  box-shadow:
+    inset -5px -5px 0px rgba(0,0,0,0.2),
+    inset 4px 4px 0px rgba(255,255,255,0.25);
+  transition: transform 0.15s ease;
+}
+
+.light--red    .light-orb { background: var(--red); }
+.light--yellow .light-orb { background: var(--yellow); }
+.light--green  .light-orb { background: var(--green); }
+
+.light-label {
+  font-weight: 900;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.3;
+  color: var(--text-main);
+}
+.light-label small {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* 答題動畫 */
+.light.is-pulse .light-orb {
+  animation: pulseOrb 0.45s ease;
+}
+@keyframes pulseOrb {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* =========================================================
+   11. 過場頁
+   ========================================================= */
+.transition-card {
+  margin: auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.transition-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================================================
+   12. 結算頁 — 活潑純色，呼應各關卡特徵
+   - 卡片底色：米白單色（無漸層）
+   - 標題：對比深藍 + 微白邊
+   - 進階聖杯區：橄欖綠系（對應進階關卡 paper #C8DCA8 + 邊框 #6A8A48）
+   - 基礎星星區：米白底 + 深藍邊框（對應基礎關卡 paper #FDF8EE + 邊框 #2D4198）
+   - 兩區塊用粉 / 金 / 橄欖等活潑點綴色（chip ✦ 角飾、icon），但不使用漸層
+   ========================================================= */
+.result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: auto 0;
+  background: #FFE388;  /* 蜜瓜黃：活潑陽光色，呼應金色聖杯與星星 */
+}
+
+/* 「再玩一次」按鈕：粉底搭配深藍字（與標題同色），不使用白字 */
+#btn-restart {
+  color: #1B2D7A;
+}
+
+/* 標題：對比深藍純色 */
+.result-card .title {
+  color: #1B2D7A;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 0 rgba(255,255,255,0.6);
+}
+
+.result-card .subtitle { color: #877666; }
+
+/* 結算 block 共同 */
+.result-block {
+  border: 3px solid var(--block-color, #2D4198);
+  border-radius: var(--radius-card);
+  box-shadow: 4px 4px 0 var(--block-color, #2D4198);
+  padding: 18px 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.result-block h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--block-color, #2D4198);
+  letter-spacing: 0.05em;
+}
+
+/* 角落小星星裝飾 — 用對比色點綴增加活潑感 */
+.result-block::before,
+.result-block::after {
+  content: '✦';
+  position: absolute;
+  font-size: 18px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.result-block::before { top: 8px;    left: 12px; }
+.result-block::after  { bottom: 8px; right: 12px; }
+
+/* ── 進階 · 聖杯 ── 橄欖綠系：呼應進階關卡 paper + 橄欖邊 */
+.result-block--advanced {
+  --block-color: #6A8A48;
+  background: #C8DCA8;
+}
+.result-block--advanced h3 { color: #3D5A1A; }
+/* 角飾用粉色點亮，與進階關卡 chip 同色（活潑撞色） */
+.result-block--advanced::before,
+.result-block--advanced::after { color: #C87890; }
+
+/* ── 基礎 · 星星 ── 米白＋深藍邊：呼應基礎關卡 paper + 藍邊 */
+.result-block--basic {
+  --block-color: #2D4198;
+  background: #FDF8EE;
+}
+.result-block--basic h3 { color: #2D4198; }
+/* 角飾用粉色點亮，與基礎關卡 chip 同色 */
+.result-block--basic::before,
+.result-block--basic::after { color: #C87890; }
+
+/* 圖示列 */
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
+}
+.icon-row svg { width: 56px; height: 56px; }
+.icon-row .icon { animation: pop 0.4s ease both; }
+@keyframes pop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  80%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.icon-row .icon:nth-child(1) { animation-delay: 0.05s; }
+.icon-row .icon:nth-child(2) { animation-delay: 0.15s; }
+.icon-row .icon:nth-child(3) { animation-delay: 0.25s; }
+.icon-row .icon:nth-child(4) { animation-delay: 0.35s; }
+.icon-row .icon:nth-child(5) { animation-delay: 0.45s; }
+
+.caption {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--block-color, #877666);
+  opacity: 0.85;
+}
+.closing {
+  text-align: center;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin: 0;
+  font-weight: 700;
+}
+.closing::before { content: '✨ '; }
+.closing::after  { content: ' ✨'; }
+
+/* =========================================================
+   13. 回饋對話框
+   ========================================================= */
+.overlay {
+  /* fixed 由 game.js 控制顯示，保持原邏輯 */
+  position: fixed;
+  inset: 0;
+  background: rgba(20,15,10,0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 100;
+  animation: overlayFade 0.2s ease both;
+}
+@keyframes overlayFade { from { opacity: 0; } to { opacity: 1; } }
+
+.dialog {
+  background: var(--bg-paper);
+  color: var(--text-main);
+  border: var(--border-ink);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hard);
+  padding: 24px 22px 18px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  animation: dialogPop 0.3s cubic-bezier(.18,.89,.32,1.28) both;
+}
+@keyframes dialogPop {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+.dialog h3 {
+  margin: 4px 0 10px;
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-main);
+}
+
+.dialog-body {
+  line-height: 1.75;
+  font-size: 15px;
+  margin: 6px 0;
+  color: var(--text-main);
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.dialog-correct {
+  text-align: center;
+  font-weight: 900;
+  color: var(--green-d);
+  margin: 4px 0 8px;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.dialog-foot {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 10px 0 0;
+}
+
+/* =========================================================
+   答對煙火效果（火箭升空 + 在指定位置爆炸）
+   - 第 1 次答對：發送 3 發煙火（左上、正上、右上），總時長 1.5s
+   - 第 2 次答對：發送 1 發煙火，後接對話框
+   - 結構：
+       #correct-ring（fixed 在畫面中心，0×0 容器）
+         ├─ .firework-rocket × N    （從畫面下方升至爆點）
+         └─ .fw-burst × N            （爆點群組，內含 flash + particle + streak）
+   ========================================================= */
+#correct-ring {
+  position: fixed;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  pointer-events: none;
+  z-index: 300;
+}
+
+/* ── 火箭：從下方升空到爆點 ── */
+.firework-rocket {
+  position: absolute;
+  top: 0; left: 0;
+  width: 5px;
+  height: 18px;
+  border-radius: 3px;
+  background: linear-gradient(to top, transparent, var(--rocket-color, #FFD700) 60%, #fff);
+  box-shadow:
+    0 0 12px var(--rocket-color, #FFD700),
+    0 8px 18px rgba(255,215,0,0.4);
+  transform: translate(-50%, -50%) translate(var(--start-x), var(--start-y));
+  opacity: 0;
+  animation: fwRocket var(--rocket-dur, 380ms) cubic-bezier(0.4, 0.2, 0.4, 1) forwards;
+  animation-delay: var(--rocket-delay, 0s);
+}
+@keyframes fwRocket {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--start-x), var(--start-y)) scaleY(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(var(--burst-x), var(--burst-y)) scaleY(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(var(--burst-x), var(--burst-y)) scaleY(0.7);
+  }
+}
+
+/* ── 爆炸群組：把座標原點搬到爆點 ── */
+.fw-burst {
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 0;
+  transform: translate(var(--burst-x, 0), var(--burst-y, 0));
+}
+
+/* 中央閃光 */
+.fw-burst .firework-flash {
+  position: absolute;
+  top: 0; left: 0;
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #FFE066 35%, rgba(255,224,102,0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  animation: fwFlash 0.45s ease-out forwards;
+}
+@keyframes fwFlash {
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.2); }
+  25%  { opacity: 1; transform: translate(-50%,-50%) scale(1.4); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(3); }
+}
+
+/* 放射粒子（消散速度放慢，飛散範圍 ×1.5，由 game.js 設定 --tx/--ty） */
+.fw-burst .firework-particle {
+  position: absolute;
+  top: 0; left: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: fwParticle 1.4s cubic-bezier(0.15, 0.7, 0.3, 1) forwards;
+}
+@keyframes fwParticle {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0, 0) scale(0.4);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%)
+              translate(calc(var(--tx) * 0.25), calc(var(--ty) * 0.25))
+              scale(1.2);
+  }
+  60% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%)
+              translate(var(--tx), calc(var(--ty) + 90px))
+              scale(0.3);
+  }
+}
+
+/* 流星長條（消散時間略放慢） */
+.fw-burst .firework-streak {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 60px;
+  background: linear-gradient(to top, transparent, currentColor 60%, #fff);
+  border-radius: 2px;
+  transform-origin: 50% 100%;
+  transform: translate(-50%, -100%) rotate(0deg);
+  opacity: 0;
+  animation: fwStreak 0.8s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
+}
+@keyframes fwStreak {
+  0%   { opacity: 0; transform: translate(-50%, -100%) rotate(var(--angle)) scaleY(0.2); }
+  25%  { opacity: 1; transform: translate(-50%, -100%) rotate(var(--angle)) scaleY(1) translateY(-15px); }
+  100% { opacity: 0; transform: translate(-50%, -100%) rotate(var(--angle)) scaleY(0.6) translateY(-60px); }
+}
+
+/* =========================================================
+   14. 載入錯誤提示
+   ========================================================= */
+#load-error .dialog-body code {
+  font-family: monospace;
+  background: rgba(0,0,0,0.06);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   15. 大螢幕微調
+   ========================================================= */
+@media (min-width: 720px) {
+  #app { padding: 28px; }
+  .scenario-card { min-height: 200px; padding: 24px; }
+  .light { min-height: 170px; }
+  .light-orb { width: 80px; height: 80px; }
+  .light-label { font-size: 17px; }
+  .transition-actions { flex-direction: row; justify-content: center; }
+  .icon-row svg { width: 64px; height: 64px; }
+}
+
+/* =========================================================
+   16. 無障礙：尊重減少動畫
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

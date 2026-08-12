@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>國小｜CH4｜真相大搜查－校園主播危機｜GAILearn</title>
+  <link rel="stylesheet" href="styles.css">
+
+    <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-H0GVBHS5B6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('set', {
+      'material_id': 'ES-CH4-01',
+      'manual_chapter': 'CH4',
+      'school_level': 'elementary'
+    });
+    gtag('config', 'G-H0GVBHS5B6', {
+      'page_title': '國小｜CH4｜真相大搜查－校園主播危機｜GAILearn',
+      'content_group': '國小互動式教材'
+    });
+  </script>
+
+</head>
+
+<body>
+
+  <!-- 遊戲主容器（CSV 載入完成才顯示，期間頁面留白） -->
+  <main id="game-container" class="game-container" hidden>
+
+    <!-- ===== 畫面 1：單頁式開始頁（標題＋玩法說明＋開始按鈕） ===== -->
+    <section id="screen-start" class="screen screen--active" data-screen="start">
+      <div class="start-card">
+        <h1 class="start-card__title">🔍真相大搜查</h1>
+        <p class="start-card__subtitle">校園主播危機 — 用「停、查、問」找出 AI 假消息</p>
+
+        <div class="start-card__section-title">遊戲怎麼玩？</div>
+        <div class="flow-grid" id="flow-grid">
+          <!-- 由 JS 從 instructions.csv 填入 3 個 step -->
+        </div>
+
+        <div class="start-card__section-title">小提醒</div>
+        <div class="rules-list">
+          <div class="rule-item">
+            <span class="rule-icon">⏱️</span>
+            <span>第一關每則訊息有 <strong>5 秒</strong>判斷時間，想清楚再按！</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-icon">🔎</span>
+            <span>第二關要在主圖上找出 <strong>其中 3 個破綻</strong>，可以使用 1 次提示。</span>
+          </div>
+          <div class="rule-item">
+            <span class="rule-icon">🏆</span>
+            <span>完成情境會獲得探員證書，共有 3 個情境 <strong>最高可取得三星榮譽</strong>！</span>
+          </div>
+        </div>
+
+        <button class="btn btn--accent btn--lg btn--hero" id="start-btn">開始</button>
+      </div>
+    </section>
+
+    <!-- ===== 畫面 3：前導動畫（18 張圖 flipbook + 打字機對白） ===== -->
+    <section id="screen-intro" class="screen" data-screen="intro">
+      <div class="intro__slideshow">
+        <img id="intro-slide" class="intro__slide" src="" alt="開場動畫">
+        <!-- 對話框浮在 slideshow 上層、蓋住底部跑道 -->
+        <div class="intro__bubble">
+          <p class="intro__text" id="intro-text"></p>
+        </div>
+      </div>
+      <!-- 動畫結束後出現的「開始調查」按鈕（位於 slideshow 下方，不擋對話框） -->
+      <div class="intro__cta" id="intro-cta" hidden>
+        <p class="intro__cta-subtitle" id="intro-cta-subtitle">本次任務：—</p>
+        <button class="btn btn--accent btn--hero" id="intro-cta-btn">🔍 開始調查！</button>
+      </div>
+    </section>
+
+    <!-- ===== 畫面 4：情境揭幕（隨機選定後的 3 秒過場） ===== -->
+    <section id="screen-scenario-reveal" class="screen" data-screen="scenario-reveal">
+      <div class="reveal__inner">
+        <p class="reveal__label">事件來了！</p>
+        <h2 class="reveal__name" id="reveal-name">—</h2>
+        <p class="reveal__desc" id="reveal-desc">—</p>
+      </div>
+    </section>
+
+    <!-- ===== 畫面 5：第一關「停」 ===== -->
+    <section id="screen-level1" class="screen" data-screen="level1">
+      <header class="level1__header">
+        <h2 class="level1__title">第一關　停</h2>
+        <div class="level1__progress">
+          <span class="level1__progress-label">已找到假訊息</span>
+          <span class="level1__progress-value" id="level1-progress">0 / 2</span>
+        </div>
+        <div class="timer" id="level1-timer" hidden>
+          <svg class="timer__svg" width="80" height="80">
+            <circle class="timer__circle-bg" cx="40" cy="40" r="36"></circle>
+            <circle class="timer__circle-fg" id="level1-timer-circle" cx="40" cy="40" r="36"></circle>
+          </svg>
+          <span class="timer__text" id="level1-timer-text">5</span>
+        </div>
+      </header>
+      <div class="level1__stage">
+        <div class="phone-frame">
+          <div class="phone-frame__image-wrap">
+            <img id="level1-message-image" src="" alt="訊息圖" class="phone-frame__image">
+            <!-- 右下浮層徽章（約圖片寬度 12%） -->
+            <img class="image-logo image-logo--l1" src="assets/images/ui/image_logo.webp" alt="" aria-hidden="true">
+          </div>
+          <p id="level1-message-text" class="phone-frame__caption">—</p>
+        </div>
+      </div>
+      <footer class="level1__footer">
+        <button class="btn btn--success btn--judge" id="level1-btn-true">
+          <span class="emoji">✅</span>通過｜真
+        </button>
+        <button class="btn btn--danger btn--judge" id="level1-btn-fake">
+          <span class="emoji">⛔</span>停！｜假
+        </button>
+      </footer>
+      <!-- 慶祝層 / 提示層 由 JS 動態插入 -->
+    </section>
+
+    <!-- ===== 畫面 6：第二關「查」 ===== -->
+    <section id="screen-level2" class="screen" data-screen="level2">
+      <header class="level2__header">
+        <h2 class="level2__title">第二關　查　找出 3 個破綻</h2>
+        <div class="level2__progress">
+          <span class="level2__progress-label">已找到破綻</span>
+          <span class="level2__progress-value" id="level2-progress">0 / 3</span>
+        </div>
+        <div class="timer" id="level2-timer">
+          <svg class="timer__svg" width="80" height="80">
+            <circle class="timer__circle-bg" cx="40" cy="40" r="36"></circle>
+            <circle class="timer__circle-fg" id="level2-timer-circle" cx="40" cy="40" r="36"></circle>
+          </svg>
+          <span class="timer__text" id="level2-timer-text">60</span>
+        </div>
+      </header>
+      <div class="level2__stage" id="level2-stage">
+        <div class="level2__image-wrap">
+          <img id="level2-main-image" src="" alt="主圖" class="level2__main-image">
+          <!-- 右下浮層徽章（約圖片寬度 8%） -->
+          <img class="image-logo image-logo--l2" src="assets/images/ui/image_logo.webp" alt="" aria-hidden="true">
+        </div>
+        <!-- hotspot 標記由 JS 動態插入到 stage -->
+      </div>
+      <footer class="level2__footer">
+        <button class="btn btn--ghost" id="level2-hint-btn">需要提示</button>
+      </footer>
+    </section>
+
+    <!-- ===== 畫面 7：第三關「問」 ===== -->
+    <section id="screen-level3" class="screen" data-screen="level3">
+      <header class="level3__header">
+        <h2 class="level3__title">第三關　問</h2>
+        <div class="level3__breakpoints" id="level3-breakpoints"></div>
+      </header>
+      <p class="level3__question">根據破綻，應該問誰最能確認真假？</p>
+      <div class="level3__characters" id="level3-characters"></div>
+      <div class="level3__response" id="level3-response" hidden></div>
+    </section>
+
+    <!-- ===== 畫面 8：情境結算頁 ===== -->
+    <section id="screen-result" class="screen" data-screen="result">
+      <h2 class="result__title">情境完成！</h2>
+      <div class="result__tree" id="result-tree"></div>
+      <footer class="result__footer">
+        <button class="btn btn--primary btn--lg" id="result-next-btn">前往證書</button>
+      </footer>
+    </section>
+
+    <!-- ===== 畫面 9：證書頁 ===== -->
+    <section id="screen-certificate" class="screen" data-screen="certificate">
+
+      <div class="certificate" id="certificate-canvas">
+        <p class="certificate__header">A I  T R U T H  D E T E C T I V E</p>
+        <h2 class="certificate__title">AI 真相偵探證書</h2>
+        <p class="certificate__scenario-label">調查任務</p>
+        <p class="certificate__scenario" id="cert-scenario">—</p>
+        <div class="certificate__stars" id="cert-stars">⭐⭐⭐</div>
+        <p class="certificate__name-label">持有人</p>
+        <p class="certificate__name" id="cert-name">未具名小偵探</p>
+        <p class="certificate__rank" id="cert-rank">三星偵探（最高榮譽）</p>
+        <p class="certificate__date" id="cert-date">—</p>
+      </div>
+
+      <!-- 姓名輸入列（選填，即時更新證書名字） -->
+      <div class="cert-name-row">
+        <label for="cert-name-input" class="cert-name-row__label">證書姓名（選填）</label>
+        <input
+          type="text"
+          id="cert-name-input"
+          class="cert-name-row__input"
+          placeholder="輸入名字（最多 12 字）"
+          maxlength="12"
+          autocomplete="off">
+        <p class="cert-name-row__hint">不輸入也可以下載證書喔！</p>
+      </div>
+
+      <p class="certificate__message" id="cert-message">繼續挑戰下一個情境，可以升星喔！</p>
+      <footer class="certificate__footer">
+        <button class="btn btn--primary btn--lg" id="cert-download-btn">下載證書</button>
+        <button class="btn btn--accent btn--lg" id="cert-replay-btn">再挑戰一場</button>
+        <button class="btn btn--ghost btn--lg" id="cert-restart-btn" hidden>重新開始</button>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- Toast 提示容器（共用） -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- 音效（之後接上實際檔案） -->
+  <audio id="audio-bgm" loop preload="none"></audio>
+  <audio id="audio-sfx" preload="none"></audio>
+  <audio id="audio-voice" preload="none"></audio>
+
+  <!-- html2canvas：用於證書下載成 PNG。GitHub Pages 部署也能直接使用 -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

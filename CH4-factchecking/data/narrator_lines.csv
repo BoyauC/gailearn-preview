@@ -1,0 +1,18 @@
+line_id,scene,text,voice
+intro_full,intro,注意！我是校園主播吱吱。現在網路上充滿了真假難辨的 AI 假圖片及資訊，\n連我們的校園福利社都變到司令台上了！大家快記住『停、查、問』口訣，\n我們要拯救校園，找出隱藏的 AI 假消息！GO！ GO！,assets/audio/voices/narrator/intro_full.mp3
+level1_open_s1,level1_open,天氣變化很大！我看到有人說可能颱風停課，我們快來看看這些訊息哪些是真的，哪些是假的！,assets/audio/voices/narrator/level1_open_s1.mp3
+level1_open_s2,level1_open,我看到一個很溫馨的新聞…『偏鄉學校獲得愛心捐贈』…但我們要仔細看看，這是真的好心，還是包裝過的騙局？,assets/audio/voices/narrator/level1_open_s2.mp3
+level1_open_s3,level1_open,我看到有人傳一個『免費 iPhone 17』的訊息！誰都可以領？嗯…這聽起來太好了！我們快來看看真假！,assets/audio/voices/narrator/level1_open_s3.mp3
+level2_open,level2_open,接著我們把可疑的圖片放大來看，找出 3 個破綻！,assets/audio/voices/narrator/level2_open.mp3
+level3_open_s1,level3_open,我們找到了 3 個破綻，這個停課公告應該問誰最能確認真假？,assets/audio/voices/narrator/level3_open_s1.mp3
+level3_open_s2,level3_open,我們找到了 3 個破綻，這個『溫馨校園訊息』應該問誰？,assets/audio/voices/narrator/level3_open_s2.mp3
+level3_open_s3,level3_open,我們找到了 3 個破綻，這個『免費禮物贈送』訊息應該問誰？,assets/audio/voices/narrator/level3_open_s3.mp3
+clear_s1,clear,太棒了！你成功識破了假停課訊息！,assets/audio/voices/narrator/clear_s1.mp3
+clear_s2,clear,太棒了！記得：天下沒有白吃的午餐，溫馨的故事也可能是陷阱。看到『免費』、『點此』、『填表領獎』要特別小心！,assets/audio/voices/narrator/clear_s2.mp3
+clear_s3,clear,太棒了！看到「免費」+「點連結」= 詐騙，太便宜的「好康」= 陷阱，陌生人說「中獎」= 騙局。記住這 3 招，你就是 AI 真相偵探！,assets/audio/voices/narrator/clear_s3.mp3
+cheer_correct_true,cheer,沒錯！這則是真的，可以放心通過！,assets/audio/voices/narrator/cheer_correct_true.mp3
+cheer_correct_fake,cheer,做得好！你抓到了一則假訊息！,assets/audio/voices/narrator/cheer_correct_fake.mp3
+cheer_break,cheer,你找到一個破綻！厲害！,assets/audio/voices/narrator/cheer_break.mp3
+cert_1star,certificate,你拿到一星探員證書！繼續挑戰下一個情境，可以升星喔！,assets/audio/voices/narrator/cert_1star.mp3
+cert_2star,certificate,你拿到二星偵探證書！再完成一個情境，就能拿到最高榮譽！,assets/audio/voices/narrator/cert_2star.mp3
+cert_3star,certificate,太棒了！你已成為三星 AI 真相偵探！這是最高榮譽！,assets/audio/voices/narrator/cert_3star.mp3

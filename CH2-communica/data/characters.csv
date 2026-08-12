@@ -1,0 +1,5 @@
+character_id,name,image,trait_short,trait_full,response_style,option_count,theme_color
+zhi,吱吱,assets/images/characters/zhi.png,喜歡各種嘗試,"愛交朋友、有點自戀，有經營直播頻道，富正義感，但有時候口快了一些。",活潑、愛用驚嘆號和情緒,3,#ffd166
+ke,可可,assets/images/characters/ke.png,沉穩篤實,"有點神經質，屬於網海中潛水型的人，總是ㄎㄎ，重視隱私。",中規中矩、條理分明,3,#86c5e8
+si,思思,assets/images/characters/si.png,愛作白日夢,"非常容易相信別人，有禮貌，被打了還會跟你說謝謝的那種人。",天馬行空、用比喻、充滿想像,3,#e9d6e8
+oni,歐匿,assets/images/characters/oni.png,可愛又神祕,"特殊技法是決定控制資訊的匿名性與否，來獲得更多的觸擊率。",留白俐落、提供兩種思路、不囉嗦,2,#c9b3e0

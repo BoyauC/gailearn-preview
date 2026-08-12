@@ -1,0 +1,7 @@
+style_id,label_zh,emoji,css_filter,suffix_en,suffix_zh
+normal,標準,🌤️,none,,畫面保持原始色調
+retro,復古風,📷,sepia(0.8) contrast(1.2),"vintage retro tone, sepia photo style",以復古老照片風格呈現，畫面變成黃褐色
+night,夜晚,🌙,brightness(0.6) hue-rotate(200deg) saturate(1.2),"at nighttime, dark blue moonlight",在夜晚的藍色月光下，畫面變暗且偏藍
+vivid,鮮豔,🌈,saturate(2.0),highly saturated vivid colors,用超鮮豔飽滿的色彩呈現
+cyberpunk,賽博龐克,🤖,hue-rotate(280deg) saturate(1.5) contrast(1.1),"cyberpunk neon style, glowing magenta",以賽博龐克霓虹紫紅風格呈現
+soft,柔和,☁️,brightness(1.05) contrast(0.85) saturate(0.85),"soft pastel colors, dreamy atmosphere",用柔和粉彩夢幻風呈現
