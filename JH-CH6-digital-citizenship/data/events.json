@@ -1,0 +1,2244 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "data/script-source.md",
+  "axes": [
+    "AX_DATA",
+    "AX_BALANCE",
+    "AX_REPUTATION",
+    "AX_PRIVACY",
+    "AX_LAW",
+    "AX_ETHICS"
+  ],
+  "states": [
+    "ST_ENERGY",
+    "ST_TRUST",
+    "ST_STRESS",
+    "ST_FOOTPRINT"
+  ],
+  "days": [
+    {
+      "day": 1,
+      "title": "群組裡的爆料消息",
+      "axis": "AX_DATA",
+      "badge": "truth",
+      "scene": "校門與教室",
+      "questions": [
+        "D1_Q1",
+        "D1_Q2",
+        "D1_Q3",
+        "D1_Q4"
+      ]
+    },
+    {
+      "day": 2,
+      "title": "AI 作業與睡前使用",
+      "axis": "AX_BALANCE",
+      "badge": "balance",
+      "scene": "放學街道與家中書桌",
+      "questions": [
+        "D2_Q1",
+        "D2_Q2",
+        "D2_Q3",
+        "D2_Q4"
+      ]
+    },
+    {
+      "day": 3,
+      "title": "同學的搞笑照片",
+      "axis": "AX_REPUTATION",
+      "badge": "reputation",
+      "scene": "校園走廊與班級群組",
+      "questions": [
+        "D3_Q1",
+        "D3_Q2",
+        "D3_Q3",
+        "D3_Q4"
+      ]
+    },
+    {
+      "day": 4,
+      "title": "免費活動的註冊頁",
+      "axis": "AX_PRIVACY",
+      "badge": "privacy",
+      "scene": "電腦教室與家中平板",
+      "questions": [
+        "D4_Q1",
+        "D4_Q2",
+        "D4_Q3",
+        "D4_Q4"
+      ]
+    },
+    {
+      "day": 5,
+      "title": "網路素材與二創作品",
+      "axis": "AX_LAW",
+      "badge": "law",
+      "scene": "社團教室與影片剪輯桌",
+      "questions": [
+        "D5_Q1",
+        "D5_Q2",
+        "D5_Q3",
+        "D5_Q4"
+      ]
+    },
+    {
+      "day": 6,
+      "title": "群組爭論與數位公約",
+      "axis": "AX_ETHICS",
+      "badge": "ethics",
+      "scene": "班級討論區與成果舞臺",
+      "questions": [
+        "D6_Q1",
+        "D6_Q2",
+        "D6_Q3",
+        "D6_Q4",
+        "D6_Q5"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "D1_Q1",
+      "day": 1,
+      "number": 1,
+      "title": "先讀懂這張截圖",
+      "context": "",
+      "options": [
+        {
+          "id": "D1_Q1_A",
+          "covenantId": null,
+          "text": "十幾個人都傳了，先轉到社團群提醒大家",
+          "axes": {
+            "AX_DATA": -2,
+            "AX_ETHICS": -1,
+            "AX_REPUTATION": -1
+          },
+          "states": {
+            "ST_TRUST": -5,
+            "ST_STRESS": 5,
+            "ST_FOOTPRINT": 8
+          },
+          "feedback": "吱吱：「快是快，但我們其實還不知道誰發布的。」群組轉傳數立刻上升。",
+          "flags": [
+            "rumor_shared",
+            "rumor_reach_high"
+          ],
+          "handbook": "媒體識讀：讀懂、懷疑、查證；網路行動需負責",
+          "rationale": "多人轉傳不等於真實；擴散會把不確定訊息變成群體壓力。",
+          "remedy": "立即刪除尚可刪的轉傳，發更正並附正式查核入口，可於 Q4 啟動 rumor_correction。"
+        },
+        {
+          "id": "D1_Q1_B",
+          "covenantId": null,
+          "text": "先在群組標註『未證實』，請原發文者補來源",
+          "axes": {
+            "AX_DATA": 1,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -2,
+            "ST_TRUST": 3,
+            "ST_STRESS": 1
+          },
+          "feedback": "可可：「至少先把事實和推測分開了；但還需要自己查。」",
+          "flags": [
+            "rumor_paused"
+          ],
+          "handbook": "區分事實與意見；負責任溝通",
+          "rationale": "是低成本的風險控制，但只請別人補來源，仍未完成交叉查證。",
+          "remedy": "接著查看正式公告或詢問校方，將「待確認」更新成結果。"
+        },
+        {
+          "id": "D1_Q1_C",
+          "covenantId": null,
+          "text": "先不轉傳，記下日期、用詞與缺少的來源",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_STRESS": -2
+          },
+          "feedback": "思思：「原來『沒寫什麼』也是線索。」真相羅盤亮起一格。",
+          "flags": [
+            "source_clues_logged"
+          ],
+          "handbook": "讀懂訊息、懷疑內容、找出可驗證線索",
+          "rationale": "先辨識訊息聲稱什麼、缺什麼，能避免被情緒性標題推著走。",
+          "remedy": "若時間不足，可先截存查核線索並公開說明「暫不轉傳」。"
+        }
+      ]
+    },
+    {
+      "id": "D1_Q2",
+      "day": 1,
+      "number": 2,
+      "title": "AI 說「可能是真的」",
+      "context": "歐匿顯示：「許多學校確實有手機管理規範，因此這則消息可能為真。」吱吱問：「AI 都這樣說了，可以傳了吧？」",
+      "options": [
+        {
+          "id": "D1_Q2_A",
+          "covenantId": null,
+          "text": "AI 找過很多資料，『可能』就當作是真的",
+          "axes": {
+            "AX_DATA": -2,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_STRESS": 4,
+            "ST_FOOTPRINT": 4
+          },
+          "feedback": "歐匿：「我回答的是一般可能性，不是這張截圖的真偽。」",
+          "flags": [
+            "ai_claim_overtrusted",
+            "rumor_shared",
+            "rumor_reach_high"
+          ],
+          "handbook": "判斷 AI 輸出；批判思考資訊",
+          "rationale": "AI 的流暢回答可能只有一般資訊，不能取代原始來源與在地事實。",
+          "remedy": "重問 AI「需要哪些證據才能確認」，再查原始公告；不可只換另一個 AI 問。"
+        },
+        {
+          "id": "D1_Q2_B",
+          "covenantId": null,
+          "text": "請 AI 列出查核步驟，再由我打開原始來源",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_BALANCE": 1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_STRESS": -1
+          },
+          "feedback": "可可：「讓 AI 幫忙整理步驟，最後證據仍由我們確認。」",
+          "flags": [
+            "ai_used_for_checklist"
+          ],
+          "handbook": "AI 輔助而非取代；查看來源、交叉查證",
+          "rationale": "善用 AI 提升效率，同時保留人的判斷與來源責任，是可行折衷。",
+          "remedy": "若 AI 給的網址不存在，改從學校首頁自行導航，不直接信任生成連結。"
+        },
+        {
+          "id": "D1_Q2_C",
+          "covenantId": null,
+          "text": "完全不用 AI，自己逐頁搜尋所有社群貼文",
+          "axes": {
+            "AX_DATA": 1,
+            "AX_BALANCE": -1
+          },
+          "states": {
+            "ST_ENERGY": -8,
+            "ST_STRESS": 3
+          },
+          "feedback": "思思：「很努力，但社群貼文再多，也不一定比原始公告可靠。」",
+          "flags": [
+            "manual_search_overload"
+          ],
+          "handbook": "適時適地使用科技；來源品質比數量重要",
+          "rationale": "安全意圖正確，但耗時且可能困在重複轉述；完全排斥工具不是唯一好答案。",
+          "remedy": "縮小查核範圍：官方公告、導師或行政單位，再用 AI 整理而非裁決。"
+        }
+      ]
+    },
+    {
+      "id": "D1_Q3",
+      "day": 1,
+      "number": 3,
+      "title": "選擇查核路徑",
+      "context": "上課鐘快響了，小行只剩幾分鐘。畫面出現三條查核路徑。",
+      "options": [
+        {
+          "id": "D1_Q3_A",
+          "covenantId": null,
+          "text": "看搜尋結果最上方的摘要，標題相似就算確認",
+          "axes": {
+            "AX_DATA": -1
+          },
+          "states": {
+            "ST_ENERGY": -1,
+            "ST_STRESS": 2
+          },
+          "feedback": "可可：「摘要談的是別校去年的規定，不是我們學校下週的公告。」",
+          "flags": [
+            "wrong_context_used"
+          ],
+          "handbook": "查看日期、來源及脈絡；區分相關與證明",
+          "rationale": "關鍵字相似不代表時間、地點與對象相同。",
+          "remedy": "回到原頁核對發布單位、日期與完整內容；撤下錯誤引用。"
+        },
+        {
+          "id": "D1_Q3_B",
+          "covenantId": null,
+          "text": "查學校官網最新公告，再問導師是否收到正式通知",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_TRUST": 5,
+            "ST_STRESS": -3
+          },
+          "feedback": "導師回覆：「目前沒有全面沒收手機的公告；下週只是討論會。」",
+          "flags": [
+            "source_checked",
+            "rumor_false_confirmed"
+          ],
+          "handbook": "交叉查證；對分享負責",
+          "rationale": "官方原始來源加上合適真人確認，證據最貼近這則具體主張。",
+          "remedy": "若當下無法取得回覆，就清楚標示「尚未證實」，不要把沉默當證明。"
+        },
+        {
+          "id": "D1_Q3_C",
+          "covenantId": null,
+          "text": "先請可信任的同學分工：一人查官網、一人問老師，我整理結果",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_TRUST": 7,
+            "ST_STRESS": -2
+          },
+          "feedback": "思思：「分工後很快，而且每個結果都能說出來源。」",
+          "flags": [
+            "source_checked",
+            "peer_check_network",
+            "rumor_false_confirmed"
+          ],
+          "handbook": "交叉查證；負責任合作",
+          "rationale": "有處理成本但效率高；前提是每人回報原始來源，不是「我聽說」。",
+          "remedy": "若分工結果衝突，暫不下結論並保留來源，請教師協助確認。"
+        }
+      ]
+    },
+    {
+      "id": "D1_Q4",
+      "day": 1,
+      "number": 4,
+      "title": "要在群組怎麼說",
+      "context": "查核結果顯示：「目前無全面沒收手機公告；校方僅規劃討論使用規範。」先前已有同學因消息爭吵。",
+      "options": [
+        {
+          "id": "D1_Q4_A",
+          "covenantId": null,
+          "text": "貼『假消息啦！你們也太好騙』並標記原發文者",
+          "axes": {
+            "AX_REPUTATION": -2,
+            "AX_ETHICS": -2,
+            "AX_DATA": 1
+          },
+          "states": {
+            "ST_TRUST": -8,
+            "ST_STRESS": 6,
+            "ST_FOOTPRINT": 5
+          },
+          "feedback": "吱吱：「資訊改正了，但人被公開嘲笑，爭吵反而更大。」",
+          "flags": [
+            "public_shaming"
+          ],
+          "handbook": "維護聲譽；澄清而非嘲諷",
+          "rationale": "真相正確不代表溝通方式就正確；公開羞辱會傷害他人第二形象。",
+          "remedy": "刪除嘲諷、私下道歉，重新以中性文字發布來源與查核步驟。"
+        },
+        {
+          "id": "D1_Q4_B",
+          "covenantId": null,
+          "text": "貼官方連結：『目前查不到這項公告，先暫停轉傳；若有更新再補充』",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_REPUTATION": 1,
+            "AX_ETHICS": 2
+          },
+          "states": {
+            "ST_TRUST": 8,
+            "ST_STRESS": -5,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "可可：「有結論、有證據，也留下日後更新的空間。」",
+          "flags": [
+            "source_checked",
+            "responsible_correction",
+            "rumor_shared",
+            "rumor_correction"
+          ],
+          "handbook": "查證、負責任、有道德的網路溝通",
+          "rationale": "不誇大、不攻擊，且讓群組成員能自行檢視證據。",
+          "remedy": "若自己曾轉傳，需明確承認並到原群組更正，不能只在新訊息中含糊帶過。"
+        },
+        {
+          "id": "D1_Q4_C",
+          "covenantId": null,
+          "text": "怕得罪人，什麼也不說，只把自己的訊息刪掉",
+          "axes": {
+            "AX_ETHICS": -1,
+            "AX_REPUTATION": 0
+          },
+          "states": {
+            "ST_TRUST": -2,
+            "ST_STRESS": 2,
+            "ST_FOOTPRINT": -2
+          },
+          "feedback": "思思：「你停下來了，但別人還不知道這則消息有問題。」",
+          "flags": [
+            "silent_withdrawal",
+            "rumor_shared"
+          ],
+          "handbook": "對行為負責；阻止錯誤資訊擴散",
+          "rationale": "刪除能降低部分風險，但未修復已造成的錯誤理解。",
+          "remedy": "補發簡短更正；若不適合公開，至少通知群組管理者協助置頂澄清。"
+        }
+      ]
+    },
+    {
+      "id": "D2_Q1",
+      "day": 2,
+      "number": 1,
+      "title": "AI 要幫到哪裡",
+      "context": "",
+      "options": [
+        {
+          "id": "D2_Q1_A",
+          "covenantId": null,
+          "text": "把題目丟給 AI，直接貼上完整心得",
+          "axes": {
+            "AX_BALANCE": -2,
+            "AX_DATA": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_ENERGY": 2,
+            "ST_STRESS": -3
+          },
+          "feedback": "歐匿：「文章完成了，但其中寫到你沒做過的查核行動。」",
+          "flags": [
+            "ai_dependency",
+            "unowned_reflection"
+          ],
+          "handbook": "AI 輔助而非取代；對自己的數位行動負責",
+          "rationale": "短期省力，卻失去反思與說明內容的能力。",
+          "remedy": "對照自身紀錄，刪除不實細節，用自己的例子重寫並保留 AI 協助說明。"
+        },
+        {
+          "id": "D2_Q1_B",
+          "covenantId": null,
+          "text": "請 AI 用三個問題幫我回想，再自己寫短版心得",
+          "axes": {
+            "AX_BALANCE": 2,
+            "AX_DATA": 1,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_STRESS": -4
+          },
+          "feedback": "思思：「問題讓我想起今天真的做過什麼，不是替我編故事。」",
+          "flags": [
+            "ai_as_scaffold",
+            "work_understood"
+          ],
+          "handbook": "適時使用科技；AI 輔助、人保留判斷",
+          "rationale": "用工具降低啟動成本，但內容與決定仍屬於玩家，是安全折衷。",
+          "remedy": "完成後關掉生成視窗，用自己的話朗讀一次，確認能解釋。"
+        },
+        {
+          "id": "D2_Q1_C",
+          "covenantId": null,
+          "text": "完全不用 AI，硬撐到寫出最完整版本",
+          "axes": {
+            "AX_BALANCE": -1,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -12,
+            "ST_STRESS": 7
+          },
+          "feedback": "可可：「獨立完成很可貴，但熬夜也會影響明天的判斷。」",
+          "flags": [
+            "late_night_overuse",
+            "manual_overwork"
+          ],
+          "handbook": "使用時間改善計畫；科技與生活平衡",
+          "rationale": "不依賴 AI 不等於健康使用；過度追求完整會犧牲休息。",
+          "remedy": "改交可說明的短版、記錄待補處，必要時向老師誠實說明進度。"
+        }
+      ]
+    },
+    {
+      "id": "D2_Q2",
+      "day": 2,
+      "number": 2,
+      "title": "朋友邀請繼續在線聊天",
+      "context": "吱吱：「寫完就來！今晚新活動只開到十二點。」思思也說想在線等小行陪她完成。",
+      "options": [
+        {
+          "id": "D2_Q2_A",
+          "covenantId": null,
+          "text": "一邊陪思思、一邊玩活動，晚一點再睡",
+          "axes": {
+            "AX_BALANCE": -2
+          },
+          "states": {
+            "ST_ENERGY": -15,
+            "ST_STRESS": 10,
+            "ST_TRUST": 2
+          },
+          "feedback": "吱吱：「大家都在線！」畫面卻開始重影，小行回訊息的速度越來越慢。",
+          "flags": [
+            "late_night_overuse",
+            "notification_overload"
+          ],
+          "handbook": "控制使用時間；避免過度使用",
+          "rationale": "有陪伴意圖，但同時多工和延後睡眠會增加壓力、降低隔日判斷力。",
+          "remedy": "說明下線時間，約定明天面對面協助；開啟勿擾模式。"
+        },
+        {
+          "id": "D2_Q2_B",
+          "covenantId": null,
+          "text": "陪思思十分鐘釐清第一步，約好明早再談，然後下線",
+          "axes": {
+            "AX_BALANCE": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_TRUST": 6,
+            "ST_STRESS": -5
+          },
+          "feedback": "思思：「你沒有突然消失，也沒有替我做完；明早見。」",
+          "flags": [
+            "healthy_boundary",
+            "peer_support_planned"
+          ],
+          "handbook": "適時適地使用；面對面互動；負責任溝通",
+          "rationale": "清楚界線兼顧關係與休息，是需溝通成本的平衡做法。",
+          "remedy": "若對方情緒或安全有急迫風險，應改為聯絡可信任成人，不機械套用下線規則。"
+        },
+        {
+          "id": "D2_Q2_C",
+          "covenantId": null,
+          "text": "直接關機，不回任何人",
+          "axes": {
+            "AX_BALANCE": 1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_ENERGY": 5,
+            "ST_TRUST": -5,
+            "ST_STRESS": -4
+          },
+          "feedback": "思思：「我以為你生氣了。」休息獲得保護，但關係留下誤會。",
+          "flags": [
+            "abrupt_disconnect"
+          ],
+          "handbook": "避免科技冷漠；網路禮儀",
+          "rationale": "保護睡眠有效，但沒有基本告知可能傷害人際信任。",
+          "remedy": "隔天主動說明並道歉；日後預先設定狀態訊息或固定下線時間。"
+        }
+      ]
+    },
+    {
+      "id": "D2_Q3",
+      "day": 2,
+      "number": 3,
+      "title": "睡前設定",
+      "context": "歐匿顯示三種快捷設定：「全部通知」「只留重要聯絡」「完全停用手機」。",
+      "options": [
+        {
+          "id": "D2_Q3_A",
+          "covenantId": null,
+          "text": "通知全開，怕錯過群組進度",
+          "axes": {
+            "AX_BALANCE": -2
+          },
+          "states": {
+            "ST_ENERGY": -10,
+            "ST_STRESS": 8
+          },
+          "feedback": "通知每幾分鐘亮一次，科技平衡徽章出現警示裂紋。",
+          "flags": [
+            "late_night_overuse",
+            "notification_overload"
+          ],
+          "handbook": "每日使用時間與改善計畫",
+          "rationale": "害怕錯過使工具反過來控制休息。",
+          "remedy": "設勿擾時段，只保留家人緊急聯絡；明早一次處理群組。"
+        },
+        {
+          "id": "D2_Q3_B",
+          "covenantId": null,
+          "text": "設定 20 分鐘完成提醒、睡眠模式，只留家人緊急聯絡",
+          "axes": {
+            "AX_BALANCE": 2,
+            "AX_PRIVACY": 1
+          },
+          "states": {
+            "ST_ENERGY": 6,
+            "ST_STRESS": -7
+          },
+          "feedback": "可可：「不是拒絕科技，而是讓它在對的時間工作。」",
+          "flags": [
+            "sleep_mode_set"
+          ],
+          "handbook": "對的時間與情境使用；改善使用計畫",
+          "rationale": "兼顧可聯絡性和休息，且設定具體可執行。",
+          "remedy": "每週檢查實際螢幕時間；若常忽略提醒，將裝置移離床邊。"
+        },
+        {
+          "id": "D2_Q3_C",
+          "covenantId": null,
+          "text": "刪掉所有聊天 App，明天再裝回來",
+          "axes": {
+            "AX_BALANCE": 0
+          },
+          "states": {
+            "ST_ENERGY": 3,
+            "ST_STRESS": 2,
+            "ST_TRUST": -2
+          },
+          "feedback": "吱吱：「做得很徹底，但每天刪裝不一定能建立長久習慣。」",
+          "flags": [
+            "extreme_app_cycle"
+          ],
+          "handbook": "使用科技的良好習慣",
+          "rationale": "短期阻斷有效，但成本高、難持續，也可能漏掉必要訊息。",
+          "remedy": "改用時段、通知與主畫面管理；需要時請家人共同約定。"
+        }
+      ]
+    },
+    {
+      "id": "D2_Q4",
+      "day": 2,
+      "number": 4,
+      "title": "隔日的理解檢查",
+      "context": "老師臨時請小行用一句話說明心得中的查核步驟。若有 late_night_overuse，畫面先觸發「昨晚睡太晚：ST_ENERGY -10」，需要耐心的選項顯示精力成本，但仍提供補救，不鎖死學習機會。",
+      "options": [
+        {
+          "id": "D2_Q4_A",
+          "covenantId": null,
+          "text": "照著 AI 文章念，不理會老師追問",
+          "axes": {
+            "AX_BALANCE": -1,
+            "AX_DATA": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -4,
+            "ST_STRESS": 6
+          },
+          "feedback": "老師：「句子很完整，但請告訴我你實際查了哪個來源。」",
+          "flags": [
+            "ai_dependency",
+            "explanation_gap"
+          ],
+          "handbook": "不過度依賴；對內容負責",
+          "rationale": "無法說明表示工具取代了理解，延遲風險已出現。",
+          "remedy": "承認使用方式，回看第一天紀錄，以自己的經驗重寫。"
+        },
+        {
+          "id": "D2_Q4_B",
+          "covenantId": null,
+          "text": "用自己的例子簡短回答，並說明 AI 只幫忙整理問題",
+          "axes": {
+            "AX_BALANCE": 2,
+            "AX_DATA": 1,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_TRUST": 5,
+            "ST_STRESS": -4
+          },
+          "feedback": "老師：「能說清楚自己做了什麼，才是真正的學習證據。」",
+          "flags": [
+            "ai_use_disclosed",
+            "work_understood",
+            "explanation_gap"
+          ],
+          "handbook": "AI 輔助、人負責；透明責任",
+          "rationale": "能說明內容與工具角色，表示理解和責任仍由學生掌握。",
+          "remedy": "若引用 AI 產生的特定內容，仍需查核並依作業規定標示。"
+        },
+        {
+          "id": "D2_Q4_C",
+          "covenantId": null,
+          "text": "誠實說昨晚沒完成理解，請求午休補充說明",
+          "axes": {
+            "AX_BALANCE": 1,
+            "AX_ETHICS": 2
+          },
+          "states": {
+            "ST_TRUST": 3,
+            "ST_STRESS": 1,
+            "ST_ENERGY": -3
+          },
+          "feedback": "可可：「有成本，但誠實爭取補救比假裝懂更可靠。」",
+          "flags": [
+            "honest_extension",
+            "remedy_ai_dependency"
+          ],
+          "handbook": "負責任、有道德意識；改善計畫",
+          "rationale": "不是最佳效率，卻是風險已發生時可行的修復路徑。",
+          "remedy": "午休完成自己的摘要，設定今晚的合理時限，避免把延期變成循環。"
+        }
+      ]
+    },
+    {
+      "id": "D3_Q1",
+      "day": 3,
+      "number": 1,
+      "title": "第一個反應",
+      "context": "",
+      "options": [
+        {
+          "id": "D3_Q1_A",
+          "covenantId": null,
+          "text": "轉發迷因並加一句『今日最佳』",
+          "axes": {
+            "AX_REPUTATION": -2,
+            "AX_PRIVACY": -2,
+            "AX_LAW": -1,
+            "AX_ETHICS": -2
+          },
+          "states": {
+            "ST_TRUST": -15,
+            "ST_FOOTPRINT": 20,
+            "ST_STRESS": 4
+          },
+          "feedback": "畫面顯示轉傳數跳升；阿岳離開群組。",
+          "flags": [
+            "photo_forwarded",
+            "photo_reach_high"
+          ],
+          "handbook": "第二形象、肖像與聲譽、數位足跡、法律責任",
+          "rationale": "「只是玩笑」不能取代當事人的同意；轉傳會擴大傷害與法律風險。",
+          "remedy": "停止轉傳、刪除、通知管理者、保存必要求助證據並向當事人道歉。"
+        },
+        {
+          "id": "D3_Q1_B",
+          "covenantId": null,
+          "text": "不轉發，但按笑臉表示看過",
+          "axes": {
+            "AX_REPUTATION": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -5,
+            "ST_FOOTPRINT": 3
+          },
+          "feedback": "思思：「沒有轉傳比較好，但笑臉也讓發圖的人覺得大家支持。」",
+          "flags": [
+            "photo_bystander_reaction"
+          ],
+          "handbook": "網路行動會影響真實世界；有道德意識",
+          "rationale": "被動互動仍可能鼓勵擴散，並讓當事人感到被集體嘲笑。",
+          "remedy": "收回反應，私下關心當事人，在群組清楚表示不應再傳。"
+        },
+        {
+          "id": "D3_Q1_C",
+          "covenantId": null,
+          "text": "先不互動，私下問阿岳是否需要協助",
+          "axes": {
+            "AX_REPUTATION": 2,
+            "AX_ETHICS": 2,
+            "AX_PRIVACY": 1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_TRUST": 8,
+            "ST_STRESS": -2
+          },
+          "feedback": "阿岳：「我不想大家再傳，但也不想被更多人圍觀。」",
+          "flags": [
+            "photo_protected",
+            "victim_preference_known"
+          ],
+          "handbook": "尊重他人聲譽與隱私；考慮是否傷害他人",
+          "rationale": "先了解當事人需求，避免以「幫忙」之名再次公開事件。",
+          "remedy": "若無法直接聯絡或涉及安全，找可信任教師協助，仍避免公開細節。"
+        }
+      ]
+    },
+    {
+      "id": "D3_Q2",
+      "day": 3,
+      "number": 2,
+      "title": "群組正在擴散",
+      "context": "",
+      "options": [
+        {
+          "id": "D3_Q2_A",
+          "covenantId": null,
+          "text": "在群組大罵吱吱『你就是霸凌者』",
+          "axes": {
+            "AX_REPUTATION": -1,
+            "AX_ETHICS": -2
+          },
+          "states": {
+            "ST_TRUST": -6,
+            "ST_STRESS": 8,
+            "ST_FOOTPRINT": 4
+          },
+          "feedback": "吱吱立刻反擊，焦點從照片轉成互罵。",
+          "flags": [
+            "conflict_escalated",
+            "public_labeling"
+          ],
+          "handbook": "針對行為而非攻擊個人；維護聲譽",
+          "rationale": "制止傷害的目的正確，但公開貼標籤可能升高衝突並傷害另一人的聲譽。",
+          "remedy": "改述具體行為與影響：「請停止轉傳並刪除照片」，必要時請管理者介入。"
+        },
+        {
+          "id": "D3_Q2_B",
+          "covenantId": null,
+          "text": "簡短說明未經同意不宜轉傳，請大家刪除，並私訊發圖者",
+          "axes": {
+            "AX_REPUTATION": 2,
+            "AX_PRIVACY": 2,
+            "AX_LAW": 1,
+            "AX_ETHICS": 2
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_TRUST": 10,
+            "ST_STRESS": 1,
+            "ST_FOOTPRINT": -8
+          },
+          "feedback": "可可：「公開阻止擴散，私下處理責任，兩邊都顧到了。」",
+          "flags": [
+            "photo_protected",
+            "spread_stop_requested"
+          ],
+          "handbook": "肖像、聲譽、數位足跡；負責任溝通",
+          "rationale": "清楚指出行為界線，又避免公開羞辱，是安全但需要人際成本的方案。",
+          "remedy": "若對方不刪或繼續傳，升級給群組管理者、導師或輔導人員處理。"
+        },
+        {
+          "id": "D3_Q2_C",
+          "covenantId": null,
+          "text": "把照片裁掉臉再做成迷因，覺得這樣就能繼續用",
+          "axes": {
+            "AX_PRIVACY": 1,
+            "AX_REPUTATION": -1,
+            "AX_ETHICS": -1,
+            "AX_LAW": 0
+          },
+          "states": {
+            "ST_FOOTPRINT": -3,
+            "ST_TRUST": -3
+          },
+          "feedback": "歐匿：「臉被裁掉了，但制服、場景和動作仍可能辨識出阿岳。」",
+          "flags": [
+            "photo_partially_deidentified"
+          ],
+          "handbook": "個資辨識、肖像與尊重他人",
+          "rationale": "處理後風險降低，但情境仍可識別，且嘲笑本身未消失；不是自動取得同意。",
+          "remedy": "改用自製虛構角色重現「走廊安全」情境，且不影射當事人。"
+        }
+      ]
+    },
+    {
+      "id": "D3_Q3",
+      "day": 3,
+      "number": 3,
+      "title": "要保存證據還是全部刪掉",
+      "context": "阿岳想請老師協助，但擔心截圖會再次流傳。",
+      "options": [
+        {
+          "id": "D3_Q3_A",
+          "covenantId": null,
+          "text": "把所有截圖公開貼到社群，證明事情很嚴重",
+          "axes": {
+            "AX_PRIVACY": -2,
+            "AX_REPUTATION": -2,
+            "AX_LAW": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": 18,
+            "ST_TRUST": -10
+          },
+          "feedback": "阿岳：「你是想幫我，可是更多陌生人看到了。」",
+          "flags": [
+            "evidence_publicized",
+            "photo_reach_high"
+          ],
+          "handbook": "保護他人資料；網路行動與法律後果",
+          "rationale": "蒐證目的不能合理化公開散布；必要證據應限制對象與範圍。",
+          "remedy": "刪除公開內容，保留原始時間與必要畫面，只交給可信任成人或正式申訴管道。"
+        },
+        {
+          "id": "D3_Q3_B",
+          "covenantId": null,
+          "text": "保存必要截圖與時間，遮住無關者資料，只交給導師",
+          "axes": {
+            "AX_PRIVACY": 2,
+            "AX_LAW": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_TRUST": 8,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "導師：「這些足以協助處理，也沒有讓更多同學被捲入。」",
+          "flags": [
+            "evidence_minimized",
+            "teacher_support"
+          ],
+          "handbook": "個資、兒少保護、知道何時求助",
+          "rationale": "兼顧求助證據與資料最小化，是需時間但風險可控的做法。",
+          "remedy": "處理結束後依需要刪除副本，不把蒐證檔長期留在一般相簿或雲端分享區。"
+        },
+        {
+          "id": "D3_Q3_C",
+          "covenantId": null,
+          "text": "立刻刪掉自己看到的一切，不留證據也不告訴任何人",
+          "axes": {
+            "AX_PRIVACY": 1,
+            "AX_LAW": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": -5,
+            "ST_TRUST": -2
+          },
+          "feedback": "可可：「降低持有風險了，但阿岳可能失去求助需要的資料。」",
+          "flags": [
+            "evidence_lost"
+          ],
+          "handbook": "兒少保護、法律概念、何時求助",
+          "rationale": "全刪有隱私好處，但在持續傷害時可能妨礙正式協助。",
+          "remedy": "詢問當事人與教師需要哪些最低限度證據；不要自行蒐集更多。"
+        }
+      ]
+    },
+    {
+      "id": "D3_Q4",
+      "day": 3,
+      "number": 4,
+      "title": "補救與道歉",
+      "context": "若小行曾轉傳或按讚，畫面要求面對自己的紀錄；若沒有，則由小行協助吱吱選擇補救。",
+      "options": [
+        {
+          "id": "D3_Q4_A",
+          "covenantId": null,
+          "text": "只刪貼文，不提自己做過什麼",
+          "axes": {
+            "AX_REPUTATION": 0,
+            "AX_ETHICS": -1,
+            "AX_PRIVACY": 1
+          },
+          "states": {
+            "ST_FOOTPRINT": -8,
+            "ST_TRUST": -2
+          },
+          "feedback": "阿岳：「照片少了一份，但我不知道你是否理解問題。」",
+          "flags": [
+            "photo_deleted_only",
+            "photo_forwarded"
+          ],
+          "handbook": "承認錯誤、修正不當行動",
+          "rationale": "刪除是必要風險控制，卻不能完整修復信任或已發生的擴散。",
+          "remedy": "補上具體道歉、通知收件者刪除，說明以後會先取得同意。"
+        },
+        {
+          "id": "D3_Q4_B",
+          "covenantId": null,
+          "text": "刪除、請收件者停止轉傳，私下具體道歉並詢問需要",
+          "axes": {
+            "AX_REPUTATION": 2,
+            "AX_PRIVACY": 2,
+            "AX_ETHICS": 2,
+            "AX_LAW": 1
+          },
+          "states": {
+            "ST_ENERGY": -6,
+            "ST_TRUST": 12,
+            "ST_STRESS": -3,
+            "ST_FOOTPRINT": -12
+          },
+          "feedback": "阿岳：「不能當作沒發生，但我看見你在處理後果。」",
+          "flags": [
+            "remedy_photo_full",
+            "photo_protected",
+            "photo_forwarded"
+          ],
+          "handbook": "承認錯誤、阻止擴散、尊重當事人",
+          "rationale": "補救包含行動、責任與當事人需求；不能保證完全回收數位足跡。",
+          "remedy": "依當事人意願請教師協助；後續不把道歉過程做成自我宣傳。"
+        },
+        {
+          "id": "D3_Q4_C",
+          "covenantId": null,
+          "text": "公開寫很長的道歉文並貼出阿岳姓名，希望大家稱讚勇於認錯",
+          "axes": {
+            "AX_REPUTATION": -1,
+            "AX_PRIVACY": -2,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -5,
+            "ST_FOOTPRINT": 8
+          },
+          "feedback": "思思：「道歉又把阿岳和事件綁在一起了。」",
+          "flags": [
+            "apology_reexposed_victim"
+          ],
+          "handbook": "尊重他人聲譽與個資；有道德意識",
+          "rationale": "以公開表演為中心的道歉可能再次揭露當事人，忽略其意願。",
+          "remedy": "移除姓名與細節，先私下詢問；公開更正只說必要資訊。"
+        }
+      ]
+    },
+    {
+      "id": "D4_Q1",
+      "day": 4,
+      "number": 1,
+      "title": "先判斷活動頁可信度",
+      "context": "",
+      "options": [
+        {
+          "id": "D4_Q1_A",
+          "covenantId": null,
+          "text": "倒數快結束，先填再說",
+          "axes": {
+            "AX_DATA": -2,
+            "AX_PRIVACY": -2
+          },
+          "states": {
+            "ST_STRESS": 8,
+            "ST_FOOTPRINT": 15
+          },
+          "feedback": "倒數歸零後又重新從三分鐘開始；可可：「這可能只是催促你放棄判斷。」",
+          "flags": [
+            "privacy_overexposed",
+            "urgency_trap_followed"
+          ],
+          "handbook": "懷疑與查證；保護個資",
+          "rationale": "人為急迫感是常見風險線索，不能用獎品抵銷資料危害。",
+          "remedy": "立即停止、關閉頁面；若已送出，進入 Q4 帳號與個資急救。"
+        },
+        {
+          "id": "D4_Q1_B",
+          "covenantId": null,
+          "text": "查主辦單位官網、網址、聯絡方式與隱私政策",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_PRIVACY": 2,
+            "AX_LAW": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_STRESS": -4,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "頁面宣稱的主辦單位官網沒有這場活動，聯絡信箱也是免費信箱。",
+          "flags": [
+            "registration_trap_identified"
+          ],
+          "handbook": "來源查證、資料保護、個資相關法律概念",
+          "rationale": "以原始官方管道核對，能辨識冒名與過度蒐集。",
+          "remedy": "將可疑頁回報平台或可信任成人；不要在公開貼文重貼可點擊連結。"
+        },
+        {
+          "id": "D4_Q1_C",
+          "covenantId": null,
+          "text": "把連結丟給 AI，AI 說版面專業就相信",
+          "axes": {
+            "AX_DATA": -1,
+            "AX_PRIVACY": -1
+          },
+          "states": {
+            "ST_STRESS": 2,
+            "ST_FOOTPRINT": 6
+          },
+          "feedback": "歐匿：「我看見的是頁面文字，無法保證背後的主辦者。」",
+          "flags": [
+            "ai_security_overtrusted"
+          ],
+          "handbook": "判斷 AI 輸出；查證來源",
+          "rationale": "AI 可協助列風險，但不能只憑視覺或文案驗證真實身分。",
+          "remedy": "用 AI 產生檢查表後自行查官方網域、政策與聯絡管道。"
+        }
+      ]
+    },
+    {
+      "id": "D4_Q2",
+      "day": 4,
+      "number": 2,
+      "title": "哪些資料真的需要",
+      "context": "假設另找到官方活動頁，真正報名只需要暱稱、聯絡信箱與年齡區間；其餘欄位標示「可選」。",
+      "options": [
+        {
+          "id": "D4_Q2_A",
+          "covenantId": null,
+          "text": "所有欄位都填，換取最個人化推薦",
+          "axes": {
+            "AX_PRIVACY": -2,
+            "AX_BALANCE": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": 18,
+            "ST_STRESS": 3
+          },
+          "feedback": "思思：「原來『可選』不是一定要填。」足跡密鎖出現警示。",
+          "flags": [
+            "privacy_overexposed",
+            "data_minimization_failed"
+          ],
+          "handbook": "保護應保護的資料；數位足跡",
+          "rationale": "資料一旦交出可能被長期保存、組合或外洩；便利不代表必要。",
+          "remedy": "回帳號設定刪除非必要資料、撤回同意，確認保存期限。"
+        },
+        {
+          "id": "D4_Q2_B",
+          "covenantId": null,
+          "text": "只填完成報名必要資料，選擇不提供位置、住址與相簿",
+          "axes": {
+            "AX_PRIVACY": 2,
+            "AX_DATA": 1
+          },
+          "states": {
+            "ST_ENERGY": -2,
+            "ST_FOOTPRINT": -8,
+            "ST_STRESS": -3
+          },
+          "feedback": "可可：「你不是什麼都不給，而是先問『為何需要』。」",
+          "flags": [
+            "data_minimized",
+            "safe_registration"
+          ],
+          "handbook": "個資保護、資料最小化、數位足跡",
+          "rationale": "以目的限制資料範圍，兼顧使用服務與隱私。",
+          "remedy": "定期檢查服務是否新增用途；活動結束後刪除帳號或不再需要的資料。"
+        },
+        {
+          "id": "D4_Q2_C",
+          "covenantId": null,
+          "text": "用假住址、假電話填滿欄位",
+          "axes": {
+            "AX_PRIVACY": 1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": -3,
+            "ST_STRESS": 2
+          },
+          "feedback": "歐匿：「少暴露真資料，但虛假聯絡也可能違反規則或錯失通知。」",
+          "flags": [
+            "fake_data_used"
+          ],
+          "handbook": "有道德意識；資料保護",
+          "rationale": "隱私風險較低，卻未處理服務為何索取資料，也可能衍生責任問題。",
+          "remedy": "優先不填非必要欄位；若服務強迫蒐集不合理資料，就放棄或改官方管道。"
+        }
+      ]
+    },
+    {
+      "id": "D4_Q3",
+      "day": 4,
+      "number": 3,
+      "title": "密碼與權限",
+      "context": "頁面要求「輸入社群帳號密碼驗證身分」，並跳出相簿和位置權限。",
+      "options": [
+        {
+          "id": "D4_Q3_A",
+          "covenantId": null,
+          "text": "密碼不給，但位置與整個相簿都允許",
+          "axes": {
+            "AX_PRIVACY": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": 12,
+            "ST_STRESS": 2
+          },
+          "feedback": "可可：「保住一把鑰匙，卻打開了另外兩扇門。」",
+          "flags": [
+            "broad_permissions_granted"
+          ],
+          "handbook": "位置、照片與他人資料也需保護",
+          "rationale": "只拒絕密碼不足；相簿可能含他人影像，位置會揭露行程。",
+          "remedy": "到系統設定撤回權限，改成「使用期間」或「僅選取照片」。"
+        },
+        {
+          "id": "D4_Q3_B",
+          "covenantId": null,
+          "text": "不輸入密碼；拒絕非必要權限，改用官方登入或家長、老師協助確認",
+          "axes": {
+            "AX_PRIVACY": 2,
+            "AX_LAW": 1,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -4,
+            "ST_TRUST": 4,
+            "ST_FOOTPRINT": -10
+          },
+          "feedback": "思思：「多花一點時間，但我們沒有把帳號鑰匙交出去。」",
+          "flags": [
+            "credentials_protected",
+            "adult_check_used"
+          ],
+          "handbook": "密碼安全、個資、知道何時求助",
+          "rationale": "不在第三方頁輸入密碼，並選擇適齡的可信任協助，是安全高成本方案。",
+          "remedy": "若曾重複使用該密碼，立即改密碼、啟用多重要素驗證並檢查登入紀錄。"
+        },
+        {
+          "id": "D4_Q3_C",
+          "covenantId": null,
+          "text": "只開『僅選取的照片』與活動期間位置，提交後立刻撤回",
+          "axes": {
+            "AX_PRIVACY": 1,
+            "AX_DATA": 1
+          },
+          "states": {
+            "ST_ENERGY": -4,
+            "ST_FOOTPRINT": -3
+          },
+          "feedback": "歐匿：「這是處理後可用的折衷，但前提是功能真的需要，而且頁面可信。」",
+          "flags": [
+            "limited_permissions_used"
+          ],
+          "handbook": "適時授權、保護自己與他人資料",
+          "rationale": "權限受範圍與時間限制，可降低風險；不適用於可疑服務或無必要用途。",
+          "remedy": "提交後查看權限與上傳內容，刪除誤選資料；拒絕上傳含他人的照片。"
+        }
+      ]
+    },
+    {
+      "id": "D4_Q4",
+      "day": 4,
+      "number": 4,
+      "title": "延遲後果：登入警告",
+      "context": "若有 privacy_overexposed、broad_permissions_granted 或第三天 evidence_publicized，手機跳出陌生登入和針對學校、活動內容的可疑訊息；否則呈現思思轉來的求助案例。",
+      "options": [
+        {
+          "id": "D4_Q4_A",
+          "covenantId": null,
+          "text": "怕被罵，刪掉警告訊息，假裝沒看見",
+          "axes": {
+            "AX_PRIVACY": -2,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_STRESS": 10,
+            "ST_FOOTPRINT": 10,
+            "ST_TRUST": -4
+          },
+          "feedback": "警告消失了，但陌生裝置仍顯示在線。",
+          "flags": [
+            "account_warning_ignored"
+          ],
+          "handbook": "對行為負責；保護密碼與個資",
+          "rationale": "隱藏通知不會解除存取，拖延可能擴大損害。",
+          "remedy": "立即啟動帳號急救並找可信任成人協助，不因羞愧延後。"
+        },
+        {
+          "id": "D4_Q4_B",
+          "covenantId": null,
+          "text": "改密碼、登出陌生裝置、開啟多重要素驗證、撤權限並告知可信任成人",
+          "axes": {
+            "AX_PRIVACY": 2,
+            "AX_LAW": 1,
+            "AX_ETHICS": 2
+          },
+          "states": {
+            "ST_ENERGY": -8,
+            "ST_STRESS": -5,
+            "ST_FOOTPRINT": -15,
+            "ST_TRUST": 5
+          },
+          "feedback": "足跡警示縮小，但系統提示：「已外流資料不能保證完全收回。」",
+          "flags": [
+            "remedy_privacy_full",
+            "account_secured",
+            "privacy_overexposed"
+          ],
+          "handbook": "密碼安全、個資保護、何時求助",
+          "rationale": "完整急救同時阻斷存取、強化帳號並處理外部協助；後果只能降低不能抹除。",
+          "remedy": "檢查其他共用密碼帳號與資料刪除管道，留意後續詐騙。"
+        },
+        {
+          "id": "D4_Q4_C",
+          "covenantId": null,
+          "text": "只改這個帳號密碼，其他之後再說",
+          "axes": {
+            "AX_PRIVACY": 1
+          },
+          "states": {
+            "ST_ENERGY": -2,
+            "ST_STRESS": 1,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "可可：「先做一件有幫助，但若密碼重複，其他帳號仍有風險。」",
+          "flags": [
+            "remedy_privacy_partial"
+          ],
+          "handbook": "密碼與數位足跡保護",
+          "rationale": "快速處理能降低部分風險，卻未撤權限、登出或處理重複密碼。",
+          "remedy": "用密碼管理方式逐一更換、啟用多重要素驗證，完成後再檢查登入紀錄。"
+        }
+      ]
+    },
+    {
+      "id": "D5_Q1",
+      "day": 5,
+      "number": 1,
+      "title": "熱門歌曲怎麼用",
+      "context": "",
+      "options": [
+        {
+          "id": "D5_Q1_A",
+          "covenantId": null,
+          "text": "網路找得到就下載整首當配樂",
+          "axes": {
+            "AX_LAW": -2,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_STRESS": 3,
+            "ST_FOOTPRINT": 10
+          },
+          "feedback": "上傳測試立刻出現著作權警示。",
+          "flags": [
+            "copyright_risk_music",
+            "unlicensed_assets"
+          ],
+          "handbook": "著作權、合法使用",
+          "rationale": "可取得不代表有公開重製與播放授權。",
+          "remedy": "移除檔案，改用自製或授權清楚素材；不要用變速、裁切規避辨識。"
+        },
+        {
+          "id": "D5_Q1_B",
+          "covenantId": null,
+          "text": "只用十秒並標歌名，認為一定是合理使用",
+          "axes": {
+            "AX_LAW": -1,
+            "AX_ETHICS": 0
+          },
+          "states": {
+            "ST_STRESS": 2,
+            "ST_FOOTPRINT": 4
+          },
+          "feedback": "可可：「秒數短和註明來源都不是自動合法的保證。」",
+          "flags": [
+            "fair_use_assumed"
+          ],
+          "handbook": "著作權與授權概念",
+          "rationale": "使用比例與標示只是判斷因素之一，仍需看目的、方式與規定。",
+          "remedy": "查學校與平台規範；不確定時換成授權清楚的替代素材。"
+        },
+        {
+          "id": "D5_Q1_C",
+          "covenantId": null,
+          "text": "查授權條款，選可公開使用的音樂並依要求標示",
+          "axes": {
+            "AX_LAW": 2,
+            "AX_DATA": 1,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_STRESS": -3,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "法律界線徽章亮起；影片保留公開資格。",
+          "flags": [
+            "licensed_assets",
+            "license_recorded"
+          ],
+          "handbook": "著作權、確認授權、標示來源",
+          "rationale": "不只寫作者，而是確認使用範圍、改作與標示條件。",
+          "remedy": "保存授權頁、作者、網址與查詢日期；若條款改變仍有製作時紀錄。"
+        }
+      ]
+    },
+    {
+      "id": "D5_Q2",
+      "day": 5,
+      "number": 2,
+      "title": "插畫與 AI 片頭圖",
+      "context": "",
+      "options": [
+        {
+          "id": "D5_Q2_A",
+          "covenantId": null,
+          "text": "插畫註明作者，AI 圖就當作完全沒問題",
+          "axes": {
+            "AX_LAW": -1,
+            "AX_DATA": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_STRESS": 2,
+            "ST_FOOTPRINT": 5
+          },
+          "feedback": "歐匿：「標示作者不等於取得授權；AI 圖也要檢查來源與使用規則。」",
+          "flags": [
+            "attribution_only",
+            "ai_asset_unchecked"
+          ],
+          "handbook": "著作權、批判判斷 AI 輸出",
+          "rationale": "來源標示與使用許可是兩回事；AI 生成不會自動消除相似、條款或責任風險。",
+          "remedy": "查授權與生成服務條款，做相似性檢視；必要時重製或替換。"
+        },
+        {
+          "id": "D5_Q2_B",
+          "covenantId": null,
+          "text": "改用自製圖示；AI 只產生構圖草案，由團隊重畫並記錄協助",
+          "axes": {
+            "AX_LAW": 2,
+            "AX_DATA": 1,
+            "AX_ETHICS": 2
+          },
+          "states": {
+            "ST_ENERGY": -8,
+            "ST_TRUST": 5,
+            "ST_STRESS": -2
+          },
+          "feedback": "思思：「花時間，但每個圖像怎麼來的，我們都說得清楚。」",
+          "flags": [
+            "licensed_assets",
+            "ai_use_disclosed",
+            "asset_provenance_clear"
+          ],
+          "handbook": "合法素材、透明責任、有道德意識",
+          "rationale": "自製並保留 AI 協助紀錄，降低授權不明風險，也能清楚說明創作責任。",
+          "remedy": "若參考特定作品，避免高度近似；保留草稿與來源檢查。"
+        },
+        {
+          "id": "D5_Q2_C",
+          "covenantId": null,
+          "text": "用授權可改作的插畫，依條款標示；AI 圖只留不涉及品牌的背景",
+          "axes": {
+            "AX_LAW": 2,
+            "AX_DATA": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_STRESS": -2
+          },
+          "feedback": "可可：「處理後可以用，但每一項都要符合自己的條件。」",
+          "flags": [
+            "licensed_assets",
+            "license_recorded",
+            "ai_asset_limited"
+          ],
+          "handbook": "授權使用、資料判斷",
+          "rationale": "是效率與責任的折衷：不把所有素材一概禁用，而是逐項限制用途。",
+          "remedy": "上線前再檢查署名格式、改作條件與平台規則。"
+        }
+      ]
+    },
+    {
+      "id": "D5_Q3",
+      "day": 5,
+      "number": 3,
+      "title": "同學照片與迷因殘留",
+      "context": "若有 photo_forwarded，剪輯軌上真的出現阿岳迷因；若沒有，則是另一位同學的活動照片尚未取得公開同意。",
+      "options": [
+        {
+          "id": "D5_Q3_A",
+          "covenantId": null,
+          "text": "班級共同作品就直接用，不必一個個問",
+          "axes": {
+            "AX_LAW": -2,
+            "AX_PRIVACY": -2,
+            "AX_REPUTATION": -2,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -12,
+            "ST_FOOTPRINT": 18
+          },
+          "feedback": "阿岳：「我參加班級，不代表同意這張照片被公開。」",
+          "flags": [
+            "image_used_without_consent",
+            "photo_forwarded",
+            "photo_reach_high"
+          ],
+          "handbook": "肖像權、個資、聲譽",
+          "rationale": "團體活動不代表放棄對影像用途的選擇；敏感迷因風險更高。",
+          "remedy": "立即下架、詢問當事人需求、改用無人物畫面或已同意素材。"
+        },
+        {
+          "id": "D5_Q3_B",
+          "covenantId": null,
+          "text": "逐一取得明確同意，說明用途、平台與可撤回方式",
+          "axes": {
+            "AX_LAW": 2,
+            "AX_PRIVACY": 2,
+            "AX_REPUTATION": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -7,
+            "ST_TRUST": 12,
+            "ST_FOOTPRINT": -10
+          },
+          "feedback": "阿岳選擇不使用迷因，但同意另一張團體背影照。",
+          "flags": [
+            "image_consent_obtained",
+            "photo_protected"
+          ],
+          "handbook": "肖像、個資、尊重他人、合法使用",
+          "rationale": "同意須對應具體用途，且拒絕不應承受壓力；成本高但最尊重人。",
+          "remedy": "保存最少必要同意紀錄；用途改變時重新確認，撤回後更新版本。"
+        },
+        {
+          "id": "D5_Q3_C",
+          "covenantId": null,
+          "text": "移除可辨識臉孔與姓名，改用自製剪影重現活動",
+          "axes": {
+            "AX_PRIVACY": 2,
+            "AX_REPUTATION": 1,
+            "AX_LAW": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_TRUST": 6,
+            "ST_FOOTPRINT": -8
+          },
+          "feedback": "吱吱：「笑點少了，但故事還在，而且沒有人被拿來當素材。」",
+          "flags": [
+            "image_replaced_safely",
+            "photo_protected"
+          ],
+          "handbook": "保護個資與聲譽；合法替代素材",
+          "rationale": "當取得同意困難時，改用不可辨識的自製呈現是可行折衷。",
+          "remedy": "確認制服、聲音、場景與動作不會重新指向特定同學。"
+        }
+      ]
+    },
+    {
+      "id": "D5_Q4",
+      "day": 5,
+      "number": 4,
+      "title": "公開前的授權清單",
+      "context": "倒數十五分鐘，團隊必須決定是否公開影片。",
+      "options": [
+        {
+          "id": "D5_Q4_A",
+          "covenantId": null,
+          "text": "先公開，收到申訴再下架",
+          "axes": {
+            "AX_LAW": -2,
+            "AX_ETHICS": -2
+          },
+          "states": {
+            "ST_STRESS": 8,
+            "ST_FOOTPRINT": 15
+          },
+          "feedback": "上傳鍵亮起紅色警示；可可：「下架不能保證副本消失。」",
+          "flags": [
+            "publish_before_clearance",
+            "takedown_risk"
+          ],
+          "handbook": "法律責任、數位足跡、對行為負責",
+          "rationale": "把風險成本轉嫁給創作者與被拍攝者，補救也不能完全回收。",
+          "remedy": "先暫存不公開，逐項替換或確認；若已上線立即下架並通知受影響者。"
+        },
+        {
+          "id": "D5_Q4_B",
+          "covenantId": null,
+          "text": "缺一項授權，整部片延期，完成清單後再公開",
+          "axes": {
+            "AX_LAW": 2,
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_ENERGY": -4,
+            "ST_STRESS": 2,
+            "ST_TRUST": 5
+          },
+          "feedback": "老師同意延期；團隊要承擔重新排程。",
+          "flags": [
+            "licensed_assets",
+            "publication_delayed"
+          ],
+          "handbook": "確認授權、負責任",
+          "rationale": "安全但有時間與成果展示成本，適合無法即時替換的重要素材。",
+          "remedy": "排定負責人與完成時間，避免「延期」變成不處理。"
+        },
+        {
+          "id": "D5_Q4_C",
+          "covenantId": null,
+          "text": "先用授權完整的精簡版公開，完整版待素材確認後更新",
+          "axes": {
+            "AX_LAW": 2,
+            "AX_BALANCE": 1,
+            "AX_ETHICS": 2
+          },
+          "states": {
+            "ST_ENERGY": -6,
+            "ST_STRESS": -4,
+            "ST_TRUST": 7,
+            "ST_FOOTPRINT": -8
+          },
+          "feedback": "影片縮短了，但順利通過公開檢查。",
+          "flags": [
+            "licensed_assets",
+            "safe_short_version"
+          ],
+          "handbook": "合法使用、適時運用工具、責任溝通",
+          "rationale": "兼顧期限與法律界線；只公開已能負責的部分。",
+          "remedy": "版本名稱和素材清單要清楚，更新時重新檢查所有新增內容。"
+        }
+      ]
+    },
+    {
+      "id": "D6_Q1",
+      "day": 6,
+      "number": 1,
+      "title": "先處理匿名攻擊",
+      "context": "",
+      "options": [
+        {
+          "id": "D6_Q1_A",
+          "covenantId": null,
+          "text": "開分身用更難聽的話反擊",
+          "axes": {
+            "AX_ETHICS": -2,
+            "AX_REPUTATION": -2,
+            "AX_LAW": -1
+          },
+          "states": {
+            "ST_TRUST": -12,
+            "ST_STRESS": 12,
+            "ST_FOOTPRINT": 15
+          },
+          "feedback": "歐匿：「匿名降低被看見的感覺，沒有取消行為責任。」",
+          "flags": [
+            "anonymous_attack",
+            "conflict_escalated"
+          ],
+          "handbook": "匿名責任、妨害名譽、網路禮儀",
+          "rationale": "以傷害回應傷害，會擴大衝突並留下新的法律與足跡風險。",
+          "remedy": "停止回覆、保留必要證據、刪除攻擊、具體道歉並請管理者介入。"
+        },
+        {
+          "id": "D6_Q1_B",
+          "covenantId": null,
+          "text": "截圖公審，號召全班找出是誰",
+          "axes": {
+            "AX_ETHICS": -2,
+            "AX_REPUTATION": -1,
+            "AX_PRIVACY": -1,
+            "AX_LAW": -1
+          },
+          "states": {
+            "ST_TRUST": -8,
+            "ST_STRESS": 10,
+            "ST_FOOTPRINT": 12
+          },
+          "feedback": "思思：「大家開始猜人，沒被證實的同學也被點名了。」",
+          "flags": [
+            "anonymous_attack",
+            "doxxing_risk",
+            "public_shaming"
+          ],
+          "handbook": "聲譽、個資、法律、批判思考",
+          "rationale": "公開追查可能誤認、揭露資料並形成群體攻擊；蒐證應交給合適管道。",
+          "remedy": "刪除猜測名單，只保存必要內容給管理者、教師或正式申訴管道。"
+        },
+        {
+          "id": "D6_Q1_C",
+          "covenantId": null,
+          "text": "不猜身分；保存必要證據、停止擴散並請管理者限制攻擊帳號",
+          "axes": {
+            "AX_ETHICS": 2,
+            "AX_REPUTATION": 2,
+            "AX_PRIVACY": 1,
+            "AX_LAW": 1
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_TRUST": 8,
+            "ST_STRESS": -5,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "可可：「先保護人，再處理行為；匿名者仍要為內容負責。」",
+          "flags": [
+            "ethical_mediation",
+            "anonymous_attack_contained"
+          ],
+          "handbook": "負責任、有道德意識、妨害名譽與求助",
+          "rationale": "控制傷害、保留程序需要的證據，避免自行獵巫。",
+          "remedy": "若涉及威脅、自傷、兒少性影像或持續騷擾，立即找可信任成人及正式單位。"
+        }
+      ]
+    },
+    {
+      "id": "D6_Q2",
+      "day": 6,
+      "number": 2,
+      "title": "把爭論拉回議題",
+      "context": "",
+      "options": [
+        {
+          "id": "D6_Q2_A",
+          "covenantId": null,
+          "text": "宣布全面禁用手機和 AI，這樣最安全",
+          "axes": {
+            "AX_BALANCE": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -4,
+            "ST_STRESS": 3
+          },
+          "feedback": "吱吱：「風險少了，但需要聯絡、查資料和輔助學習時怎麼辦？」",
+          "flags": [
+            "blanket_ban_proposed"
+          ],
+          "handbook": "對的時間與情境使用；批判思考",
+          "rationale": "全面禁止忽略合理用途與可管理風險，不符合「善用」科技。",
+          "remedy": "改成時段、情境、權限與責任條件，並保留必要協助例外。"
+        },
+        {
+          "id": "D6_Q2_B",
+          "covenantId": null,
+          "text": "先分開『可確認事實、個人意見、需要再查』，再請每方說需求",
+          "axes": {
+            "AX_DATA": 2,
+            "AX_ETHICS": 2,
+            "AX_REPUTATION": 1
+          },
+          "states": {
+            "ST_ENERGY": -6,
+            "ST_TRUST": 10,
+            "ST_STRESS": -5
+          },
+          "feedback": "思思：「原來大家不是只分成支持和反對；有人在意聯絡，有人在意上課干擾。」",
+          "flags": [
+            "ethical_mediation",
+            "needs_identified"
+          ],
+          "handbook": "批判思考、負責任溝通、尊重他人",
+          "rationale": "把人身立場轉成可討論的資訊與需求，有助於形成可執行規則。",
+          "remedy": "設定發言順序與時間；對未確認主張標記待查，不用聲量表決真相。"
+        },
+        {
+          "id": "D6_Q2_C",
+          "covenantId": null,
+          "text": "先投票，票多的一方決定全部規則",
+          "axes": {
+            "AX_ETHICS": 0,
+            "AX_DATA": -1
+          },
+          "states": {
+            "ST_TRUST": -2,
+            "ST_STRESS": 1
+          },
+          "feedback": "可可：「投票有效率，但少數人的安全和必要需求不能直接消失。」",
+          "flags": [
+            "majority_only_rule"
+          ],
+          "handbook": "有道德意識；做決定時考慮是否傷害他人",
+          "rationale": "快速且有程序感，但未釐清資訊、權利與例外，可能形成不公平規則。",
+          "remedy": "先確認不可侵害的界線與必要例外，再對可選方案投票。"
+        }
+      ]
+    },
+    {
+      "id": "D6_Q3",
+      "day": 6,
+      "number": 3,
+      "title": "公開錯誤與補救",
+      "context": "系統挑選玩家六天內一個尚未完整處理的重大旗標；若沒有重大風險，則處理吱吱曾轉傳迷因的案例。",
+      "options": [
+        {
+          "id": "D6_Q3_A",
+          "covenantId": null,
+          "text": "把紀錄刪掉，公約只寫理想做法",
+          "axes": {
+            "AX_ETHICS": -1,
+            "AX_REPUTATION": -1
+          },
+          "states": {
+            "ST_TRUST": -4,
+            "ST_STRESS": 3,
+            "ST_FOOTPRINT": -2
+          },
+          "feedback": "歐匿：「畫面少了一筆，但已造成的影響沒有因此消失。」",
+          "flags": [
+            "unresolved_major_risk"
+          ],
+          "handbook": "對行為負責、承認錯誤",
+          "rationale": "隱藏紀錄避免尷尬，卻無法修復受影響者或制度漏洞。",
+          "remedy": "選擇一項具體補救並記入公約，不必公開不必要的個資細節。"
+        },
+        {
+          "id": "D6_Q3_B",
+          "covenantId": null,
+          "text": "說明做錯的行為、造成的影響與已採取的補救，不公開他人細節",
+          "axes": {
+            "AX_ETHICS": 2,
+            "AX_REPUTATION": 2
+          },
+          "states": {
+            "ST_ENERGY": -5,
+            "ST_TRUST": 10,
+            "ST_STRESS": -3,
+            "ST_FOOTPRINT": -5
+          },
+          "feedback": "阿岳：「你沒有拿我的事情當表演，但有說清楚以後怎麼做。」",
+          "flags": [
+            "major_risk_acknowledged",
+            "remedy_committed",
+            "unresolved_major_risk"
+          ],
+          "handbook": "承認錯誤、負責任、尊重聲譽與隱私",
+          "rationale": "透明聚焦行為與修復，不二次揭露當事人，是成熟的責任做法。",
+          "remedy": "按旗標完成具體行動：更正、下架、撤權限、改密碼、取得授權或正式求助。"
+        },
+        {
+          "id": "D6_Q3_C",
+          "covenantId": null,
+          "text": "私下完成補救，只在公約寫匿名案例與預防步驟",
+          "axes": {
+            "AX_ETHICS": 1,
+            "AX_PRIVACY": 1
+          },
+          "states": {
+            "ST_ENERGY": -4,
+            "ST_TRUST": 5,
+            "ST_STRESS": -2,
+            "ST_FOOTPRINT": -4
+          },
+          "feedback": "可可：「在保護當事人的前提下，班級仍能從事件學到方法。」",
+          "flags": [
+            "private_remedy_completed",
+            "lesson_anonymized"
+          ],
+          "handbook": "有道德意識、個資保護、補救責任",
+          "rationale": "當公開說明會造成二次傷害時，私下修復加匿名化學習是合理折衷。",
+          "remedy": "補救需由受影響者或合適成人確認，不能用「私下處理」逃避責任。"
+        }
+      ]
+    },
+    {
+      "id": "D6_Q4",
+      "day": 6,
+      "number": 4,
+      "title": "共同完成六項數位生活公約",
+      "context": "玩家在每一軸的三條固定原則中選一條，再於本機填一項「未來一週行動」。公約與自由文字只留在遊戲本機狀態，不送往 GA4。系統檢查是否涵蓋六軸，不設單一標準答案。",
+      "options": [
+        {
+          "id": "D6_Q4_DATA_A",
+          "covenantId": "CV_DATA_1",
+          "text": "分享前確認來源、日期與至少一個原始證據",
+          "axes": {
+            "AX_DATA": 1
+          },
+          "states": {
+            "ST_TRUST": 2,
+            "ST_STRESS": -1
+          },
+          "feedback": "可可：「別人能沿著證據再看一次，查證才不是口號。」",
+          "flags": [
+            "covenant_data_actionable"
+          ],
+          "handbook": "讀懂、懷疑、查證",
+          "rationale": "有具體檢查項目，能直接套用到第一天事件。",
+          "remedy": "若時間不足，先標「未證實」並暫停轉傳，稍後補查。"
+        },
+        {
+          "id": "D6_Q4_DATA_B",
+          "covenantId": "CV_DATA_2",
+          "text": "只要 AI 說可能，就可以分享",
+          "axes": {
+            "AX_DATA": -1
+          },
+          "states": {
+            "ST_STRESS": 2,
+            "ST_FOOTPRINT": 2
+          },
+          "feedback": "歐匿：「『可能』不是原始證據，我也可能缺少最新脈絡。」",
+          "flags": [
+            "covenant_gap_data"
+          ],
+          "handbook": "判斷 AI 輸出",
+          "rationale": "把工具推測當結論，重現第一天風險。",
+          "remedy": "修訂為 AI 列查核步驟、人確認原始來源。"
+        },
+        {
+          "id": "D6_Q4_DATA_C",
+          "covenantId": "CV_DATA_3",
+          "text": "所有網路資訊都不相信也不使用",
+          "axes": {
+            "AX_DATA": 0,
+            "AX_BALANCE": -1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_STRESS": 1
+          },
+          "feedback": "思思：「完全拒絕很安全嗎？那正式公告也不能用了。」",
+          "flags": [
+            "covenant_gap_data"
+          ],
+          "handbook": "批判思考、適時使用科技",
+          "rationale": "懷疑不等於否定一切，會失去可靠資訊的用途。",
+          "remedy": "改為依來源、證據與脈絡分級信任。"
+        },
+        {
+          "id": "D6_Q4_BALANCE_A",
+          "covenantId": "CV_BALANCE_1",
+          "text": "依情境設定時段、通知與休息；AI 幫忙但不取代理解",
+          "axes": {
+            "AX_BALANCE": 1
+          },
+          "states": {
+            "ST_ENERGY": 2,
+            "ST_STRESS": -2
+          },
+          "feedback": "吱吱：「有需要時能用，也知道什麼時候停。」",
+          "flags": [
+            "covenant_balance_actionable"
+          ],
+          "handbook": "適時適地、不沉迷、不過度依賴",
+          "rationale": "同時涵蓋作息、情境與 AI 角色，能執行且不走極端。",
+          "remedy": "先從一個時段試行，依螢幕時間與精神狀態調整。"
+        },
+        {
+          "id": "D6_Q4_BALANCE_B",
+          "covenantId": "CV_BALANCE_2",
+          "text": "只要任務完成，使用多久都沒關係",
+          "axes": {
+            "AX_BALANCE": -1
+          },
+          "states": {
+            "ST_ENERGY": -3,
+            "ST_STRESS": 3
+          },
+          "feedback": "小行打了個哈欠；可可：「完成度不能抵銷過載。」",
+          "flags": [
+            "covenant_gap_balance"
+          ],
+          "handbook": "使用時間與改善計畫",
+          "rationale": "忽略精力、壓力與面對面生活成本。",
+          "remedy": "加入睡眠、休息、通知與每日回顧界線。"
+        },
+        {
+          "id": "D6_Q4_BALANCE_C",
+          "covenantId": "CV_BALANCE_3",
+          "text": "一律禁用所有手機與 AI",
+          "axes": {
+            "AX_BALANCE": -1
+          },
+          "states": {
+            "ST_TRUST": -2,
+            "ST_STRESS": 1
+          },
+          "feedback": "歐匿：「風險少了，合理的學習與聯絡用途也消失了。」",
+          "flags": [
+            "covenant_gap_balance"
+          ],
+          "handbook": "對的時間與情境使用",
+          "rationale": "全面禁止不符合善用科技，也忽略必要協助。",
+          "remedy": "改成依上課、休息、緊急聯絡等情境訂條件。"
+        },
+        {
+          "id": "D6_Q4_REPUTATION_A",
+          "covenantId": "CV_REPUTATION_1",
+          "text": "發布前想像當事人看見的感受；出錯就停止擴散並修復",
+          "axes": {
+            "AX_REPUTATION": 1
+          },
+          "states": {
+            "ST_TRUST": 3,
+            "ST_FOOTPRINT": -1
+          },
+          "feedback": "阿岳：「不只是不發，出錯後也知道怎麼處理。」",
+          "flags": [
+            "covenant_reputation_actionable"
+          ],
+          "handbook": "第二形象、維護他人聲譽",
+          "rationale": "同時含預防與補救，能對應照片事件。",
+          "remedy": "依當事人需要刪除、道歉、通知收件者與求助。"
+        },
+        {
+          "id": "D6_Q4_REPUTATION_B",
+          "covenantId": "CV_REPUTATION_2",
+          "text": "只要是玩笑，轉傳也沒關係",
+          "axes": {
+            "AX_REPUTATION": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -4,
+            "ST_FOOTPRINT": 3
+          },
+          "feedback": "思思：「是不是玩笑，不能只由發圖的人決定。」",
+          "flags": [
+            "covenant_gap_reputation"
+          ],
+          "handbook": "網路行動進入真實世界",
+          "rationale": "忽略當事人感受、辨識性與擴散後果。",
+          "remedy": "改為先取得具體用途同意，不同意就換素材。"
+        },
+        {
+          "id": "D6_Q4_REPUTATION_C",
+          "covenantId": "CV_REPUTATION_3",
+          "text": "出錯只要刪掉自己的貼文，不必更正",
+          "axes": {
+            "AX_REPUTATION": 0,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_TRUST": -2,
+            "ST_FOOTPRINT": -1
+          },
+          "feedback": "吱吱：「自己這份少了，但別人的副本和誤會還在。」",
+          "flags": [
+            "covenant_gap_reputation"
+          ],
+          "handbook": "承認錯誤、阻止擴散",
+          "rationale": "只有部分風險控制，沒有承擔已造成的影響。",
+          "remedy": "加入更正、通知停止轉傳及向受影響者道歉。"
+        },
+        {
+          "id": "D6_Q4_PRIVACY_A",
+          "covenantId": "CV_PRIVACY_1",
+          "text": "只提供必要資料，不交密碼；照片、位置與他人資料先取得同意",
+          "axes": {
+            "AX_PRIVACY": 1
+          },
+          "states": {
+            "ST_FOOTPRINT": -3,
+            "ST_STRESS": -1
+          },
+          "feedback": "可可：「每一種資料都先問用途與必要性。」",
+          "flags": [
+            "covenant_privacy_actionable"
+          ],
+          "handbook": "密碼、個資、位置、他人照片",
+          "rationale": "具體涵蓋資料最小化與他人隱私。",
+          "remedy": "活動結束撤權限、刪除不再需要的資料並檢查登入。"
+        },
+        {
+          "id": "D6_Q4_PRIVACY_B",
+          "covenantId": "CV_PRIVACY_2",
+          "text": "免費服務可以換取全部資料",
+          "axes": {
+            "AX_PRIVACY": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": 4,
+            "ST_STRESS": 2
+          },
+          "feedback": "歐匿：「免費價格沒有說明資料會被怎麼保存與組合。」",
+          "flags": [
+            "covenant_gap_privacy"
+          ],
+          "handbook": "個資與數位足跡",
+          "rationale": "把便利視為無上限蒐集的理由，忽略長期風險。",
+          "remedy": "改成只提供功能必要資料，拒絕不合理欄位。"
+        },
+        {
+          "id": "D6_Q4_PRIVACY_C",
+          "covenantId": "CV_PRIVACY_3",
+          "text": "遇到必填欄位一律填假資料",
+          "axes": {
+            "AX_PRIVACY": 1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": -1,
+            "ST_STRESS": 1
+          },
+          "feedback": "思思：「保護了真資料，但沒有解決服務是否值得使用。」",
+          "flags": [
+            "covenant_gap_privacy"
+          ],
+          "handbook": "個資保護、有道德意識",
+          "rationale": "可能違反規則、錯失通知，也未處理過度蒐集。",
+          "remedy": "不填非必要資料；強迫不合理蒐集時放棄並改官方管道。"
+        },
+        {
+          "id": "D6_Q4_LAW_A",
+          "covenantId": "CV_LAW_1",
+          "text": "素材先查授權與用途、影像先取得同意；重大風險找合適成人",
+          "axes": {
+            "AX_LAW": 1
+          },
+          "states": {
+            "ST_TRUST": 2,
+            "ST_FOOTPRINT": -2
+          },
+          "feedback": "可可：「能用、怎麼用、誰同意，都能說清楚。」",
+          "flags": [
+            "covenant_law_actionable"
+          ],
+          "handbook": "著作權、肖像、個資、兒少保護",
+          "rationale": "把法律概念轉成製作前的具體檢查。",
+          "remedy": "保存最低必要授權紀錄；用途改變時重新確認。"
+        },
+        {
+          "id": "D6_Q4_LAW_B",
+          "covenantId": "CV_LAW_2",
+          "text": "有標作者名字，網路素材就都能用",
+          "axes": {
+            "AX_LAW": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": 3,
+            "ST_STRESS": 1
+          },
+          "feedback": "歐匿：「署名和授權是兩件事。」",
+          "flags": [
+            "covenant_gap_law"
+          ],
+          "handbook": "著作權與合法使用",
+          "rationale": "忽略重製、改作、公開範圍與條款。",
+          "remedy": "查明確授權；不清楚就換自製或授權清楚素材。"
+        },
+        {
+          "id": "D6_Q4_LAW_C",
+          "covenantId": "CV_LAW_3",
+          "text": "先公開，收到申訴再下架",
+          "axes": {
+            "AX_LAW": -1,
+            "AX_ETHICS": -1
+          },
+          "states": {
+            "ST_FOOTPRINT": 4,
+            "ST_TRUST": -3
+          },
+          "feedback": "阿岳：「副本已經出現，下架不等於沒發生。」",
+          "flags": [
+            "covenant_gap_law"
+          ],
+          "handbook": "法律責任、數位足跡",
+          "rationale": "把檢查成本與傷害轉嫁給權利人和被拍攝者。",
+          "remedy": "公開前完成清單；有缺項就延期或先發安全精簡版。"
+        },
+        {
+          "id": "D6_Q4_ETHICS_A",
+          "covenantId": "CV_ETHICS_1",
+          "text": "針對議題不攻擊人，分清事實與意見；匿名也對行為負責",
+          "axes": {
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_TRUST": 3,
+            "ST_STRESS": -2
+          },
+          "feedback": "思思：「這樣不同意見還能留在同一個群組裡談。」",
+          "flags": [
+            "covenant_ethics_actionable",
+            "ethical_mediation"
+          ],
+          "handbook": "負責任、批判思考、有道德意識",
+          "rationale": "同時處理資訊品質、溝通方式與匿名責任。",
+          "remedy": "衝突升高時暫停、保留必要證據並找合適管理者。"
+        },
+        {
+          "id": "D6_Q4_ETHICS_B",
+          "covenantId": "CV_ETHICS_2",
+          "text": "對方先罵，就可以用同樣方式反擊",
+          "axes": {
+            "AX_ETHICS": -1,
+            "AX_REPUTATION": -1
+          },
+          "states": {
+            "ST_TRUST": -4,
+            "ST_STRESS": 4,
+            "ST_FOOTPRINT": 3
+          },
+          "feedback": "吱吱：「當下很痛快，但群組只剩互相傷害。」",
+          "flags": [
+            "covenant_gap_ethics",
+            "anonymous_attack"
+          ],
+          "handbook": "網路禮儀、妨害名譽、責任",
+          "rationale": "對方先犯錯不會取消自己的責任。",
+          "remedy": "停止反擊，針對行為說明界線並用合適程序處理。"
+        },
+        {
+          "id": "D6_Q4_ETHICS_C",
+          "covenantId": "CV_ETHICS_3",
+          "text": "為避免衝突，永遠不在網路上發言",
+          "axes": {
+            "AX_ETHICS": 0
+          },
+          "states": {
+            "ST_TRUST": -2,
+            "ST_STRESS": 1
+          },
+          "feedback": "可可：「沉默能避開部分衝突，也可能讓傷害沒人制止。」",
+          "flags": [
+            "covenant_gap_ethics"
+          ],
+          "handbook": "負責任、有道德意識",
+          "rationale": "完全沉默不是唯一安全答案，且可能放棄求助與澄清。",
+          "remedy": "採中性、具體、少揭露的回應；不適合公開時轉合適管道。"
+        }
+      ]
+    },
+    {
+      "id": "D6_Q5",
+      "day": 6,
+      "number": 5,
+      "title": "未來一週改善計畫",
+      "context": "系統依最低能力軸推薦三個固定行動，玩家選一個；可在本機另寫自己的版本，但自由文字不送 GA。",
+      "options": [
+        {
+          "id": "D6_Q5_A",
+          "covenantId": null,
+          "text": "選一個具體行動，寫明時間、情境與檢查方式",
+          "axes": {
+            "AX_ETHICS": 1
+          },
+          "states": {
+            "ST_STRESS": -3
+          },
+          "feedback": "可可：「小到做得到，才會從結算畫面走進生活。」",
+          "flags": [
+            "improvement_plan_actionable"
+          ],
+          "handbook": "一週改善計畫、負責任行動",
+          "rationale": "具體、可觀察、有期限，能把反思轉為行動。",
+          "remedy": "一週後檢查一次；沒做到就縮小步驟，不用否定整體進步。"
+        },
+        {
+          "id": "D6_Q5_B",
+          "covenantId": null,
+          "text": "選『以後全部做到最好』",
+          "axes": {},
+          "states": {
+            "ST_STRESS": 3
+          },
+          "feedback": "思思：「聽起來很厲害，但明天第一步是什麼？」",
+          "flags": [
+            "improvement_plan_vague"
+          ],
+          "handbook": "改善計畫",
+          "rationale": "目標正向但不可操作，容易造成壓力與放棄。",
+          "remedy": "改寫成單一行為，例如睡前 30 分鐘開勿擾，連續三天記錄。"
+        },
+        {
+          "id": "D6_Q5_C",
+          "covenantId": null,
+          "text": "先選兩天試行，再依結果調整",
+          "axes": {
+            "AX_BALANCE": 1
+          },
+          "states": {
+            "ST_ENERGY": -2,
+            "ST_STRESS": -2
+          },
+          "feedback": "歐匿：「這是可調整的折衷；試行不是拖延，記得設回顧日期。」",
+          "flags": [
+            "improvement_plan_trial"
+          ],
+          "handbook": "使用時間改善、批判思考",
+          "rationale": "降低一次改太多的成本，透過紀錄修正，適合仍不確定的玩家。",
+          "remedy": "固定兩天後回顧，保留有效部分並決定下一週版本。"
+        }
+      ]
+    }
+  ]
+}
