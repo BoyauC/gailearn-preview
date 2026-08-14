@@ -16,6 +16,20 @@ const STATES = {
   ST_STRESS: { name: "數位壓力", icon: "💬", risk: true },
   ST_FOOTPRINT: { name: "足跡風險", icon: "◉", risk: true }
 };
+const AI_PRINCIPLES = {
+  AI_UNDERSTAND: { name: "理解與善用", short: "理解 AI、善用工具", icon: "🧠" },
+  AI_VERIFY: { name: "查證與負責", short: "查證內容、負起責任", icon: "🔎" },
+  AI_TRANSPARENT: { name: "誠實與透明", short: "誠實標註、資訊透明", icon: "🏷️" },
+  AI_LAW_RESPECT: { name: "守法與尊重", short: "遵守法律、尊重權益", icon: "⚖️" }
+};
+const QUESTION_PRINCIPLES = {
+  D1_Q1: ["AI_VERIFY"], D1_Q2: ["AI_UNDERSTAND", "AI_VERIFY"], D1_Q3: ["AI_VERIFY"], D1_Q4: ["AI_VERIFY"],
+  D2_Q1: ["AI_UNDERSTAND"], D2_Q4: ["AI_UNDERSTAND", "AI_TRANSPARENT"],
+  D3_Q1: ["AI_LAW_RESPECT"], D3_Q2: ["AI_LAW_RESPECT"], D3_Q3: ["AI_LAW_RESPECT"], D3_Q4: ["AI_LAW_RESPECT"],
+  D4_Q1: ["AI_VERIFY", "AI_LAW_RESPECT"], D4_Q2: ["AI_LAW_RESPECT"], D4_Q3: ["AI_LAW_RESPECT"], D4_Q4: ["AI_LAW_RESPECT"],
+  D5_Q1: ["AI_LAW_RESPECT"], D5_Q2: ["AI_TRANSPARENT", "AI_LAW_RESPECT"], D5_Q3: ["AI_LAW_RESPECT"], D5_Q4: ["AI_LAW_RESPECT"],
+  D6_Q3: ["AI_TRANSPARENT", "AI_LAW_RESPECT"]
+};
 const WARMUPS = [
   ["看到驚人消息時，我通常會……", "先轉傳再說", "看一下留言", "確認來源與日期"],
   ["睡前收到很多通知時，我通常會……", "一路看到睡著", "想到才關", "設定下線與休息時間"],
@@ -47,6 +61,7 @@ function initialState() {
     decisions: {},
     completedDays: [],
     arrivedDays: [],
+    aiPrinciples: Object.fromEntries(Object.keys(AI_PRINCIPLES).map((key) => [key, 0])),
     consequencesSeen: [],
     history: [],
     improvement: null,
@@ -67,8 +82,8 @@ function level(points) { return Math.max(1, Math.min(5, 1 + Math.floor(Math.max(
 function announce(text) { announcer.textContent = ""; requestAnimationFrame(() => { announcer.textContent = text; }); }
 function esc(value = "") { return String(value).replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char])); }
 
-function shell(inner, controls = "") {
-  return `<div class="shell"><header class="topbar"><div class="brand"><h1>我要成為善用 AI 的數位公民</h1><p>數位生活挑戰營</p></div>${controls}</header>${inner}</div>`;
+function shell(inner, controls = "", shellClass = "") {
+  return `<div class="shell ${shellClass}"><header class="topbar"><div class="brand"><h1>我要成為善用 AI 的數位公民</h1><p>數位生活挑戰營</p></div>${controls}</header>${inner}</div>`;
 }
 
 function statusBar() {
@@ -82,7 +97,7 @@ function statusBar() {
 
 function renderHome() {
   const resume = state.started && !state.completed;
-  app.innerHTML = shell(`<section class="hero"><div class="hero-art" role="img" aria-label="小民，數位生活挑戰營的國中生主角"></div><div><h2>每一次點擊，<br>都會留下足跡。</h2><p class="hero-copy">和小民、吱吱、思思、可可與歐匿一起面對群組消息、AI 作業、照片、個資、網路素材與匿名爭論。沒有只靠直覺的滿分答案；你要在時間、關係與風險之間做決定。</p><div class="chips"><span class="chip">6 項數位公民能力</span><span class="chip">4 項生活狀態</span><span class="chip">選擇會影響後續</span></div><button class="primary" id="start">${resume ? "繼續挑戰" : state.completed ? "查看上次結算" : "開始挑戰"}</button></div></section>`);
+  app.innerHTML = shell(`<section class="hero"><div class="hero-art" role="img" aria-label="小民，數位生活挑戰營的國中生主角"></div><div><h2>每一次點擊，<br>都會留下足跡。</h2><p class="hero-copy">和小民、吱吱、思思、可可與歐匿一起面對群組消息、AI 作業、照片、個資、網路素材與匿名爭論。沒有只靠直覺的滿分答案；你要在時間、關係與風險之間做決定。</p><div class="chips"><span class="chip">數位公民六大素養</span><span class="chip">4 項生活狀態</span><span class="chip">選擇會影響後續</span></div><button class="primary" id="start">${resume ? "繼續挑戰" : state.completed ? "查看上次結算" : "開始挑戰"}</button></div></section>`);
   document.querySelector("#start").addEventListener("click", () => {
     if (state.completed) { view = "result"; render(); return; }
     state.started = true; saveState();
@@ -110,6 +125,27 @@ function hexPanel() {
     const lvl = level(state.axes[key]);
     return `<div class="hex-axis"><img src="${badgePath(key)}" alt=""><div><div class="axis-name">${meta.name}・${lvl}級</div><div class="level-dots" aria-hidden="true">${[1,2,3,4,5].map((n) => `<i class="${n <= lvl ? "on" : ""}"></i>`).join("")}</div></div></div>`;
   }).join("")}</div>`;
+}
+
+function principlesForQuestion(questionId) {
+  if (questionId.startsWith("D6_Q4_DATA")) return ["AI_VERIFY"];
+  if (questionId.startsWith("D6_Q4_BALANCE")) return ["AI_UNDERSTAND"];
+  if (questionId.startsWith("D6_Q4_REPUTATION") || questionId.startsWith("D6_Q4_PRIVACY") || questionId.startsWith("D6_Q4_LAW") || questionId.startsWith("D6_Q4_ETHICS")) return ["AI_LAW_RESPECT"];
+  return QUESTION_PRINCIPLES[questionId] || [];
+}
+
+function principleLevelText(value) {
+  return ["尚未展現", "已經嘗試", "穩定實踐"][Math.max(0, Math.min(2, value || 0))];
+}
+
+function aiPrinciplesPanel(collapsible = false) {
+  const mobileCollapsed = collapsible && matchMedia("(max-width: 720px)").matches;
+  const content = `<div class="principle-grid">${Object.entries(AI_PRINCIPLES).map(([key, meta]) => {
+    const value = state.aiPrinciples?.[key] || 0;
+    return `<div class="principle-card level-${value}"><span class="principle-icon" aria-hidden="true">${meta.icon}</span><div><strong>${meta.name}</strong><small>${principleLevelText(value)}</small></div><span class="principle-dots" aria-label="${principleLevelText(value)}">${[0,1,2].map((stage) => `<i class="${stage <= value ? "reached" : ""} ${stage === value ? "current" : ""}"></i>`).join("")}</span></div>`;
+  }).join("")}</div>`;
+  if (collapsible) return `<details class="ai-principles principle-event" ${mobileCollapsed ? "" : "open"}><summary>AI 四大核心原則</summary>${content}</details>`;
+  return `<section class="ai-principles" aria-label="AI 四大核心原則"><h3>AI 四大核心原則</h3>${content}</section>`;
 }
 
 function radarChart() {
@@ -277,7 +313,7 @@ function renderEvent() {
   const officialCount = day.questions.length;
   const progress = ((stepIndex + (feedback ? 1 : 0)) / steps.length) * 100;
   const context = questionContext(question, day);
-  app.innerHTML = shell(`${statusBar()}<section class="event-card event-layout"><section class="scene-panel"><span class="day-tag">第 ${day.day} 天・${AXES[day.axis].name}</span><h2>${day.title}</h2><p class="context">${esc(context)}</p><div class="speaker"><img class="speaker-character" src="assets/characters/ouni.png" alt="歐匿"><div><strong>歐匿</strong><br>${currentDay === 6 ? "這次便利與責任要一起考慮。" : "先看清楚情境，再決定怎麼行動。"}</div></div></section><section class="choice-panel"><div class="progress"><span style="--progress:${progress}%"></span></div><p class="question-count">${question.id.startsWith("D6_Q4_") ? "第 6 天・公約制定" : `第 ${question.number}／${officialCount} 個正式決策`}</p><h3>${esc(question.title)}</h3>${feedback ? feedbackHtml(feedback) : `<div class="options">${question.options.map((option) => `<button class="option" data-id="${option.id}">${esc(option.text)}</button>`).join("")}</div>`}</section><aside class="hex-panel">${hexPanel()}</aside></section>`, `<button class="ghost" id="map">回到地圖</button>`);
+  app.innerHTML = shell(`${statusBar()}<section class="event-card event-layout"><section class="scene-panel"><span class="day-tag">第 ${day.day} 天・${AXES[day.axis].name}</span><h2>${day.title}</h2><p class="context">${esc(context)}</p><div class="speaker"><img class="speaker-character" src="assets/characters/ouni.png" alt="歐匿"><div><strong>歐匿</strong><br>${currentDay === 6 ? "這次便利與責任要一起考慮。" : "先看清楚情境，再決定怎麼行動。"}</div></div>${aiPrinciplesPanel(true)}</section><section class="choice-panel"><div class="progress"><span style="--progress:${progress}%"></span></div><p class="question-count">${question.id.startsWith("D6_Q4_") ? "第 6 天・公約制定" : `第 ${question.number}／${officialCount} 個正式決策`}</p><h3>${esc(question.title)}</h3>${feedback ? feedbackHtml(feedback) : `<div class="options">${question.options.map((option) => `<button class="option" data-id="${option.id}">${esc(option.text)}</button>`).join("")}</div>`}</section><aside class="hex-panel">${hexPanel()}</aside></section>`, `<button class="ghost" id="map">回到地圖</button>`);
   document.querySelector("#map").addEventListener("click", () => { view = "map"; render(); });
   if (!feedback) document.querySelectorAll(".option").forEach((button) => button.addEventListener("click", () => chooseOption(question, button.dataset.id)));
   else document.querySelector("#next").addEventListener("click", () => {
@@ -292,10 +328,17 @@ function chooseOption(question, optionId) {
   Object.entries(option.axes).forEach(([key, delta]) => { state.axes[key] = Math.max(0, Math.min(14, state.axes[key] + delta)); });
   Object.entries(option.states).forEach(([key, delta]) => { state.states[key] = clamp(state.states[key] + delta); });
   state.flags = [...new Set([...state.flags, ...option.flags])];
+  const principleKeys = principlesForQuestion(question.id);
+  const axisScore = Object.values(option.axes).reduce((sum, value) => sum + value, 0);
+  const principleResults = principleKeys.map((key) => {
+    const progressed = axisScore > 0;
+    if (progressed) state.aiPrinciples[key] = Math.min(2, (state.aiPrinciples[key] || 0) + 1);
+    return { key, progressed, level: state.aiPrinciples[key] || 0 };
+  });
   state.decisions[question.id] = option.id;
-  state.history.push({ day: currentDay, question: question.title, option: option.text, feedback: option.feedback });
+  state.history.push({ day: currentDay, question: question.title, option: option.text, feedback: option.feedback, principles: principleResults.map((item) => item.key) });
   if (question.id === "D6_Q5") state.improvement = option.id;
-  feedback = option;
+  feedback = { ...option, principleResults };
   saveState();
   announce(`選擇完成。${option.feedback}`);
   render();
@@ -308,7 +351,8 @@ function deltaLabels(option) {
   return labels;
 }
 function feedbackHtml(option) {
-  return `<div class="feedback"><blockquote>${esc(option.feedback)}</blockquote><div class="delta-row">${deltaLabels(option).map(([label, direction]) => `<span class="delta ${direction < 0 ? "down" : ""}">${esc(label)}</span>`).join("")}</div><div class="why"><strong>為什麼：</strong>${esc(option.rationale)}</div><div class="remedy"><strong>改善或補救：</strong>${esc(option.remedy)}</div><button class="primary" id="next">繼續</button></div>`;
+  const principles = option.principleResults?.length ? `<div class="principle-feedback">${option.principleResults.map(({ key, progressed, level }) => `<div class="${progressed ? "met" : "missed"}"><span aria-hidden="true">${progressed ? "✓" : "△"}</span><strong>${AI_PRINCIPLES[key].name}</strong><span>${progressed ? principleLevelText(level) : "這次尚未展現"}</span></div>`).join("")}</div>` : "";
+  return `<div class="feedback"><blockquote>${esc(option.feedback)}</blockquote><div class="delta-row">${deltaLabels(option).map(([label, direction]) => `<span class="delta ${direction < 0 ? "down" : ""}">${esc(label)}</span>`).join("")}</div>${principles}<div class="why"><strong>為什麼：</strong>${esc(option.rationale)}</div><div class="remedy"><strong>改善或補救：</strong>${esc(option.remedy)}</div><button class="primary" id="next">繼續</button></div>`;
 }
 
 function completeDay(day) {
@@ -346,13 +390,96 @@ const ENDINGS = {
 function renderResult() {
   const ending = ENDINGS[state.ending || determineEnding()];
   const ranked = Object.keys(AXES).sort((a,b) => state.axes[b] - state.axes[a]);
-  app.innerHTML = shell(`<section class="result-card"><div class="eyebrow">六天挑戰完成</div><h2>${ending[0]}</h2><p class="hero-copy">${ending[1]}</p><div class="result-grid"><section class="summary-box"><h3>你的數位公民六邊形</h3>${radarChart()}<p><strong>優勢：</strong>${AXES[ranked[0]].name}</p><p><strong>優先加強：</strong>${AXES[ranked.at(-1)].name}</p></section><section class="summary-box"><h3>生活狀態</h3>${statusBar()}<h3>曾留下的選擇證據</h3><div class="history">${state.history.slice(-6).map((item) => `<div class="history-item"><strong>第 ${item.day} 天：</strong>${esc(item.option)}</div>`).join("")}</div></section></div><button class="secondary" id="restart">重新挑戰</button></section>`);
+  const keyChoices = [...new Map(state.history.map((item) => [item.day, item])).values()];
+  app.innerHTML = shell(`<section class="result-card"><div class="eyebrow">六天挑戰完成</div><h2>${ending[0]}</h2><p class="hero-copy">${ending[1]}</p><div class="result-grid"><section class="summary-box"><h3>你的數位公民六邊形</h3>${radarChart()}<p><strong>優勢：</strong>${AXES[ranked[0]].name}</p><p><strong>優先加強：</strong>${AXES[ranked.at(-1)].name}</p></section><section class="summary-box"><h3>AI 四大核心原則</h3><p class="summary-intro">從六天選擇中整理你的實踐程度。</p>${aiPrinciplesPanel()}<h3>生活狀態</h3>${statusBar()}<h3>六天關鍵選擇回顧</h3><p class="summary-intro">每天保留一項最近的選擇，幫助理解這次結算如何形成；不代表標準答案。</p><div class="history">${keyChoices.map((item) => `<div class="history-item"><strong>第 ${item.day} 天：</strong>${esc(item.option)}</div>`).join("")}</div></section></div><div class="result-actions"><button class="primary" id="download-result">下載結算圖</button><button class="secondary" id="restart">重新挑戰</button></div></section>`, "", "result-shell");
+  document.querySelector("#download-result").addEventListener("click", downloadResultImage);
   document.querySelector("#restart").addEventListener("click", resetGame);
+}
+
+function roundedRect(ctx, x, y, width, height, radius, fill, stroke = null) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, height, radius);
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+}
+
+function canvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 3) {
+  const chars = [...String(text)];
+  const lines = [];
+  let line = "";
+  for (const char of chars) {
+    if (ctx.measureText(line + char).width > maxWidth && line) { lines.push(line); line = char; }
+    else line += char;
+  }
+  if (line) lines.push(line);
+  lines.slice(0, maxLines).forEach((item, index) => {
+    const clipped = index === maxLines - 1 && lines.length > maxLines ? `${item.slice(0, -1)}…` : item;
+    ctx.fillText(clipped, x, y + index * lineHeight);
+  });
+  return Math.min(lines.length, maxLines) * lineHeight;
+}
+
+function downloadResultImage() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200; canvas.height = 1500;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#f2f6ee"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  roundedRect(ctx, 45, 45, 1110, 1410, 34, "#fffdf7", "#cad7d4");
+  ctx.fillStyle = "#df765e"; ctx.font = '700 28px "Microsoft JhengHei", sans-serif'; ctx.fillText("六天挑戰完成", 90, 105);
+  ctx.fillStyle = "#20363d"; ctx.font = '900 52px "Microsoft JhengHei", sans-serif'; ctx.fillText(ENDINGS[state.ending || determineEnding()][0], 90, 175);
+  ctx.font = '700 24px "Microsoft JhengHei", sans-serif'; ctx.fillStyle = "#61747a"; ctx.fillText("我要成為善用 AI 的數位公民｜數位生活挑戰營", 90, 220);
+
+  ctx.fillStyle = "#20363d"; ctx.font = '900 30px "Microsoft JhengHei", sans-serif'; ctx.fillText("數位公民六邊形", 100, 300);
+  const cx = 350, cy = 560, radius = 205;
+  const axisEntries = Object.entries(AXES);
+  const chartPoint = (index, scale) => { const angle = -Math.PI / 2 + index * Math.PI / 3; return [cx + Math.cos(angle) * radius * scale, cy + Math.sin(angle) * radius * scale]; };
+  ctx.strokeStyle = "#bdd2cb"; ctx.lineWidth = 2;
+  for (let ring = 1; ring <= 5; ring += 1) { ctx.beginPath(); axisEntries.forEach((_, index) => { const [x,y] = chartPoint(index, ring / 5); index ? ctx.lineTo(x,y) : ctx.moveTo(x,y); }); ctx.closePath(); ctx.stroke(); }
+  ctx.beginPath(); axisEntries.forEach((_, index) => { const [x,y] = chartPoint(index, 1); ctx.moveTo(cx,cy); ctx.lineTo(x,y); }); ctx.stroke();
+  ctx.beginPath(); axisEntries.forEach(([key], index) => { const [x,y] = chartPoint(index, level(state.axes[key]) / 5); index ? ctx.lineTo(x,y) : ctx.moveTo(x,y); }); ctx.closePath(); ctx.fillStyle = "rgba(73,139,129,.38)"; ctx.fill(); ctx.strokeStyle = "#236d68"; ctx.lineWidth = 5; ctx.stroke();
+  ctx.font = '800 22px "Microsoft JhengHei", sans-serif'; ctx.textAlign = "center"; ctx.fillStyle = "#20363d";
+  axisEntries.forEach(([key, meta], index) => { const [x,y] = chartPoint(index, 1.28); ctx.fillText(`${meta.name} ${level(state.axes[key])}級`, x, y + 8); });
+  ctx.textAlign = "left";
+
+  ctx.font = '900 30px "Microsoft JhengHei", sans-serif'; ctx.fillText("AI 四大核心原則", 650, 300);
+  Object.entries(AI_PRINCIPLES).forEach(([key, meta], index) => {
+    const y = 335 + index * 92; const value = state.aiPrinciples?.[key] || 0;
+    roundedRect(ctx, 650, y, 430, 72, 16, value === 2 ? "#f0f2fb" : "#f7f8f7", value === 2 ? "#9badd2" : "#d6dfdc");
+    ctx.font = '900 23px "Microsoft JhengHei", sans-serif'; ctx.fillStyle = "#20363d"; ctx.fillText(`${meta.icon}  ${meta.name}`, 675, y + 30);
+    ctx.font = '700 18px "Microsoft JhengHei", sans-serif'; ctx.fillStyle = "#61747a"; ctx.fillText(principleLevelText(value), 675, y + 56);
+  });
+
+  ctx.fillStyle = "#20363d"; ctx.font = '900 30px "Microsoft JhengHei", sans-serif'; ctx.fillText("生活狀態", 100, 880);
+  Object.entries(STATES).forEach(([key, meta], index) => {
+    const x = 100 + (index % 2) * 280, y = 915 + Math.floor(index / 2) * 105;
+    roundedRect(ctx, x, y, 250, 82, 15, "#f7faf8", "#cad7d4");
+    ctx.fillStyle = "#20363d"; ctx.font = '800 22px "Microsoft JhengHei", sans-serif'; ctx.fillText(`${meta.icon} ${meta.name}`, x + 18, y + 31);
+    ctx.font = '900 25px "Microsoft JhengHei", sans-serif'; ctx.fillText(state.states[key], x + 18, y + 63);
+  });
+
+  ctx.font = '900 30px "Microsoft JhengHei", sans-serif'; ctx.fillText("這次的學習方向", 650, 750);
+  ctx.font = '800 23px "Microsoft JhengHei", sans-serif'; ctx.fillStyle = "#315f68"; ctx.fillText(`優勢：${AXES[Object.keys(AXES).sort((a,b) => state.axes[b] - state.axes[a])[0]].name}`, 650, 800);
+  ctx.fillText(`優先加強：${AXES[Object.keys(AXES).sort((a,b) => state.axes[b] - state.axes[a]).at(-1)].name}`, 650, 840);
+  roundedRect(ctx, 650, 885, 430, 180, 18, "#fff7e6", "#ead9b4");
+  ctx.fillStyle = "#20363d"; ctx.font = '900 23px "Microsoft JhengHei", sans-serif'; ctx.fillText("結算提醒", 675, 925);
+  ctx.font = '700 21px "Microsoft JhengHei", sans-serif';
+  canvasText(ctx, ENDINGS[state.ending || determineEnding()][1], 675, 965, 380, 34, 3);
+
+  ctx.fillStyle = "#61747a"; ctx.font = '700 20px "Microsoft JhengHei", sans-serif';
+  ctx.fillText("結果來自本次選擇，用來回顧與改善，不代表固定能力或考試分數。", 90, 1375);
+  ctx.fillText("GAILearn", 990, 1415);
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = "GAILearn-CH6-數位生活挑戰營-結算.png";
+  document.body.append(link); link.click(); link.remove();
+  const button = document.querySelector("#download-result");
+  if (button) { button.textContent = "結算圖已下載"; setTimeout(() => { button.textContent = "下載結算圖"; }, 1800); }
+  announce("結算圖已下載");
 }
 
 function renderReview(day) {
   const items = state.history.filter((item) => item.day === day);
-  app.innerHTML = shell(`<section class="result-card"><div class="eyebrow">第 ${day} 天回顧</div><h2>${content.days.find((item) => item.day === day).title}</h2><div class="history">${items.map((item) => `<div class="history-item"><strong>${esc(item.question)}</strong><br>${esc(item.option)}<br><small>${esc(item.feedback)}</small></div>`).join("")}</div><button class="primary" id="back">回到地圖</button></section>`);
+  app.innerHTML = shell(`<section class="result-card"><div class="eyebrow">第 ${day} 天回顧</div><h2>${content.days.find((item) => item.day === day).title}</h2><div class="history">${items.map((item) => `<div class="history-item"><strong>${esc(item.question)}</strong><br>${esc(item.option)}<br><small>${esc(item.feedback)}</small></div>`).join("")}</div><button class="primary" id="back">回到地圖</button></section>`, "", "result-shell");
   document.querySelector("#back").addEventListener("click", () => { view = "map"; render(); });
 }
 
