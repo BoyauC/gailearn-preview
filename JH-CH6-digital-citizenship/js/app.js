@@ -109,7 +109,7 @@ function renderHome() {
 
 function renderWarmup() {
   const item = WARMUPS[warmupIndex];
-  app.innerHTML = shell(`<section class="event-card event-layout"><div class="scene-panel"><span class="day-tag">暖身活動</span><p class="context">這不是考試，也不會決定最後結果，六題只是為了建立你的起點。</p><div class="warmup-avatar" role="img" aria-label="小民半身像"></div></div><div class="choice-panel"><div class="progress"><span style="--progress:${((warmupIndex + 1) / 6) * 100}%"></span></div><p class="question-count">第 ${warmupIndex + 1}／6 題</p><h3>${item[0]}</h3><div class="options">${item.slice(1).map((text, index) => `<button class="option" data-score="${index}">${text}</button>`).join("")}</div></div><aside class="hex-panel">${hexPanel()}</aside></section>`);
+  app.innerHTML = shell(`<section class="event-card event-layout"><div class="scene-panel"><span class="day-tag">暖身活動</span><p class="context">這不是考試，也不會決定最後結果，六題只是為了建立你的起點。</p><div class="warmup-avatar" role="img" aria-label="小民半身像"></div></div><div class="choice-panel"><div class="progress"><span style="--progress:${((warmupIndex + 1) / 6) * 100}%"></span></div><p class="question-count">第 ${warmupIndex + 1}／6 題</p><h3>${item[0]}</h3><div class="options">${item.slice(1).map((text, index) => `<button class="option" data-score="${index}">${text}</button>`).join("")}</div></div><aside class="hex-panel">${hexPanel(warmupIndex)}</aside></section>`);
   document.querySelectorAll(".option").forEach((button) => button.addEventListener("click", () => {
     const axis = Object.keys(AXES)[warmupIndex];
     state.axes[axis] = Number(button.dataset.score) * 3;
@@ -120,10 +120,11 @@ function renderWarmup() {
 }
 
 function badgePath(axis) { return `assets/badges/${AXES[axis].badge}`; }
-function hexPanel() {
-  return `<h3>數位公民六邊形</h3><div class="hex-list">${Object.entries(AXES).map(([key, meta]) => {
+function hexPanel(pendingFrom = null) {
+  return `<h3>數位公民六邊形</h3><div class="hex-list">${Object.entries(AXES).map(([key, meta], index) => {
+    const pending = Number.isInteger(pendingFrom) && index >= pendingFrom;
     const lvl = level(state.axes[key]);
-    return `<div class="hex-axis"><img src="${badgePath(key)}" alt=""><div><div class="axis-name">${meta.name}・${lvl}級</div><div class="level-dots" aria-hidden="true">${[1,2,3,4,5].map((n) => `<i class="${n <= lvl ? "on" : ""}"></i>`).join("")}</div></div></div>`;
+    return `<div class="hex-axis ${pending ? "pending" : ""}"><img src="${badgePath(key)}" alt=""><div><div class="axis-name">${meta.name}・${pending ? "待建立" : `${lvl}級`}</div><div class="level-dots" aria-label="${pending ? "尚未完成暖身題" : `${lvl}級`}">${[1,2,3,4,5].map((n) => `<i class="${!pending && n <= lvl ? "on" : ""}"></i>`).join("")}</div></div></div>`;
   }).join("")}</div>`;
 }
 
