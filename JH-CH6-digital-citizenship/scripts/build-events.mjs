@@ -16,6 +16,25 @@ const DAY_META = {
   6: { title: "群組爭論與數位公約", axis: "AX_ETHICS", badge: "ethics", scene: "班級討論區與成果舞臺" }
 };
 
+const CONTEXT_OVERRIDES = {
+  D2_Q4: "老師臨時請小民用一句話，說明心得中實際採用的查核步驟。",
+  D4_Q4: "手機跳出陌生登入警告，小民和思思要決定接下來怎麼處理。",
+  D5_Q3: "剪輯軌上出現一張尚未確認能否公開使用的同學照片。",
+  D6_Q3: "班級準備把六天遇到的錯誤與補救寫進公約，小民要決定如何說明。",
+  D6_Q4: "班級要為六項數位公民能力，各選出一條可以實際做到的生活公約。",
+  D6_Q5: "最後，請為未來一週選一項具體、做得到的改善行動。"
+};
+
+const TITLE_OVERRIDES = {
+  D4_Q4: "突然出現的登入警告"
+};
+
+const OPTION_TEXT_OVERRIDES = {
+  D1_Q1_A: {
+    remedy: "立即刪除尚可刪除的轉傳，發布更正並附上正式查核入口；稍後查明結果時，再回到原群組補充說明。"
+  }
+};
+
 const splitCells = (line) => line.slice(1, -1).split("|").map((cell) => cell.trim());
 const strip = (value) => value
   .replace(/`/g, "")
@@ -41,7 +60,7 @@ function optionFromCells(cells) {
   const decisionCode = codes.find((code) => /^D\d_Q\d/.test(code));
   const covenantCode = codes.find((code) => /^CV_/.test(code));
   const textMatch = first.match(/[「“](.+?)[」”]/);
-  return {
+  const option = {
     id: decisionCode || covenantCode,
     covenantId: covenantCode || null,
     text: textMatch ? textMatch[1] : strip(first.replace(/`[^`]+`/g, "")),
@@ -53,6 +72,7 @@ function optionFromCells(cells) {
     rationale: strip(cells[6]),
     remedy: strip(cells[7])
   };
+  return { ...option, ...(OPTION_TEXT_OVERRIDES[option.id] || {}) };
 }
 
 const questions = [];
@@ -74,12 +94,13 @@ for (let index = 0; index < headings.length; index += 1) {
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith("|") && !line.startsWith("###") && !line.startsWith("**"));
 
+  const id = match[1].replace("-", "_");
   questions.push({
-    id: match[1].replace("-", "_"),
+    id,
     day,
     number: questionNumber,
-    title: match[4].trim(),
-    context: strip(contextLines[0] || ""),
+    title: TITLE_OVERRIDES[id] || match[4].trim(),
+    context: CONTEXT_OVERRIDES[id] || strip(contextLines[0] || ""),
     options
   });
 }
