@@ -95,6 +95,7 @@ button:focus-visible, a:focus-visible { outline: 4px solid #0b69d1; outline-offs
 .progress { height: 9px; border-radius: 99px; background: #e0e6e4; overflow: hidden; }
 .progress span { display: block; height: 100%; background: var(--green); width: var(--progress); }
 .question-count { color: var(--muted); font-weight: 800; margin: 10px 0 4px; }
+.choice-context { margin: 8px 0 12px; padding: 11px 13px; border-left: 5px solid var(--teal-2); border-radius: 11px; background: #edf4f2; font-size: .92rem; line-height: 1.6; }
 .choice-panel h3 { margin: 0 0 14px; font-size: clamp(1.25rem, 2.2vw, 1.8rem); }
 .options { display: grid; gap: 12px; }
 .option { min-height: 60px; padding: 13px 15px; text-align: left; border: 2px solid #bfcfcb; border-radius: 15px; background: #fff; color: var(--ink); cursor: pointer; font-weight: 750; line-height: 1.55; }
@@ -194,6 +195,7 @@ button:focus-visible, a:focus-visible { outline: 4px solid #0b69d1; outline-offs
   .speaker-character { width: 52px; height: 52px; flex-basis: 52px; }
   .progress { height: 7px; }
   .question-count { margin: 6px 0 2px; font-size: .78rem; }
+  .choice-context { margin: 5px 0 7px; padding: 7px 9px; font-size: .78rem; line-height: 1.4; }
   .choice-panel h3 { margin-bottom: 8px; font-size: 1.25rem; }
   .options { gap: 8px; }
   .option { min-height: 48px; padding: 9px 12px; font-size: .88rem; line-height: 1.4; }
