@@ -25,9 +25,7 @@ const CONTEXT_OVERRIDES = {
   D6_Q5: "最後，請為未來一週選一項具體、做得到的改善行動。"
 };
 
-const TITLE_OVERRIDES = {
-  D4_Q4: "突然出現的登入警告"
-};
+const TITLE_OVERRIDES = {};
 
 const OPTION_TEXT_OVERRIDES = {
   D1_Q1_A: {

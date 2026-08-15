@@ -30,6 +30,14 @@ const QUESTION_PRINCIPLES = {
   D5_Q1: ["AI_LAW_RESPECT"], D5_Q2: ["AI_TRANSPARENT", "AI_LAW_RESPECT"], D5_Q3: ["AI_LAW_RESPECT"], D5_Q4: ["AI_LAW_RESPECT"],
   D6_Q3: ["AI_TRANSPARENT", "AI_LAW_RESPECT"]
 };
+const COVENANT_QUESTIONS = {
+  DATA: "分享資訊前，哪一條公約最能幫助大家查清楚？",
+  BALANCE: "使用手機與 AI 時，哪一條公約最能兼顧學習與休息？",
+  REPUTATION: "面對他人的照片與名聲，哪一條公約最能保護彼此？",
+  PRIVACY: "提供資料與權限前，哪一條公約最能保護隱私？",
+  LAW: "使用素材與影像時，哪一條公約最能守住法律界線？",
+  ETHICS: "群組意見不同時，哪一條公約最能維持善意溝通？"
+};
 const WARMUPS = [
   ["看到驚人消息時，我通常會……", "先轉傳再說", "看一下留言", "確認來源與日期"],
   ["睡前收到很多通知時，我通常會……", "一路看到睡著", "想到才關", "設定下線與休息時間"],
@@ -253,7 +261,7 @@ function daySteps(day) {
     return groups.map((group, index) => ({
       ...question,
       id: `D6_Q4_${group}`,
-      title: `數位生活公約 ${index + 1}／6：${AXES[`AX_${group}`].name}`,
+      title: COVENANT_QUESTIONS[group],
       options: question.options.filter((option) => option.id.includes(`_${group}_`))
     }));
   });
@@ -315,7 +323,7 @@ function renderEvent() {
   const officialCount = day.questions.length;
   const progress = ((stepIndex + (feedback ? 1 : 0)) / steps.length) * 100;
   const context = questionContext(question, day);
-  app.innerHTML = shell(`${statusBar()}<section class="event-card event-layout"><section class="scene-panel"><span class="day-tag">第 ${day.day} 天・${AXES[day.axis].name}</span><h2>${day.title}</h2><div class="speaker"><img class="speaker-character" src="assets/characters/ouni.png" alt="歐匿"><div><strong>歐匿</strong><br>${currentDay === 6 ? "這次便利與責任要一起考慮。" : "先看清楚情境，再決定怎麼行動。"}</div></div>${aiPrinciplesPanel(true)}</section><section class="choice-panel"><div class="progress"><span style="--progress:${progress}%"></span></div><p class="question-count">${question.id.startsWith("D6_Q4_") ? "第6天・公約制定" : `第${question.number}/${officialCount}個決策`}</p><div class="choice-context"><strong>情境：</strong>${esc(context)}</div><h3>${esc(question.title)}</h3>${feedback ? feedbackHtml(feedback) : `<div class="options">${question.options.map((option) => `<button class="option" data-id="${option.id}">${esc(option.text)}</button>`).join("")}</div>`}</section><aside class="hex-panel">${hexPanel()}</aside></section>`, `<button class="ghost" id="map">回到地圖</button>`);
+  app.innerHTML = shell(`${statusBar()}<section class="event-card event-layout"><section class="scene-panel"><span class="day-tag">第 ${day.day} 天・${AXES[day.axis].name}</span><h2>${day.title}</h2><div class="speaker"><img class="speaker-character" src="assets/characters/ouni.png" alt="歐匿"><div><strong>歐匿</strong><br>${currentDay === 6 ? "這次便利與責任要一起考慮。" : "先看清楚情境，再決定怎麼行動。"}</div></div>${aiPrinciplesPanel(true)}</section><section class="choice-panel"><div class="progress"><span style="--progress:${progress}%"></span></div><p class="question-count">${question.id.startsWith("D6_Q4_") ? "第6天・公約制定" : `第${question.number}/${officialCount}個決策`}</p><div class="choice-context"><strong>情境：</strong>${esc(context)}</div><div class="decision-label">現在要決定的是</div><h3 class="decision-question">${esc(question.title)}</h3>${feedback ? feedbackHtml(feedback) : `<div class="options">${question.options.map((option) => `<button class="option" data-id="${option.id}">${esc(option.text)}</button>`).join("")}</div>`}</section><aside class="hex-panel">${hexPanel()}</aside></section>`, `<button class="ghost" id="map">回到地圖</button>`);
   document.querySelector("#map").addEventListener("click", () => { view = "map"; render(); });
   if (!feedback) document.querySelectorAll(".option").forEach((button) => button.addEventListener("click", () => chooseOption(question, button.dataset.id)));
   else document.querySelector("#next").addEventListener("click", () => {
