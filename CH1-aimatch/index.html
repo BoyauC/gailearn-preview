@@ -32,6 +32,7 @@
             --basket-per: #E2F0CB;
             --basket-rec: #B5EAD7;
             --basket-cre: #C7CEEA;
+            --basket-agent: #F4D6FF;
             --text-dark: #555555;
         }
 
@@ -259,6 +260,7 @@
         .basket[data-category="perception"]    { background-color: var(--basket-per); border-color: #9FC17D; }
         .basket[data-category="recommendation"]{ background-color: var(--basket-rec); border-color: #69C9A1; }
         .basket[data-category="creation"]      { background-color: var(--basket-cre); border-color: #8C99D2; }
+        .basket[data-category="agent"]         { background-color: var(--basket-agent); border-color: #B58AC8; }
 
         /* ====== 控制區與訊息 ====== */
         #controls-area {
@@ -467,6 +469,7 @@
         .start-legend-item[data-cat="perception"]    { background-color: var(--basket-per); border-color: #9FC17D; }
         .start-legend-item[data-cat="recommendation"]{ background-color: var(--basket-rec); border-color: #69C9A1; }
         .start-legend-item[data-cat="creation"]      { background-color: var(--basket-cre); border-color: #8C99D2; }
+        .start-legend-item[data-cat="agent"]         { background-color: var(--basket-agent); border-color: #B58AC8; }
 
         .start-legend-icon {
             font-size: 32px;
@@ -542,8 +545,12 @@
         html.device-pc #cards-area,
         html.device-tablet #cards-area {
             flex: 1.45;
-            gap: 10px;
-            justify-content: space-evenly;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-rows: repeat(2, minmax(0, 1fr));
+            gap: clamp(8px, 1.4vw, 16px);
+            align-items: center;
+            justify-items: center;
         }
         html.device-pc #baskets-area,
         html.device-tablet #baskets-area {
@@ -558,7 +565,6 @@
         html.device-tablet #cards-area {
             flex: 1 1 auto;
             gap: clamp(8px, 1.2dvh, 12px);
-            justify-content: center;
         }
         html.device-tablet #baskets-area {
             flex: 0 0 clamp(360px, 36vw, 460px);
@@ -570,9 +576,9 @@
             height: clamp(180px, 23vw, 248px);
         }
         html.device-tablet .card {
-            height: clamp(200px, calc((100% - 28px) / 3), 300px);
+            width: min(28vw, 300px);
+            height: auto;
             aspect-ratio: 4 / 3;
-            width: auto;
         }
         html.device-pc .basket,
         html.device-tablet .basket {
@@ -614,28 +620,35 @@
     <section id="screen-start" aria-labelledby="start-title">
         <div class="start-card">
             <h1 id="start-title" class="start-title">🤖 認識 AI 的不同類型</h1>
-            <p class="start-subtitle">將圖片卡拖曳到對應的籃子裡，挑戰兩個關卡！</p>
+            <p class="start-subtitle">認識四種 AI 類型，將圖片卡拖曳到對應的籃子裡，挑戰兩個關卡！</p>
 
             <div class="start-legend">
                 <div class="start-legend-item" data-cat="perception">
                     <span class="start-legend-icon" aria-hidden="true">👁️</span>
                     <div>
                         <strong>感知型</strong>
-                        <p>用視覺、聽覺等感官接收並理解資訊，例如智慧音箱、臉部辨識。</p>
+                        <p>像人一樣能分辨「看到」和「聽到」什麼的 AI。用視覺、聽覺等感官接收並理解資訊，例如智慧音箱、臉部辨識。</p>
                     </div>
                 </div>
                 <div class="start-legend-item" data-cat="recommendation">
                     <span class="start-legend-icon" aria-hidden="true">🧐</span>
                     <div>
                         <strong>建議分析型</strong>
-                        <p>分析資料後給出建議或預測，例如健康建議、影片推薦、導航建議。</p>
+                        <p>像人一樣能「提供建議」的 AI。分析資料後給出建議或預測，例如健康建議、影片推薦、導航建議。</p>
                     </div>
                 </div>
                 <div class="start-legend-item" data-cat="creation">
                     <span class="start-legend-icon" aria-hidden="true">🎨</span>
                     <div>
                         <strong>創作型</strong>
-                        <p>產生全新的內容，例如 AI 寫詩、寫故事、產生圖像。</p>
+                        <p>像人一樣能「創作內容」的 AI。產生全新的內容，例如 AI 寫詩、寫故事、產生圖像。</p>
+                    </div>
+                </div>
+                <div class="start-legend-item" data-cat="agent">
+                    <span class="start-legend-icon" aria-hidden="true">🤖</span>
+                    <div>
+                        <strong>代理人型</strong>
+                        <p>像人一樣能「協助你完成事情」的 AI。人工智慧代理人會先了解任務，提出「先」做什麼、「後」做什麼的建議，必要時還能使用工具來幫忙，例如安排行程、預訂餐廳、寄送電子郵件或更新行事曆。</p>
                     </div>
                 </div>
             </div>
@@ -679,6 +692,10 @@
                 <div class="basket-title">🎨 創作型</div>
                 <div class="basket-content"></div>
             </div>
+            <div class="basket" data-category="agent">
+                <div class="basket-title">🤖 代理人型</div>
+                <div class="basket-content"></div>
+            </div>
         </div>
     </main>
 
@@ -708,14 +725,19 @@
             { id: 'sen1-1', name: '智慧音箱', category: 'perception',     img: 'Assets/Images/Sen1-1.webp' },
             { id: 'sen1-2', name: '臉部辨識', category: 'perception',     img: 'Assets/Images/Sen1-2.webp' },
             { id: 'sug1-1', name: '健康建議', category: 'recommendation', img: 'Assets/Images/Sug1-1.webp' },
-            { id: 'sug1-2', name: '影片建議', category: 'recommendation', img: 'Assets/Images/Sug1-2.webp' }
+            { id: 'sug1-2', name: '影片建議', category: 'recommendation', img: 'Assets/Images/Sug1-2.webp' },
+            { id: 'act1-1', name: '規劃故事', category: 'agent',          img: 'Assets/Images/Act1-1.webp' },
+            { id: 'act1-2', name: '預訂車票', category: 'agent',          img: 'Assets/Images/Act1-2.webp' }
         ];
 
         const level2Pool = [
             { id: 'sen2-1', name: '行車守護', category: 'perception',     img: 'Assets/Images/Sen2-1.webp' },
             { id: 'sug2-1', name: '導航建議', category: 'recommendation', img: 'Assets/Images/Sug2-1.webp' },
-            { id: 'c2-1',   name: 'AI-e度',  category: 'creation',       img: 'Assets/Images/C2-1.webp' }
+            { id: 'c2-1',   name: 'AI-e度',  category: 'creation',       img: 'Assets/Images/C2-1.webp' },
+            { id: 'act2-2', name: '安排討論', category: 'agent',          img: 'Assets/Images/Act2-2.webp' }
         ];
+
+        const categoryOrder = ['perception', 'recommendation', 'creation', 'agent'];
 
         /* ====== 裝置類型偵測（最優先執行，CSS class 決定版面） ======
            pc     → 無觸控（滑鼠），單螢幕，hover + 拖曳放大 1.5x
@@ -860,15 +882,10 @@
 
             let currentCards = [];
             if (currentLevel === 0) {
-                const creationCards       = level1Pool.filter(c => c.category === 'creation');
-                const perceptionCards     = level1Pool.filter(c => c.category === 'perception');
-                const recommendationCards = level1Pool.filter(c => c.category === 'recommendation');
-                
-                const selectedCards = [
-                    creationCards[Math.floor(Math.random() * creationCards.length)],
-                    perceptionCards[Math.floor(Math.random() * perceptionCards.length)],
-                    recommendationCards[Math.floor(Math.random() * recommendationCards.length)]
-                ];
+                const selectedCards = categoryOrder.map(category => {
+                    const categoryCards = level1Pool.filter(card => card.category === category);
+                    return categoryCards[Math.floor(Math.random() * categoryCards.length)];
+                });
                 currentCards = selectedCards.sort(() => Math.random() - 0.5);
             } else {
                 currentCards = [...level2Pool].sort(() => Math.random() - 0.5);
