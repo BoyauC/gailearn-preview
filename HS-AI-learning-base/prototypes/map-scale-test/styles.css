@@ -22,8 +22,18 @@ h1 { margin: .1rem 0 0; font-size: clamp(1rem, 2.4vw, 1.45rem); }
 .status { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; }
 .status span { border-radius: 999px; background: #e7f7f6; padding: .35rem .65rem; font-size: .8rem; font-weight: 700; }
 
-.viewport { position: relative; overflow: hidden; min-height: 0; background: #9fcf68; touch-action: none; }
-.world { position: absolute; inset: 0; min-width: 720px; min-height: 100%; overflow: hidden; }
+.viewport { position: relative; overflow: hidden; min-height: 0; background: #83b95f; touch-action: none; }
+.world {
+  --world-scale: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform: translate(-50%, -50%) scale(var(--world-scale));
+  transform-origin: center;
+}
 .land {
   position: absolute; inset: 0;
   background: url("../../shared-assets/map/formal/terrain/terrain-base-v1.webp") center / cover no-repeat;
@@ -56,7 +66,7 @@ h1 { margin: .1rem 0 0; font-size: clamp(1rem, 2.4vw, 1.45rem); }
 .building-companion { left: 67.7%; top: 15.2%; width: 28.1%; }
 
 .character { --character-height: 21; --depth-scale: 1; position: absolute; left: 50%; top: 70%; width: 1px; height: 1px; z-index: 10; pointer-events: none; }
-.character img { position: absolute; left: 0; bottom: 0; height: clamp(82px, calc(var(--character-height) * 1vh), 180px); width: auto; object-fit: contain; object-position: center bottom; transform: translate3d(-50%, 0, 0) scale(var(--depth-scale)); transform-origin: center bottom; user-select: none; backface-visibility: hidden; }
+.character img { position: absolute; left: 0; bottom: 0; height: calc(var(--character-height) * 10.8px); width: auto; object-fit: contain; object-position: center bottom; transform: translate3d(-50%, 0, 0) scale(var(--depth-scale)); transform-origin: center bottom; user-select: none; backface-visibility: hidden; }
 .character::before { content: ""; position: absolute; left: 0; top: -4px; width: 44px; height: 12px; transform: translate(-50%,-50%); border-radius: 50%; background: rgba(20,28,26,.22); filter: blur(4px); }
 .character::after { content: ""; position: absolute; left: 0; top: 0; width: 74px; height: 25px; transform: translate(-50%,-50%); border: 4px solid rgba(75,230,220,.85); border-radius: 50%; }
 .anchor-marker { display: none; }
@@ -100,7 +110,6 @@ h1 { margin: .1rem 0 0; font-size: clamp(1rem, 2.4vw, 1.45rem); }
   h1 { font-size: 1rem; }
   .controls { min-height: 48px; padding-block: .35rem; }
   .building strong { bottom: -1.2rem; font-size: .65rem; }
-  .character img { min-height: 68px; }
   .help-panel { padding: .42rem .55rem; font-size: .66rem; }
   .door-action { top: 52%; min-width: 240px; padding: .65rem; }
 }

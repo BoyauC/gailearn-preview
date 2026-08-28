@@ -56,6 +56,16 @@ const rooms = Object.fromEntries(window.GAILearnRooms.rooms.map((room) => [room.
 let nearbyRoom = null;
 let dialogRoom = null;
 
+function fitWorldToViewport() {
+  const { width, height } = window.HSAIMapLayout.designSize;
+  const scale = Math.min(viewport.clientWidth / width, viewport.clientHeight / height);
+  world.style.setProperty('--world-scale', Math.max(scale, 0.01).toFixed(5));
+}
+
+const worldResizeObserver = new ResizeObserver(fitWorldToViewport);
+worldResizeObserver.observe(viewport);
+fitWorldToViewport();
+
 Object.entries(roomLayout).forEach(([key, layout]) => {
   const building = document.querySelector(`[data-building="${key}"]`);
   if (!building) return;
@@ -224,6 +234,7 @@ function tick(now) {
 viewport.addEventListener('pointerdown', (event) => {
   if (event.target.closest('button, input, .joystick')) return;
   const rect = world.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) return;
   state.target = {
     x: ((event.clientX - rect.left) / rect.width) * 100,
     y: ((event.clientY - rect.top) / rect.height) * 100,
