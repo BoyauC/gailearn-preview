@@ -23,7 +23,13 @@ h1 { margin: .1rem 0 0; font-size: clamp(1rem, 2.4vw, 1.45rem); }
 .status { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; }
 .status span { border-radius: 999px; background: #e7f7f6; padding: .35rem .65rem; font-size: .8rem; font-weight: 700; }
 
-.viewport { position: relative; overflow: hidden; min-height: 0; background: #83b95f; touch-action: none; }
+.viewport {
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  background: #83b95f url("shared-assets/map/formal/terrain/terrain-base-v1.webp") center / cover no-repeat;
+  touch-action: none;
+}
 .world {
   --world-scale: 1;
   position: absolute;
@@ -37,7 +43,7 @@ h1 { margin: .1rem 0 0; font-size: clamp(1rem, 2.4vw, 1.45rem); }
 }
 .land {
   position: absolute; inset: 0;
-  background: url("shared-assets/map/formal/terrain/terrain-base-v1.webp") center / cover no-repeat;
+  background: transparent;
 }
 .plaza {
   position: absolute; left: 4.7%; top: 30.5%; width: 10.9%; height: auto; z-index: 2;
