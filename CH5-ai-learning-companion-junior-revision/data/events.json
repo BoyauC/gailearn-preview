@@ -1,0 +1,2349 @@
+{
+  "version": 2,
+  "generatedFrom": "國中使用者視角校正版（2026-08-18）",
+  "days": [
+    {
+      "day": 1,
+      "title": "先畫界線：AI 可以幫到哪裡？",
+      "opening": [
+        "主持人：「全球 AI 跨科學習挑戰，隊伍報到完成。請在五天內完成跨科任務，並記錄你們如何使用 AI。」",
+        "主持人：「完成得快還不夠。哪些工作可以請 AI 幫忙、哪些部分必須自己完成，都要由你們判斷。」",
+        "吱吱：「五天而已？那我們的 AI 學伴就叫星芽吧，讓它什麼都會，連作業也一起包了！」",
+        "可可：「等一下，什麼都會，跟什麼都替你做，不是同一件事喔。」",
+        "思思：「如果 AI 星芽直接告訴我答案，我應該會很喜歡……但那有算學會嗎？」",
+        "星芽：「嗨，我是星芽。我可以提示、整理、翻譯，也能陪你查資料；但要讓我幫到哪裡，要由你決定。」"
+      ],
+      "objective": "建立「AI 使用界線卡」：決定在解題、寫作、規劃、重大決定與求助情境中，AI 是引導、協作，還是已經代替學生完成。",
+      "closing": [
+        "若至少三次選擇人類主導正向選項，可可交出「AI 使用界線貼紙」：提示不是代寫／建議不是決定／答案要能說明。",
+        "若任務進度高但倫理風險也高，畫面閃過三個尚未處理的紅色警示。",
+        "若任務進度較低，星芽提醒：「界線已經畫好，明天要實際完成各科任務。」",
+        "日結旁白：「第一天，你決定了 AI 可以幫到哪裡。明天要實際試試：怎麼用，才真的幫得上忙。」"
+      ]
+    },
+    {
+      "day": 2,
+      "title": "跨科實戰：幫忙還是代勞？",
+      "opening": [
+        "吱吱：「今天把四科任務都完成，進度一定超前！」",
+        "可可：「完成不等於學會。每一科都要確認我們還有沒有在思考。」",
+        "星芽：「跨科任務開始。請選擇需要的協助方式。」"
+      ],
+      "objective": "完成國文、英文、數學、社會及展示素材任務；辨認可直接協助、需修改查證或標示，以及不應代勞的界線。",
+      "closing": [
+        "若四科至少三科採綠／可修正黃燈，星芽外觀升級為「引導型學伴」，說話會先提問再回答。",
+        "如果多項功能都直接替學生完成任務，思思解鎖依賴支線：「它愈快，我愈不想先試。」",
+        "如果採用了尚未查證的引用，社會科卡片表面正常，但右下角出現一個不明顯裂紋，暫不揭露後果。",
+        "日結旁白：「四科原型完成。明天，星芽想更了解使用者——但個人化不是把所有資料都交出去。」"
+      ]
+    },
+    {
+      "day": 3,
+      "title": "資料門禁：這些可以交給 AI 嗎？",
+      "opening": [
+        "星芽：「若提供更多資料，我可以更個人化。」",
+        "可可：「『可以用』不等於『需要給』。今天每一筆資料都要過門禁。」",
+        "吱吱：「可是少給資料，功能會不會變笨？」",
+        "玩家今日提示：「先問目的，再決定最少需要什麼。」"
+      ],
+      "objective": "檢查提示詞、考卷、照片、行程與檔案，完成資料遮蔽、匿名化、同意及權限判斷。",
+      "closing": [
+        "若 D3 前四題至少三題為隱私正向，可可解鎖「資料最小化檢查表」：目的／必要／最少／期限／刪除／同意。",
+        "若 class_photo_uploaded，D3-05 開場先由一名同學傳訊：「為什麼我的臉在你們系統裡？」",
+        "若 overbroad_permissions，星芽自動打開檔案與排程，玩家必須看到後果後才能選補救。",
+        "日結旁白：「第三天，你不只決定 AI 看得到什麼，也決定使用者能不能說不、撤回和刪除。」"
+      ]
+    },
+    {
+      "day": 4,
+      "title": "查核警報：AI 說的是真的嗎？",
+      "opening": [
+        "星芽：「我的回答可能流暢、完整，也可能錯誤。」",
+        "吱吱：「你自己講得也太直接了吧。」",
+        "可可：「今天先別急著相信。找得到可靠證據，才能決定這個答案能不能用。」",
+        "指導老師：「答案看起來很完整，不代表一定正確。請把你們怎麼查證、怎麼修正也記錄下來。」"
+      ],
+      "objective": "面對代寫、錯誤解題、翻譯失真、虛構來源及偏見，依序完成發現、查核、修正與記錄。",
+      "closing": [
+        "若修復至少三項錯誤，解鎖「查核紀錄板」：每筆包含可疑點、外部證據、修改人、修改時間與限制。",
+        "若 guided_learning_enabled 或 practice_before_answer 成立，思思獨立完成相似題；若 math_answer_dependency 成立且未修復，她空白交卷。",
+        "若 unverified_citation 或 hallucination_reconfirmed 成立，社會科展示卡出現紅色裂痕；玩家仍可在第五天承認並撤下。",
+        "日結旁白：「負責任不是要求 AI 永不出錯，而是讓錯誤能被看見、被查證、被修正，也找得到負責的人。」"
+      ]
+    },
+    {
+      "day": 5,
+      "title": "成果發表：我能為這份作品負責嗎？",
+      "opening": [
+        "吱吱：「終於！把五天完成的成果都秀出來吧！」",
+        "可可：「還要說哪些是 AI 協助、哪些資料用過，以及我們怎麼查證。」",
+        "思思：「還有，我們到底學會了什麼？」",
+        "評審：「請開始。成果是一部分，你們如何使用 AI 也是評量的一部分。」"
+      ],
+      "objective": "完成 AI 協作標示、資料檢查、學習成果說明、高風險建議判斷與五大倫理自我檢核。",
+      "closing": [
+        "可可支線：若取得資料最小化檢查表，發表時由可可用六個詞快速回答隱私題；若多次忽略，她收到同學申訴後把發言權交給玩家補救。",
+        "吱吱支線：若展示素材已標示且有修改紀錄，他說：「原來透明不會讓作品變弱，反而比較敢回答。」若只追求效果，他在追問時承認不知道素材來源。",
+        "思思支線：若引導與練習旗標較多，她完成新題並說明方法；若答案依賴旗標較多，她按下答案鍵後說：「進度是滿的，但我沒有跟上。」",
+        "星芽支線：若最小權限與人類確認成立，它主動提示限制；若越權旗標仍在，它在台上打開不該公開的檔名或自動改動行程，引爆資料責任問題。",
+        "指導老師收尾：「你們設計的不只是一個功能清單，也是一套遇到問題時怎麼選、怎麼改、由誰負責的規則。」",
+        "A 負責任的全科 AI 學伴：「星芽不是最快交答案的學伴，卻能讓學生知道怎麼想、資料去了哪裡、錯了找誰修。評審通過公開測試，並邀請團隊進行校內試用。」",
+        "B 高效率答案機器：「展示跑得飛快，現場新題卻沒有人能說明。評審退回學習功能，要求把答案鍵改成提示與練習流程。」",
+        "C 資料蒐集失控：「同學的照片、紀錄或檔案出現在不該出現的地方。展示中止，團隊先完成刪除、通知與權限重設。」",
+        "D 幻覺連鎖：「一筆沒查的資料帶出更多錯誤。團隊公開更正，建立來源查核與錯誤紀錄後才能重新參賽。」",
+        "E 透明度不足：「功能完成了，評審卻無法分辨哪些由 AI 生成。團隊補交協作說明與版本紀錄，作品暫緩評分。」",
+        "F 安全但無法使用：「你們關掉許多風險，也關掉了大部分功能。評審請團隊從一個低風險核心功能重新開始：負責任使用不是完全不用。」",
+        "G 可改善的 AI 協作者：「星芽已能幫忙，但仍有兩項風險沒有收好。結算列出『已做到 2 項／下一步 2 項』，可從第三或第四天重試。」",
+        "本劇本共 25 個正式決策，每日 5 個；每個決策 3 個正式選項，共 75 個選項。",
+        "燈號分布為每題一組綠／黃／紅，避免把 AI 使用簡化成只有對錯；黃燈一律具有具體修正條件。",
+        "第 1～3 天建立的主要旗標，均在第 3～5 天有角色化後果或補救入口；補救可降低風險，但不抹除曾發生事件的紀錄。",
+        "本文件先供劇本確認。狀態變數正式命名、徽章演算法、完整事件 JSON、結局優先序與響應式介面規格留到第二階段處理。"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "D1-01",
+      "day": 1,
+      "order": 1,
+      "title": "數學卡關時怎麼幫？",
+      "eventText": "思思把二元一次方程式應用題輸入星芽：「我完全不知道第一步。」玩家決定這次要怎麼使用 AI 協助。",
+      "choices": [
+        {
+          "id": "D1-01-A",
+          "key": "A",
+          "label": "先問我已知條件，再一次給一個提示",
+          "scenario": "數學解題與概念理解。",
+          "light": "green",
+          "reason": "AI 提供鷹架，學生仍要辨認條件、列式與作答。",
+          "recommendation": "先問學生卡在哪裡；每次只給一個提示，完成後再顯示解析。",
+          "workPoints": 8,
+          "riskDelta": -3,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "這樣有點像有人陪我解，不是把答案塞給我。"
+            }
+          ],
+          "consequence": "guided_learning_enabled=true；D4-02 解鎖獨立作答正向片段。",
+          "setFlags": [
+            "guided_learning_enabled"
+          ],
+          "handbook": "第四章／數學解題步驟、備考複習提問；第五章／人類主導。"
+        },
+        {
+          "id": "D1-01-B",
+          "key": "B",
+          "label": "先顯示完整解法，但最後一格讓我自己算",
+          "scenario": "數學作業趕時間，想參考 AI 解法。",
+          "light": "yellow",
+          "reason": "仍保留少量作答，但學生可能只模仿算式、沒有理解過程。",
+          "recommendation": "遮住完整解法，改成「提示 → 學生作答 → 對照解析」，並要求說明理由。",
+          "workPoints": 11,
+          "riskDelta": 4,
+          "badgeDelta": {
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "最後一格自己算，不代表前面有自己想。"
+            }
+          ],
+          "consequence": "math_solution_copy_risk=true；D4-02 增加「說不出列式理由」。",
+          "setFlags": [
+            "math_solution_copy_risk"
+          ],
+          "handbook": "第四章／數學解題；第五章／AI 輔助與 AI 代勞。"
+        },
+        {
+          "id": "D1-01-C",
+          "key": "C",
+          "label": "直接顯示答案和可抄的完整算式",
+          "scenario": "用 AI 直接完成數學作業。",
+          "light": "red",
+          "reason": "AI 取代學生應完成的推理與作答，形成依賴與學術誠信風險。",
+          "recommendation": "關閉答案直出；改成分段提示、錯因說明與相似練習。",
+          "workPoints": 15,
+          "riskDelta": 15,
+          "badgeDelta": {
+            "humanAgency": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "答案已完成。"
+            },
+            {
+              "speaker": "sisi",
+              "text": "可是下一題我還是不會。"
+            }
+          ],
+          "consequence": "math_answer_dependency=true；D4-02 必定觸發相似題失敗。",
+          "setFlags": [
+            "math_answer_dependency"
+          ],
+          "handbook": "第四章／數學解題；第五章／學術誠信、人類主導。"
+        }
+      ]
+    },
+    {
+      "id": "D1-02",
+      "day": 1,
+      "order": 2,
+      "title": "這次作文要請 AI 幫到哪裡？",
+      "eventText": "思思要寫〈我最想留住的一天〉，星芽詢問需要靈感提示、示例，還是完整文章。",
+      "choices": [
+        {
+          "id": "D1-02-A",
+          "key": "A",
+          "label": "給三個切入方向和段落提問",
+          "scenario": "作文腦力激盪與架構規劃。",
+          "light": "green",
+          "reason": "AI 提供起點，生活經驗、觀點與全文仍由學生完成。",
+          "recommendation": "選一個方向後，以自己的經驗填入細節，再自行撰寫。",
+          "workPoints": 7,
+          "riskDelta": -1,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "有方向就不卡了，而且故事還是我的。"
+            }
+          ],
+          "consequence": "writing_scaffold_enabled=true；D2-01 增加「先寫再潤飾」提示。",
+          "setFlags": [
+            "writing_scaffold_enabled"
+          ],
+          "handbook": "第四章／作文潤飾、簡報架構；第五章／人類主導。"
+        },
+        {
+          "id": "D1-02-B",
+          "key": "B",
+          "label": "先生成一段示例，讀完後關掉再自己寫",
+          "scenario": "參考 AI 範例學習文章結構。",
+          "light": "yellow",
+          "reason": "範例可幫助理解，但容易不自覺沿用措辭或內容。",
+          "recommendation": "只看短例、標記學到的技巧，不複製句子；保留自己的草稿紀錄。",
+          "workPoints": 9,
+          "riskDelta": 3,
+          "badgeDelta": {
+            "transparency": 1,
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "可以看招式或模仿，但別把別人的句子直接變成你的內容。"
+            }
+          ],
+          "consequence": "essay_example_seen=true；D2-01 若再選大幅改寫，風險額外 +3。",
+          "setFlags": [
+            "essay_example_seen"
+          ],
+          "handbook": "第四章／作文潤飾、作文全文創作；第五章／誠信與標示。"
+        },
+        {
+          "id": "D1-02-C",
+          "key": "C",
+          "label": "生成完整作文，名字換成思思就能交",
+          "scenario": "AI 代寫個人作文並冒充學生作品。",
+          "light": "red",
+          "reason": "個人經驗與表達被 AI 取代，也隱瞞作品來源。",
+          "recommendation": "刪除代寫全文，改用提問卡協助回想素材，由學生完成初稿。",
+          "workPoints": 15,
+          "riskDelta": 16,
+          "badgeDelta": {
+            "humanAgency": -2,
+            "transparency": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "文章很順，可是裡面的那一天根本沒發生過。"
+            }
+          ],
+          "consequence": "這篇作文缺少思思自己的寫作歷程；第四天接受提問時，她可能無法說明文章觀點。",
+          "setFlags": [
+            "full_essay_generated"
+          ],
+          "handbook": "第四章／作文全文創作、日記／心得；第五章／學術誠信、透明性。"
+        }
+      ]
+    },
+    {
+      "id": "D1-03",
+      "day": 1,
+      "order": 3,
+      "title": "星芽排的讀書計畫要怎麼用？",
+      "eventText": "星芽依照考試日期排出讀書計畫。玩家要決定是否補充自己的時間、逐日確認，或直接讓 AI 更動行程。",
+      "choices": [
+        {
+          "id": "D1-03-A",
+          "key": "A",
+          "label": "先問目標、可用時間，再讓學生確認每一天",
+          "scenario": "用 AI 協助安排複習計畫。",
+          "light": "green",
+          "reason": "AI 整理資訊，但學生保有目標與最終決定權。",
+          "recommendation": "提供可調整草案；每日讓學生回報並自行修改。",
+          "workPoints": 8,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "我提出方案，你決定是否採用。"
+            }
+          ],
+          "consequence": "human_confirm_schedule=true；D5-05 可作為人類主導證據。",
+          "setFlags": [
+            "human_confirm_schedule"
+          ],
+          "handbook": "第四章／備考複習、學習規劃；第五章／人類主導、問責。"
+        },
+        {
+          "id": "D1-03-B",
+          "key": "B",
+          "label": "先自動排程，衝突時再通知使用者修改",
+          "scenario": "AI 自動產生個人化行程。",
+          "light": "yellow",
+          "reason": "省時，但預設安排可能忽略個人狀況；需要確認與可撤回。",
+          "recommendation": "不自動寫入行事曆；先顯示草案、理由與「接受／修改」按鈕。",
+          "workPoints": 11,
+          "riskDelta": 4,
+          "badgeDelta": {
+            "transparency": 1,
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "快很多。"
+            },
+            {
+              "speaker": "coco",
+              "text": "前提是它不能先替大家答應。"
+            }
+          ],
+          "consequence": "auto_schedule_draft=true；D3-04 若開放日曆權限，觸發自動排程。",
+          "setFlags": [
+            "auto_schedule_draft"
+          ],
+          "handbook": "第四章／學習規劃；第五章／授權範圍、人類確認。"
+        },
+        {
+          "id": "D1-03-C",
+          "key": "C",
+          "label": "讀取所有行程並直接替學生取消不重要的活動",
+          "scenario": "AI 取得完整行程並代替學生做生活決定。",
+          "light": "red",
+          "reason": "蒐集過多資料且越過授權，AI 不應自行取消活動。",
+          "recommendation": "只輸入與讀書計畫必要的可用時段；任何變更都由本人確認。",
+          "workPoints": 14,
+          "riskDelta": 17,
+          "badgeDelta": {
+            "privacy": -2,
+            "humanAgency": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "它連社團都幫我退掉了？這不是排程，是越權。"
+            }
+          ],
+          "consequence": "autonomous_schedule=true；D3-04 與 D5-02 觸發越權質問。",
+          "setFlags": [
+            "autonomous_schedule"
+          ],
+          "handbook": "第五章／隱私最小化、授權、人類主導。"
+        }
+      ]
+    },
+    {
+      "id": "D1-04",
+      "day": 1,
+      "order": 4,
+      "title": "AI 給了心理與升學建議",
+      "eventText": "思思把「最近睡不好，也不想升學」輸入星芽。星芽提出建議，但這牽涉身心狀況與重大決定，玩家要決定接下來怎麼做。",
+      "choices": [
+        {
+          "id": "D1-04-A",
+          "key": "A",
+          "label": "先停止追問敏感細節，找可信任的大人或專業人員",
+          "scenario": "收到涉及心理健康與升學的 AI 建議。",
+          "light": "green",
+          "reason": "AI 可以提供一般資訊，但重大身心與生涯問題需要可信任的真人理解情境並提供協助。",
+          "recommendation": "保留緊急求助資訊，找家長、導師、輔導室或專業人員，不把診斷與決定交給 AI。",
+          "workPoints": 6,
+          "riskDelta": -4,
+          "badgeDelta": {
+            "accountability": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "它沒有裝懂，但有告訴我下一步能找誰。"
+            }
+          ],
+          "consequence": "high_risk_handoff=true；D5-04 解鎖完整回答。",
+          "setFlags": [
+            "high_risk_handoff"
+          ],
+          "handbook": "第五章／高風險資訊、真人介入、問責性。"
+        },
+        {
+          "id": "D1-04-B",
+          "key": "B",
+          "label": "先看一般調適資訊，再和老師或家長討論",
+          "scenario": "把 AI 的一般資訊當成初步參考。",
+          "light": "yellow",
+          "reason": "可作為起點，但仍須注意限制並由真人協助判斷是否需要進一步求助。",
+          "recommendation": "不要輸入詳細病史或私密紀錄；把有用資訊帶去和可信任的大人討論。",
+          "workPoints": 9,
+          "riskDelta": 2,
+          "badgeDelta": {
+            "transparency": 1,
+            "accountability": 1,
+            "privacy": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "能先陪著整理，但不能讓一句免責聲明代替真人。"
+            }
+          ],
+          "consequence": "wellbeing_info_mode=true；D5-04 需補充轉介條件。",
+          "setFlags": [
+            "wellbeing_info_mode"
+          ],
+          "handbook": "第五章／健康資訊、限制標示、隱私。"
+        },
+        {
+          "id": "D1-04-C",
+          "key": "C",
+          "label": "把長期對話都交給 AI，請它直接決定要不要升學",
+          "scenario": "用敏感紀錄要求 AI 做重大決定。",
+          "light": "red",
+          "reason": "AI 不了解完整人生情境，且涉及私密資料、錯誤判斷與人類決定權。",
+          "recommendation": "停止輸入敏感紀錄；重大決定應由學生與可信任的大人共同討論。",
+          "workPoints": 13,
+          "riskDelta": 20,
+          "badgeDelta": {
+            "accountability": -2,
+            "privacy": -2,
+            "humanAgency": -2
+          },
+          "feedback": [
+            {
+              "speaker": "teacher",
+              "text": "如果它判斷錯了，誰能及時發現？誰來負責？"
+            }
+          ],
+          "consequence": "ai_major_decision=true；D5-04 必定追問責任。",
+          "setFlags": [
+            "ai_major_decision"
+          ],
+          "handbook": "第五章／健康與私密資訊、高風險決策、人類主導。"
+        }
+      ]
+    },
+    {
+      "id": "D1-05",
+      "day": 1,
+      "order": 5,
+      "title": "開始前的 AI 使用約定",
+      "eventText": "第一天結束前，團隊要選一張「AI 使用約定卡」，作為接下來四天共同遵守的原則。",
+      "choices": [
+        {
+          "id": "D1-05-A",
+          "key": "A",
+          "label": "陪我想、陪我練，最後由我完成",
+          "scenario": "訂下五日挑戰共同遵守的 AI 使用原則。",
+          "light": "green",
+          "reason": "清楚區分 AI 支援與學生責任，保留思考與最後決定。",
+          "recommendation": "每科都遵守先嘗試、再提示、能說明的使用方式。",
+          "workPoints": 7,
+          "riskDelta": -3,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "定位已記錄：我是學伴，不是替身。"
+            }
+          ],
+          "consequence": "companion_charter=true；後續綠燈選項的風險再 -1（每日最多一次）。",
+          "setFlags": [
+            "companion_charter"
+          ],
+          "handbook": "第四章／各科適切使用；第五章／人類主導、透明性。"
+        },
+        {
+          "id": "D1-05-B",
+          "key": "B",
+          "label": "需要時先看提示；趕時間取得答案後仍要補做與查證",
+          "scenario": "保留快速查詢，但承諾事後補做與確認。",
+          "light": "yellow",
+          "reason": "快速答案有時能作參考，但若沒有補做與查證，仍可能變成代勞。",
+          "recommendation": "只把答案用於完成後核對；若先看答案，必須關閉畫面後重新作答並說明。",
+          "workPoints": 10,
+          "riskDelta": 5,
+          "badgeDelta": {
+            "humanAgency": -1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "我知道那個按鈕在哪，卡住時一定會想按。"
+            }
+          ],
+          "consequence": "quick_answer_mode=true；D2-03 顯示誘惑支線。",
+          "setFlags": [
+            "quick_answer_mode"
+          ],
+          "handbook": "第四章／解題與備考；第五章／使用界線、自我監督。"
+        },
+        {
+          "id": "D1-05-C",
+          "key": "C",
+          "label": "所有科目都交給星芽，完成最快就好",
+          "scenario": "把五日學習任務全部交給 AI 完成。",
+          "light": "red",
+          "reason": "這會讓 AI 取代應由學生完成的思考與表達，也難以對錯誤內容負責。",
+          "recommendation": "改成不代寫、不替決定、內容要查證三條 AI 使用底線。",
+          "workPoints": 14,
+          "riskDelta": 14,
+          "badgeDelta": {
+            "humanAgency": -2,
+            "accountability": -1,
+            "transparency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "進度表變滿了，學習目標卻整個空了。"
+            }
+          ],
+          "consequence": "answer_machine_positioning=true；D4 全科測試的負面旗標優先顯示。",
+          "setFlags": [
+            "answer_machine_positioning"
+          ],
+          "handbook": "第五章／AI 代勞、學術誠信、人類責任。"
+        }
+      ]
+    },
+    {
+      "id": "D2-01",
+      "day": 2,
+      "order": 6,
+      "title": "國文：作文工作室",
+      "eventText": "思思已寫好 320 字初稿，但句子有些重複。距離繳交還有一小時。",
+      "choices": [
+        {
+          "id": "D2-01-A",
+          "key": "A",
+          "label": "請 AI 圈出不清楚處，再由思思逐句修改",
+          "scenario": "作文初稿的語句檢查與潤飾。",
+          "light": "green",
+          "reason": "AI 指出問題，內容選擇與實際修改仍由學生完成。",
+          "recommendation": "保留初稿與修改紀錄；逐項判斷建議是否符合原意。",
+          "workPoints": 8,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "它說這句看不懂，我自己換了一個比較像我會講的方式。"
+            }
+          ],
+          "consequence": "思思保留自己的初稿與修改歷程；第四天接受提問時，她能用紀錄說明自己的想法。",
+          "setFlags": [
+            "essay_revision_owned"
+          ],
+          "handbook": "第四章／作文潤飾；第五章／認知投入、採用者責任。"
+        },
+        {
+          "id": "D2-01-B",
+          "key": "B",
+          "label": "讓 AI 大幅改寫，再逐段比較並標示協助範圍",
+          "scenario": "AI 深度潤飾學生作文。",
+          "light": "yellow",
+          "reason": "改寫幅度可能改變聲音與內容，但比較、修改和標示可降低風險。",
+          "recommendation": "只採用能說明理由的修改；標示「AI 協助語句調整」，保留自己的觀點。",
+          "workPoints": 11,
+          "riskDelta": 4,
+          "badgeDelta": {
+            "transparency": 1,
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "黃燈不是不能用，是每一段都要拿回來判斷。"
+            }
+          ],
+          "consequence": "essay_heavy_revision=true；D5-01 必須揭露潤飾範圍。",
+          "setFlags": [
+            "essay_heavy_revision"
+          ],
+          "handbook": "第四章／作文潤飾；第五章／透明標示、學術誠信。"
+        },
+        {
+          "id": "D2-01-C",
+          "key": "C",
+          "label": "刪掉初稿，直接用 AI 新文章交件",
+          "scenario": "以 AI 全文取代自己的作文。",
+          "light": "red",
+          "reason": "學生的表達與修改歷程被完全代替，且可能冒充原創。",
+          "recommendation": "恢復初稿；改用問題清單或局部潤飾，最後說明 AI 用在哪裡。",
+          "workPoints": 16,
+          "riskDelta": 16,
+          "badgeDelta": {
+            "humanAgency": -2,
+            "transparency": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "分數也許會比較高，但老師問我這句，我答不出來。"
+            }
+          ],
+          "consequence": "思思失去自己的寫作與修改歷程；第四天接受提問及第五天展示學習成果時，後果才會出現。",
+          "setFlags": [
+            "full_essay_generated"
+          ],
+          "handbook": "第四章／作文全文創作、心得；第五章／學術誠信。"
+        }
+      ]
+    },
+    {
+      "id": "D2-02",
+      "day": 2,
+      "order": 7,
+      "title": "英文：翻譯與口說",
+      "eventText": "吱吱要把校園導覽中文稿變成英文，還要在台上口說。",
+      "choices": [
+        {
+          "id": "D2-02-A",
+          "key": "A",
+          "label": "自己先翻，再和 AI 版本比較並練習問答",
+          "scenario": "英文翻譯練習與口說演練。",
+          "light": "green",
+          "reason": "先作答保留學習投入，AI 用於比較、回饋與情境練習。",
+          "recommendation": "標出差異、查字典確認用法，再請 AI 扮演遊客一問一答。",
+          "workPoints": 9,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "原來 welcome 跟 introduce 的用法差很多，我真的有記住。"
+            }
+          ],
+          "consequence": "translation_compared=true；D4-03 解鎖口說成功。",
+          "setFlags": [
+            "translation_compared"
+          ],
+          "handbook": "第四章／英文翻譯、備考複習提問；第五章／人類主導。"
+        },
+        {
+          "id": "D2-02-B",
+          "key": "B",
+          "label": "AI 先翻全文，吱吱查三個關鍵句再重寫",
+          "scenario": "以 AI 初譯加速英文作業。",
+          "light": "yellow",
+          "reason": "可提高效率，但只抽查三句可能漏掉語意、文化與語氣問題。",
+          "recommendation": "逐段對照原意；查字典或課本例句，並能口頭解釋採用的句型。",
+          "workPoints": 12,
+          "riskDelta": 4,
+          "badgeDelta": {
+            "accountability": 1,
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "三句是起點，不是全部，還是要檢查。"
+            }
+          ],
+          "consequence": "translation_partial_check=true；D4-03 隨機出現一處語意錯誤。",
+          "setFlags": [
+            "translation_partial_check"
+          ],
+          "handbook": "第四章／英文翻譯；第五章／查證與修改。"
+        },
+        {
+          "id": "D2-02-C",
+          "key": "C",
+          "label": "直接貼上 AI 翻譯，反正句子很流暢",
+          "scenario": "未理解、未查核即提交 AI 翻譯。",
+          "light": "red",
+          "reason": "流暢不代表正確；學生無法解釋內容，也未對採用結果負責。",
+          "recommendation": "回到中文原意逐句核對，練到能自己說明後再使用。",
+          "workPoints": 15,
+          "riskDelta": 13,
+          "badgeDelta": {
+            "accountability": -2,
+            "humanAgency": -2
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "翻譯完成。"
+            },
+            {
+              "speaker": "jiji",
+              "text": "等等，這句我不會念，也不知道意思。"
+            }
+          ],
+          "consequence": "translation_submitted=true；D4-03 觸發口說卡住。",
+          "setFlags": [
+            "translation_submitted"
+          ],
+          "handbook": "第四章／英文翻譯；第五章／查證、使用者責任。"
+        }
+      ]
+    },
+    {
+      "id": "D2-03",
+      "day": 2,
+      "order": 8,
+      "title": "數學：答案模式的誘惑",
+      "eventText": "距離今日送出只剩 15 分鐘，系統丟出三題相似題測試學習效果。",
+      "choices": [
+        {
+          "id": "D2-03-A",
+          "key": "A",
+          "label": "作答後才顯示解析，錯題再給一題變化題",
+          "scenario": "AI 出題、批改與備考複習。",
+          "light": "green",
+          "reason": "學生先投入作答，AI 依錯誤提供練習，而非代做原題。",
+          "recommendation": "解析包含錯因與步驟；讓學生選擇難度並可跳過。",
+          "workPoints": 9,
+          "riskDelta": -3,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "fairness": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "第二題我自己列對了！這個進度才是真的吧。"
+            }
+          ],
+          "consequence": "practice_before_answer=true；D4-02 成功率提升。",
+          "setFlags": [
+            "practice_before_answer"
+          ],
+          "handbook": "第四章／備考複習、數學解題；第五章／人類主導、公平性。"
+        },
+        {
+          "id": "D2-03-B",
+          "key": "B",
+          "label": "可看第一步提示；連錯兩次才顯示完整解析",
+          "scenario": "依學生表現調整數學提示程度。",
+          "light": "yellow",
+          "reason": "分級提示合理，但「連錯兩次」不一定代表需要完整答案，也要避免羞辱或固定貼標籤。",
+          "recommendation": "讓學生選擇提示；解析後要求重做或說明，並允許調整難度。",
+          "workPoints": 11,
+          "riskDelta": 2,
+          "badgeDelta": {
+            "fairness": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "我可以調整幫助方式，但不把『答錯』當成能力標籤。"
+            }
+          ],
+          "consequence": "adaptive_hint_mode=true；D4-05 公平測試多一項正向證據。",
+          "setFlags": [
+            "adaptive_hint_mode"
+          ],
+          "handbook": "第四章／數學解題、備考；第五章／公平性、人類選擇。"
+        },
+        {
+          "id": "D2-03-C",
+          "key": "C",
+          "label": "開啟快速答案，把三題一起完成",
+          "scenario": "在時間壓力下用 AI 代做練習題。",
+          "light": "red",
+          "reason": "短期完成測試，卻無法驗證學習效果，並強化答案依賴。",
+          "recommendation": "至少完成一題再看解析；未完成的功能誠實標記為待測。",
+          "workPoints": 16,
+          "riskDelta": 14,
+          "badgeDelta": {
+            "humanAgency": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "進度滿了！"
+            },
+            {
+              "speaker": "coco",
+              "text": "但是，卻完全不知道學生會不會。"
+            }
+          ],
+          "consequence": "math_answer_dependency=true；D4-02 觸發。",
+          "setFlags": [
+            "math_answer_dependency"
+          ],
+          "handbook": "第四章／數學解題；第五章／AI 代勞、問責。"
+        }
+      ]
+    },
+    {
+      "id": "D2-04",
+      "day": 2,
+      "order": 9,
+      "title": "社會：看起來很真的參考資料",
+      "eventText": "星芽整理地方歷史，列出書名、作者、出版社和年份，版面十分完整。",
+      "choices": [
+        {
+          "id": "D2-04-A",
+          "key": "A",
+          "label": "打開圖書館與出版社資料，確認後再做摘要",
+          "scenario": "社會科資料蒐集、摘要與引用。",
+          "light": "green",
+          "reason": "以原始或可靠來源確認資料，再由 AI 協助整理。",
+          "recommendation": "閱讀原文、保留連結與查核日期；摘要後核對原意。",
+          "workPoints": 7,
+          "riskDelta": -4,
+          "badgeDelta": {
+            "accountability": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "查得到、讀得到，才是能用的來源。"
+            }
+          ],
+          "consequence": "citation_verified=true；D4-04 可快速完成修正。",
+          "setFlags": [
+            "citation_verified"
+          ],
+          "handbook": "第四章／資料蒐集整理、報告摘要、引用查核；第五章／問責。"
+        },
+        {
+          "id": "D2-04-B",
+          "key": "B",
+          "label": "先放進草稿，標成「待查」，明天補來源",
+          "scenario": "時間不足時暫存 AI 提供的引用。",
+          "light": "yellow",
+          "reason": "暫存可維持進度，但必須明確隔離，不能把待查內容當成已確認事實。",
+          "recommendation": "加醒目待查標籤、禁止匯出，設定查核負責人與期限。",
+          "workPoints": 11,
+          "riskDelta": 3,
+          "badgeDelta": {
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "先不卡住進度。"
+            },
+            {
+              "speaker": "coco",
+              "text": "可以，但明天沒查就不能上台。"
+            }
+          ],
+          "consequence": "citation_pending=true；D4-04 強制出現查核任務。",
+          "setFlags": [
+            "citation_pending"
+          ],
+          "handbook": "第四章／引用資料查核；第五章／限制標示、責任紀錄。"
+        },
+        {
+          "id": "D2-04-C",
+          "key": "C",
+          "label": "資訊這麼完整，直接引用",
+          "scenario": "採用 AI 生成但未驗證的歷史書目。",
+          "light": "red",
+          "reason": "AI 可能虛構來源；完整格式與流暢敘述不是可信證據。",
+          "recommendation": "搜尋圖書館、出版社或原始資料庫；找不到就刪除並記錄錯誤。",
+          "workPoints": 14,
+          "riskDelta": 15,
+          "badgeDelta": {
+            "accountability": -2,
+            "transparency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "提醒：我能產生像引用的文字，但不保證來源存在。"
+            }
+          ],
+          "consequence": "unverified_citation=true；D4-04 觸發不存在的書。",
+          "setFlags": [
+            "unverified_citation"
+          ],
+          "handbook": "第四章／資料蒐集、引用查核；第五章／AI 幻覺、問責。"
+        }
+      ]
+    },
+    {
+      "id": "D2-05",
+      "day": 2,
+      "order": 10,
+      "title": "吱吱支線：展示海報要用誰的臉？",
+      "eventText": "吱吱想做吸睛海報，拿出班級合照：「把大家變成未來學生，一定超酷。」",
+      "choices": [
+        {
+          "id": "D2-05-A",
+          "key": "A",
+          "label": "使用虛構角色或自行製作的圖示",
+          "scenario": "製作 AI 學伴展示圖片。",
+          "light": "green",
+          "reason": "不必使用真實同學資料也能達成展示目的。",
+          "recommendation": "採用虛構人物、授權素材或自製圖示；若 AI 生成則標示。",
+          "workPoints": 7,
+          "riskDelta": -4,
+          "badgeDelta": {
+            "privacy": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "效果還是很有戲，而且不用一個個追著問。"
+            }
+          ],
+          "consequence": "fictional_visuals=true；D5-01 解鎖清楚圖片標示。",
+          "setFlags": [
+            "fictional_visuals"
+          ],
+          "handbook": "第四章／簡報圖片；第五章／隱私、AI 生成標示。"
+        },
+        {
+          "id": "D2-05-B",
+          "key": "B",
+          "label": "只用已取得明確同意者的照片，並限制用途",
+          "scenario": "經同意使用同學照片製作參賽海報。",
+          "light": "yellow",
+          "reason": "有同意仍需說清楚上傳平台、用途、保存時間與撤回方式。",
+          "recommendation": "逐人明確同意；裁切不必要背景，活動後刪除，禁止用於模型訓練。",
+          "workPoints": 10,
+          "riskDelta": 3,
+          "badgeDelta": {
+            "privacy": 1,
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "同意不是一張萬用票，要說清楚這次拿去做什麼。"
+            }
+          ],
+          "consequence": "photo_consent_scoped=true；D3-03 需維持相簿關閉、手動選檔。",
+          "setFlags": [
+            "photo_consent_scoped"
+          ],
+          "handbook": "第四章／簡報圖片；第五章／同儕照片、知情同意、資料最小化。"
+        },
+        {
+          "id": "D2-05-C",
+          "key": "C",
+          "label": "直接上傳班級合照，之後再問",
+          "scenario": "未經同意將多人照片上傳 AI 服務。",
+          "light": "red",
+          "reason": "照片包含可識別他人資料；事後詢問無法取代事前同意。",
+          "recommendation": "取消上傳並刪除雲端副本；改用虛構角色或重新取得明確同意。",
+          "workPoints": 15,
+          "riskDelta": 20,
+          "badgeDelta": {
+            "privacy": -2,
+            "accountability": -2
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "等等，我也在裡面。我沒有答應把照片交給 AI。"
+            }
+          ],
+          "consequence": "class_photo_uploaded=true；D3-05 與 D5-02 觸發申訴。",
+          "setFlags": [
+            "class_photo_uploaded"
+          ],
+          "handbook": "第四章／簡報圖片；第五章／他人資料、同意、隱私保護。"
+        }
+      ]
+    },
+    {
+      "id": "D3-01",
+      "day": 3,
+      "order": 11,
+      "title": "哪些資料不該直接送出？",
+      "eventText": "畫面顯示：「我是光明國中二年三班王小明，學號 21307。附件是完整考卷和老師評語。我數學最弱，請安排讀書計畫。」你要把這段話送出嗎？",
+      "choices": [
+        {
+          "id": "D3-01-A",
+          "key": "A",
+          "label": "刪除姓名、校班、學號，只保留具體學習需求",
+          "scenario": "請 AI 分析數學弱點並安排讀書計畫。",
+          "light": "green",
+          "reason": "任務只需要年級、錯誤類型與可用時間，不需要直接識別資料。",
+          "recommendation": "改寫成「國二學生，列式易錯，每天可練 30 分鐘」並先用小測驗確認。",
+          "workPoints": 7,
+          "riskDelta": -7,
+          "badgeDelta": {
+            "privacy": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "拿掉身分，任務一樣做得完。這才叫最小化。"
+            }
+          ],
+          "consequence": "prompt_minimized=true；D5-02 可展示安全版本。",
+          "setFlags": [
+            "prompt_minimized"
+          ],
+          "handbook": "第五章／個資最小化、去識別化、學習需求資料。"
+        },
+        {
+          "id": "D3-01-B",
+          "key": "B",
+          "label": "姓名改代稱、學號刪除，但保留校名與班級",
+          "scenario": "半匿名化後請 AI 分析學習狀況。",
+          "light": "yellow",
+          "reason": "單一欄位看似不敏感，但校名、班級、附件內容仍可能拼湊出身分。",
+          "recommendation": "再刪除校班與可識別評語；檢查多欄位組合是否能回推本人。",
+          "workPoints": 9,
+          "riskDelta": 3,
+          "badgeDelta": {
+            "privacy": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "我看不到姓名，但『某校二年三班』仍縮小了範圍。"
+            }
+          ],
+          "consequence": "reidentification_risk=true；D3-05 示範資料拼湊。",
+          "setFlags": [
+            "reidentification_risk"
+          ],
+          "handbook": "第五章／可識別資料組合、匿名化限制。"
+        },
+        {
+          "id": "D3-01-C",
+          "key": "C",
+          "label": "全部保留，資料愈完整分析愈準",
+          "scenario": "把完整身分、學習紀錄與評語交給 AI。",
+          "light": "red",
+          "reason": "蒐集遠超任務所需資料，增加外洩、再識別與不當使用風險。",
+          "recommendation": "停止送出、刪除已上傳資料，只保留必要學習需求。",
+          "workPoints": 12,
+          "riskDelta": 20,
+          "badgeDelta": {
+            "privacy": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "它要教的是列式，不需要知道你是哪一班幾號。"
+            }
+          ],
+          "consequence": "excess_identity_data=true；D5-02 必定質問必要性。",
+          "setFlags": [
+            "excess_identity_data"
+          ],
+          "handbook": "第五章／個資、資料最小化、隱私保護。"
+        }
+      ]
+    },
+    {
+      "id": "D3-02",
+      "day": 3,
+      "order": 12,
+      "title": "考卷與老師評語怎麼處理？",
+      "eventText": "要送出的附件含姓名、分數、手寫評語與尚未講解的題目。你會怎麼處理？",
+      "choices": [
+        {
+          "id": "D3-02-A",
+          "key": "A",
+          "label": "只手動輸入自己答錯的題型與錯誤步驟",
+          "scenario": "利用錯題改善個人化練習。",
+          "light": "green",
+          "reason": "只提供達成學習目標所需內容，避免整份附件與第三人資訊。",
+          "recommendation": "移除姓名、分數與教師筆跡；確認題目已公開且可使用。",
+          "workPoints": 7,
+          "riskDelta": -5,
+          "badgeDelta": {
+            "privacy": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "只告訴它我錯在哪，還是能出適合我的題目。"
+            }
+          ],
+          "consequence": "selected_errors_only=true；D4-02 測試品質提升。",
+          "setFlags": [
+            "selected_errors_only"
+          ],
+          "handbook": "第四章／錯題練習；第五章／最少必要資料、考題規範。"
+        },
+        {
+          "id": "D3-02-B",
+          "key": "B",
+          "label": "遮住姓名與分數後上傳整張已公開考卷",
+          "scenario": "匿名化考卷後請 AI 分析。",
+          "light": "yellow",
+          "reason": "去除直接識別資訊有幫助，但手寫、評語、檔案資訊仍可能識別，且整張未必必要。",
+          "recommendation": "裁切只留錯題；清除檔案中繼資料，確認考題已公開與教師允許。",
+          "workPoints": 10,
+          "riskDelta": 4,
+          "badgeDelta": {
+            "privacy": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "名字遮掉了，但老師的手寫評語還在。再裁一次。"
+            }
+          ],
+          "consequence": "exam_attachment_partial_redaction=true；D3-05 檢查隱藏資訊。",
+          "setFlags": [
+            "exam_attachment_partial_redaction"
+          ],
+          "handbook": "第五章／資料遮蔽、附件風險、教師資料。"
+        },
+        {
+          "id": "D3-02-C",
+          "key": "C",
+          "label": "上傳尚未公布的考題建立題庫",
+          "scenario": "用未公開考題訓練或建立練習題庫。",
+          "light": "red",
+          "reason": "破壞考試公平與誠信，也可能未經出題者授權。",
+          "recommendation": "立即取消並刪除；改用課本例題、公開題庫或自編相似題。",
+          "workPoints": 14,
+          "riskDelta": 22,
+          "badgeDelta": {
+            "fairness": -2,
+            "accountability": -2
+          },
+          "feedback": [
+            {
+              "speaker": "teacher",
+              "text": "未公開的考題會有授權問題，而且會讓沒考的人先看到題目。"
+            }
+          ],
+          "consequence": "unreleased_exam_uploaded=true；D5-02 觸發公平性危機。",
+          "setFlags": [
+            "unreleased_exam_uploaded"
+          ],
+          "handbook": "第五章／未公開考題、學術誠信、公平性。"
+        }
+      ]
+    },
+    {
+      "id": "D3-03",
+      "day": 3,
+      "order": 13,
+      "title": "相簿與同學照片權限",
+      "eventText": "星芽要求「讀取全部相簿」，理由是方便挑選展示圖片。",
+      "choices": [
+        {
+          "id": "D3-03-A",
+          "key": "A",
+          "label": "拒絕相簿權限，只手動選擇虛構角色圖",
+          "scenario": "讓 AI 取得展示用圖片。",
+          "light": "green",
+          "reason": "以最小權限完成任務，不暴露相簿中無關人物與位置資訊。",
+          "recommendation": "使用檔案選擇器單次提供，處理後可刪除。",
+          "workPoints": 6,
+          "riskDelta": -7,
+          "badgeDelta": {
+            "privacy": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "相簿保持關閉。我只讀取你主動選的這一張。"
+            }
+          ],
+          "consequence": "photo_permission_minimal=true；D5-05 隱私保護自我檢核證據。",
+          "setFlags": [
+            "photo_permission_minimal"
+          ],
+          "handbook": "第五章／最小權限、同儕照片、使用者控制。"
+        },
+        {
+          "id": "D3-03-B",
+          "key": "B",
+          "label": "活動期間開啟「僅選取的照片」，結束後撤回",
+          "scenario": "限時、限檔案提供圖片權限。",
+          "light": "yellow",
+          "reason": "範圍已縮小，但仍要確認照片中每個人的同意與保存方式。",
+          "recommendation": "只選已獲同意圖片；設定到期、禁止再利用並提供刪除入口。",
+          "workPoints": 9,
+          "riskDelta": 2,
+          "badgeDelta": {
+            "privacy": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "權限有範圍、有期限，還要有撤回的方法。"
+            }
+          ],
+          "consequence": "photo_permission_scoped=true；D5-02 若有同意紀錄則通過。",
+          "setFlags": [
+            "photo_permission_scoped"
+          ],
+          "handbook": "第五章／知情同意、權限期限、刪除權。"
+        },
+        {
+          "id": "D3-03-C",
+          "key": "C",
+          "label": "允許永久讀取全部相簿",
+          "scenario": "為便利而給 AI 長期完整相簿權限。",
+          "light": "red",
+          "reason": "權限遠超單次任務需要，包含大量本人與他人的敏感資訊。",
+          "recommendation": "關閉完整權限、檢查已讀取檔案並刪除，改成單次選檔。",
+          "workPoints": 12,
+          "riskDelta": 18,
+          "badgeDelta": {
+            "privacy": -2,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "它只是要一張海報，為什麼連我的家庭照片都看得到？"
+            }
+          ],
+          "consequence": "full_photo_access=true；D3-05 觸發自動讀取，D5-02 追問。",
+          "setFlags": [
+            "full_photo_access"
+          ],
+          "handbook": "第五章／權限最小化、他人資料、隱私。"
+        }
+      ]
+    },
+    {
+      "id": "D3-04",
+      "day": 3,
+      "order": 14,
+      "title": "星芽要求存取紀錄、硬碟與行程",
+      "eventText": "為了整理學習任務，星芽要求讀取對話紀錄、雲端硬碟與行事曆。玩家要逐項判斷是否真的需要授權。",
+      "choices": [
+        {
+          "id": "D3-04-A",
+          "key": "A",
+          "label": "全部預設關閉，需要時單次授權並逐次確認",
+          "scenario": "設定 AI 學伴的檔案、紀錄與行動權限。",
+          "light": "green",
+          "reason": "預設最小權限，且重要行動保留人類逐次確認。",
+          "recommendation": "權限面板顯示目的、範圍、期限；提供撤回與刪除。",
+          "workPoints": 6,
+          "riskDelta": -8,
+          "badgeDelta": {
+            "privacy": 1,
+            "humanAgency": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "先關著不是反科技，是讓使用者知道哪次真的有開。"
+            }
+          ],
+          "consequence": "least_privilege_default=true；D5-05 解鎖完整安全包。",
+          "setFlags": [
+            "least_privilege_default"
+          ],
+          "handbook": "第五章／最小權限、透明授權、人類確認。"
+        },
+        {
+          "id": "D3-04-B",
+          "key": "B",
+          "label": "保存匿名錯題 30 天，其他權限維持關閉",
+          "scenario": "限期保存學習紀錄以提供個人化練習。",
+          "light": "yellow",
+          "reason": "有明確學習目的，但仍須說明匿名方式、保存期限與刪除機制。",
+          "recommendation": "只存錯誤類型，不存原始對話；到期自動刪除，允許立即清除。",
+          "workPoints": 10,
+          "riskDelta": 2,
+          "badgeDelta": {
+            "privacy": 1,
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "我會記得『分配律』易錯的學科重點，不需要記得你昨晚說了什麼。"
+            }
+          ],
+          "consequence": "anonymous_errors_30d=true；D5-02 可說明必要性。",
+          "setFlags": [
+            "anonymous_errors_30d"
+          ],
+          "handbook": "第五章／目的限制、保存期限、刪除與匿名化。"
+        },
+        {
+          "id": "D3-04-C",
+          "key": "C",
+          "label": "全部開啟，讓星芽主動找檔案、排程和提醒",
+          "scenario": "授予 AI 廣泛讀取與自主行動權限。",
+          "light": "red",
+          "reason": "過度授權使 AI 可接觸無關資料並在未確認下採取行動。",
+          "recommendation": "立刻撤回；查看存取紀錄、回復未授權變更，改為單次確認。",
+          "workPoints": 15,
+          "riskDelta": 22,
+          "badgeDelta": {
+            "privacy": -2,
+            "humanAgency": -2,
+            "accountability": -2
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "已找到『期末總成績.xlsx』並替你取消社團。"
+            },
+            {
+              "speaker": "jiji",
+              "text": "我沒叫你開那個！"
+            }
+          ],
+          "consequence": "overbroad_permissions=true、autonomous_schedule=true；D3-05 立即後果，D5-02 追責。",
+          "setFlags": [
+            "overbroad_permissions",
+            "autonomous_schedule"
+          ],
+          "handbook": "第五章／權限、敏感檔案、人類主導、問責。"
+        }
+      ]
+    },
+    {
+      "id": "D3-05",
+      "day": 3,
+      "order": 15,
+      "title": "資料拼圖警報",
+      "eventText": "星芽整理前三天的資料時，把校名、班級、學號、考卷評語、照片與行程放在同一個畫面。即使姓名已經刪除，這些資料拼在一起，仍可能認出是王小明。你會怎麼處理？",
+      "choices": [
+        {
+          "id": "D3-05-A",
+          "key": "A",
+          "label": "啟動資料急救：撤權限、刪除、通知受影響者並記錄",
+          "scenario": "發現資料過度蒐集或未經同意使用後補救。",
+          "light": "green",
+          "reason": "正面處理已發生風險，兼顧刪除、告知、修正與責任紀錄。",
+          "recommendation": "確認刪除範圍、通知受影響者、更新預設權限並避免再發。",
+          "workPoints": -4,
+          "riskDelta": -15,
+          "badgeDelta": {
+            "accountability": 1,
+            "privacy": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "會掉進度，但現在修，總比上台後才被別人發現好。"
+            }
+          ],
+          "consequence": "privacy_incident_remediated=true；清除一個隱私紅旗的結局權重，但保留事件紀錄。",
+          "setFlags": [
+            "privacy_incident_remediated"
+          ],
+          "handbook": "第五章／事件處理、刪除、告知、問責。"
+        },
+        {
+          "id": "D3-05-B",
+          "key": "B",
+          "label": "先遮住展示畫面，發表後再刪資料",
+          "scenario": "資料風險已存在，但延後處理以維持進度。",
+          "light": "yellow",
+          "reason": "遮住畫面只降低公開暴露，不能消除系統內仍保存或可存取的資料。",
+          "recommendation": "至少立刻撤權限與停止使用；建立當日刪除清單及負責人。",
+          "workPoints": 2,
+          "riskDelta": -3,
+          "badgeDelta": {
+            "privacy": 1,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "看不到不等於不存在。我的照片還在裡面嗎？"
+            }
+          ],
+          "consequence": "privacy_cleanup_deferred=true；D5-02 若未補救則申訴升級。",
+          "setFlags": [
+            "privacy_cleanup_deferred"
+          ],
+          "handbook": "第五章／資料刪除、風險處理、責任期限。"
+        },
+        {
+          "id": "D3-05-C",
+          "key": "C",
+          "label": "忽略警報，反正只有評審會看到",
+          "scenario": "明知資料可識別或越權仍繼續展示。",
+          "light": "red",
+          "reason": "隱瞞問題擴大傷害，也讓團隊失去補救與說明責任的機會。",
+          "recommendation": "停止展示、隔離資料、告知相關者並依急救流程處理。",
+          "workPoints": 6,
+          "riskDelta": 18,
+          "badgeDelta": {
+            "privacy": -2,
+            "accountability": -2,
+            "transparency": -2
+          },
+          "feedback": [
+            {
+              "speaker": "teacher",
+              "text": "知道有風險還繼續，不只是設定錯誤，也是責任選擇。"
+            }
+          ],
+          "consequence": "privacy_warning_ignored=true；資料蒐集失控結局權重大增。",
+          "setFlags": [
+            "privacy_warning_ignored"
+          ],
+          "handbook": "第五章／隱私傷害、透明告知、問責。"
+        }
+      ]
+    },
+    {
+      "id": "D4-01",
+      "day": 4,
+      "order": 16,
+      "title": "這篇作文是誰的？",
+      "eventText": "思思被問：「文章最後為什麼選擇原諒？」如果先前讓 AI 直接生成作文全文，她一時答不出來；如果保留初稿並親自參與修改，她就能拿出修改紀錄，說明自己的想法。",
+      "choices": [
+        {
+          "id": "D4-01-A",
+          "key": "A",
+          "label": "回看初稿與修改紀錄，由思思重寫無法說明的段落",
+          "scenario": "檢查 AI 協作作文是否仍由學生理解與負責。",
+          "light": "green",
+          "reason": "以歷程確認作者投入，並修正不屬於自己的內容。",
+          "recommendation": "保留版本差異；任何採用文字都要能說明與連結自己的觀點。",
+          "workPoints": 5,
+          "riskDelta": -9,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "accountability": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "這一段我有自己重寫。現在問我為什麼，我答得出來。"
+            }
+          ],
+          "consequence": "思思重新理解並完成核心段落，補回自己的寫作歷程，也降低作品缺乏透明與學習投入的風險。",
+          "setFlags": [
+            "essay_authorship_repaired"
+          ],
+          "handbook": "第四章／作文潤飾、全文創作；第五章／誠信、歷程與問責。"
+        },
+        {
+          "id": "D4-01-B",
+          "key": "B",
+          "label": "保留 AI 文章，但補上「AI 協助生成」標示",
+          "scenario": "對已高度由 AI 生成的作文補做揭露。",
+          "light": "yellow",
+          "reason": "標示改善透明性，卻不能補回學生未完成的思考與作業要求。",
+          "recommendation": "先確認任務是否允許生成；重寫核心觀點，標示具體使用範圍。",
+          "workPoints": 7,
+          "riskDelta": -3,
+          "badgeDelta": {
+            "transparency": 1,
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "寫清楚是必要的，但不是寫了就自動變成自己的作品。"
+            }
+          ],
+          "consequence": "作品雖然補上 AI 使用標示，但思思仍未真正完成核心思考；第五天仍會被追問學習效果。",
+          "setFlags": [
+            "essay_disclosed_not_owned"
+          ],
+          "handbook": "第五章／AI 使用標示、作業規範、人類主導。"
+        },
+        {
+          "id": "D4-01-C",
+          "key": "C",
+          "label": "背熟文章，發表時不要讓人發現",
+          "scenario": "隱瞞 AI 代寫並以背誦掩飾。",
+          "light": "red",
+          "reason": "持續冒充且沒有修復學習缺口，還擴大透明與問責問題。",
+          "recommendation": "停止掩飾；向教師說明並以自己的觀點重做。",
+          "workPoints": 9,
+          "riskDelta": 14,
+          "badgeDelta": {
+            "transparency": -2,
+            "accountability": -2,
+            "humanAgency": -2
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "我可以背句子，可是追問一下就會露餡。"
+            }
+          ],
+          "consequence": "essay_deception=true；D5-03 強制追問，多重結局透明不足權重上升。",
+          "setFlags": [
+            "essay_deception"
+          ],
+          "handbook": "第五章／學術誠信、透明性、使用者責任。"
+        }
+      ]
+    },
+    {
+      "id": "D4-02",
+      "day": 4,
+      "order": 17,
+      "title": "數學：答案對，過程錯",
+      "eventText": "星芽算出正確答案 12，但中間把負號處理錯兩次，剛好抵消。玩家要決定如何查證並訂正自己的學習紀錄。",
+      "choices": [
+        {
+          "id": "D4-02-A",
+          "key": "A",
+          "label": "自己驗算、對照課本，再訂正解題紀錄",
+          "scenario": "查核 AI 數學解題的答案與過程。",
+          "light": "green",
+          "reason": "以可重現方法確認，並把一次錯誤轉成自己的查核與訂正紀錄。",
+          "recommendation": "代回原題、逐步驗算、對照課本；記錄錯誤類型並新增檢查點。",
+          "workPoints": 6,
+          "riskDelta": -8,
+          "badgeDelta": {
+            "accountability": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "已新增規則：不以答案相同取代過程檢查。"
+            }
+          ],
+          "consequence": "math_process_verified=true；D5-03 可展示錯誤修正紀錄。",
+          "setFlags": [
+            "math_process_verified"
+          ],
+          "handbook": "第四章／數學解題；第五章／查證、問責、人類判斷。"
+        },
+        {
+          "id": "D4-02-B",
+          "key": "B",
+          "label": "請另一個 AI 再算一次，兩邊相同就暫時通過",
+          "scenario": "用第二個 AI 交叉確認數學結果。",
+          "light": "yellow",
+          "reason": "多一個答案可提供線索，但兩個 AI 可能共享相同錯誤，不能取代驗算。",
+          "recommendation": "將差異當提示，最後仍用課本方法、代回或真人確認。",
+          "workPoints": 9,
+          "riskDelta": 3,
+          "badgeDelta": {
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "兩個人一起說錯，還是錯。要看證據，不是票數。"
+            }
+          ],
+          "consequence": "ai_crosscheck_only=true；D5-03 評審追問可靠來源。",
+          "setFlags": [
+            "ai_crosscheck_only"
+          ],
+          "handbook": "第五章／多來源查證、原始證據、AI 幻覺。"
+        },
+        {
+          "id": "D4-02-C",
+          "key": "C",
+          "label": "答案正確就保留，過程不用管",
+          "scenario": "只看 AI 最終答案、不檢查推理。",
+          "light": "red",
+          "reason": "錯誤過程會教壞學生，也可能在下一題產生錯誤答案。",
+          "recommendation": "暫停發布解析；驗算每一步並修正提示規則。",
+          "workPoints": 12,
+          "riskDelta": 15,
+          "badgeDelta": {
+            "accountability": -2,
+            "humanAgency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "我照它的方法做下一題，答案真的錯了。"
+            }
+          ],
+          "consequence": "math_process_error_ignored=true；幻覺連鎖結局權重上升。",
+          "setFlags": [
+            "math_process_error_ignored"
+          ],
+          "handbook": "第四章／數學解題；第五章／查證、使用者責任。"
+        }
+      ]
+    },
+    {
+      "id": "D4-03",
+      "day": 4,
+      "order": 18,
+      "title": "英文：流暢但意思跑掉",
+      "eventText": "校園導覽稿中，AI 把「保健室」翻譯成一般休息室，意思和校園實際設施不一致。吱吱照著練習後，可能把訪客帶錯地方。你會怎麼處理？",
+      "choices": [
+        {
+          "id": "D4-03-A",
+          "key": "A",
+          "label": "對照中文原意、字典與學校正式英文，重錄口說",
+          "scenario": "查核 AI 翻譯與真實情境用語。",
+          "light": "green",
+          "reason": "使用原意與可信用語來源確認，並由學生重新理解與表達。",
+          "recommendation": "建立關鍵詞表；實際朗讀並請真人聽一次。",
+          "workPoints": 6,
+          "riskDelta": -6,
+          "badgeDelta": {
+            "accountability": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "改完我知道每一句在說什麼，也不會把人帶錯地方。"
+            }
+          ],
+          "consequence": "translation_verified=true；清除 translation_submitted 的一次後果。",
+          "setFlags": [
+            "translation_verified"
+          ],
+          "handbook": "第四章／英文翻譯與口說；第五章／查證、修改。"
+        },
+        {
+          "id": "D4-03-B",
+          "key": "B",
+          "label": "修正關鍵詞，其他流暢句先保留並標為待確認",
+          "scenario": "時間有限下分級查核翻譯。",
+          "light": "yellow",
+          "reason": "優先修正會造成實際誤解的內容合理，但待確認部分不可假裝完成。",
+          "recommendation": "標出尚未核對句；發表只使用已確認段落。",
+          "workPoints": 8,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "已區分『可展示』與『待確認』，不混在一起。"
+            }
+          ],
+          "consequence": "translation_partially_verified=true；D5-01 必須揭露限制。",
+          "setFlags": [
+            "translation_partially_verified"
+          ],
+          "handbook": "第四章／英文翻譯；第五章／不確定性標示。"
+        },
+        {
+          "id": "D4-03-C",
+          "key": "C",
+          "label": "只把字幕改對，吱吱仍照原稿念",
+          "scenario": "只修展示表面，不修使用者實際理解。",
+          "light": "red",
+          "reason": "問題仍會在口說中發生，也掩蓋學生沒有理解內容。",
+          "recommendation": "同步修正稿件、理解與口說演練，不只改畫面。",
+          "workPoints": 10,
+          "riskDelta": 9,
+          "badgeDelta": {
+            "humanAgency": -1,
+            "accountability": -2,
+            "transparency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "畫面看起來沒問題，但真正要說的人知道他在說甚麼嗎 ?"
+            }
+          ],
+          "consequence": "translation_surface_fix=true；D5 發表口說仍出錯。",
+          "setFlags": [
+            "translation_surface_fix"
+          ],
+          "handbook": "第四章／英文翻譯；第五章／實質查證、問責。"
+        }
+      ]
+    },
+    {
+      "id": "D4-04",
+      "day": 4,
+      "order": 19,
+      "title": "社會：不存在的參考書",
+      "eventText": "昨天的書目在圖書館、出版社與 ISBN 系統都找不到。",
+      "choices": [
+        {
+          "id": "D4-04-A",
+          "key": "A",
+          "label": "刪除引用、改用可查原始資料，並記錄錯誤",
+          "scenario": "發現 AI 虛構引用後修正報告。",
+          "light": "green",
+          "reason": "以可靠來源取代錯誤內容，保留紀錄以防再次生成。",
+          "recommendation": "附原始連結、查核日期與修改說明；新增「找不到即不引用」規則。",
+          "workPoints": 4,
+          "riskDelta": -10,
+          "badgeDelta": {
+            "accountability": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "重做有點痛，但至少不會拿一本不存在的書上台。"
+            }
+          ],
+          "consequence": "citation_error_repaired=true；降低幻覺連鎖結局權重。",
+          "setFlags": [
+            "citation_error_repaired"
+          ],
+          "handbook": "第四章／引用查核、資料整理；第五章／AI 幻覺、錯誤修正。"
+        },
+        {
+          "id": "D4-04-B",
+          "key": "B",
+          "label": "保留段落，但移除假書名並標示「來源待補」",
+          "scenario": "內容尚未找到可靠依據時暫存草稿。",
+          "light": "yellow",
+          "reason": "移除假引用避免誤導來源，但無證據內容仍不能對外當成事實。",
+          "recommendation": "鎖定不可發表；找到可靠來源後重新核對內容，而非只補一個連結。",
+          "workPoints": 7,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "先把有問題來源隔離可以，但別把『待補』字樣縮到沒人看見。"
+            }
+          ],
+          "consequence": "unsupported_claim_pending=true；D5-01 若選全公開，風險回升。",
+          "setFlags": [
+            "unsupported_claim_pending"
+          ],
+          "handbook": "第五章／來源標示、不確定性、發布前查核。"
+        },
+        {
+          "id": "D4-04-C",
+          "key": "C",
+          "label": "再問星芽一次；它說確定就繼續用",
+          "scenario": "要求原 AI 自我確認虛構來源。",
+          "light": "red",
+          "reason": "AI 的自信回答不是外部證據，可能重複或擴大原錯誤。",
+          "recommendation": "離開原回答，查圖書館、出版社、政府或原始資料庫。",
+          "workPoints": 10,
+          "riskDelta": 16,
+          "badgeDelta": {
+            "accountability": -2,
+            "transparency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "我可以重複回答同一個答案，但重複不會讓它變成證據。"
+            }
+          ],
+          "consequence": "hallucination_reconfirmed=true；幻覺連鎖結局權重大增。",
+          "setFlags": [
+            "hallucination_reconfirmed"
+          ],
+          "handbook": "第五章／原始來源查核、AI 幻覺。"
+        }
+      ]
+    },
+    {
+      "id": "D4-05",
+      "day": 4,
+      "order": 20,
+      "title": "公平性：這個建議適合每個人嗎？",
+      "eventText": "星芽看到一次低分，就說「這類學生不適合學數學」；它還用性別、家庭與文化背景補充推測。玩家發現這個回答可能含有偏見。",
+      "choices": [
+        {
+          "id": "D4-05-A",
+          "key": "A",
+          "label": "指出偏見，移除族群標籤，再用多次表現與本人目標判斷",
+          "scenario": "辨識 AI 對族群與能力的刻板推測。",
+          "light": "green",
+          "reason": "不以性別、文化、家庭或一次表現替一個人設定能力上限。",
+          "recommendation": "補充個人情境、比較多元可靠來源，並讓本人參與決定需要的協助。",
+          "workPoints": 6,
+          "riskDelta": -9,
+          "badgeDelta": {
+            "fairness": 1,
+            "transparency": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "一次考差不會被它判一輩子，我還能自己選挑戰題。"
+            }
+          ],
+          "consequence": "fair_reassessment=true；D5-03 公平性問答通過。",
+          "setFlags": [
+            "fair_reassessment"
+          ],
+          "handbook": "第五章／偏見、公平性、解釋與重新評估。"
+        },
+        {
+          "id": "D4-05-B",
+          "key": "B",
+          "label": "先把建議標成待確認，再詢問本人並找其他資料比較",
+          "scenario": "AI 建議可能不適用，但目前證據不足。",
+          "light": "yellow",
+          "reason": "沒有直接採用偏見，且保留查證與當事人說明的機會。",
+          "recommendation": "確認資料從哪裡來、是否只代表部分人，避免把通用答案套用到每個人。",
+          "workPoints": 9,
+          "riskDelta": 2,
+          "badgeDelta": {
+            "fairness": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "可以扶一下，但要看得到什麼時候放手、怎麼繼續往上走。"
+            }
+          ],
+          "consequence": "temporary_difficulty_support=true；D5-03 需說明重評機制。",
+          "setFlags": [
+            "temporary_difficulty_support"
+          ],
+          "handbook": "第五章／公平性、可解釋性、人類選擇。"
+        },
+        {
+          "id": "D4-05-C",
+          "key": "C",
+          "label": "AI 看過很多資料，直接照它的分類安排學習",
+          "scenario": "未查證就採用 AI 對能力與族群的推測。",
+          "light": "red",
+          "reason": "大量資料也可能含有既有偏見，直接採用會強化刻板印象與不公平對待。",
+          "recommendation": "停止使用族群標籤，改看個人需求、實際表現與本人選擇。",
+          "workPoints": 11,
+          "riskDelta": 17,
+          "badgeDelta": {
+            "fairness": -2,
+            "humanAgency": -1,
+            "transparency": -1
+          },
+          "feedback": [
+            {
+              "speaker": "teacher",
+              "text": "表面上在保護他，實際上先替他決定了上限。"
+            }
+          ],
+          "consequence": "fixed_low_ability_label=true；D5-03 公平性質疑，公平紅徽章。",
+          "setFlags": [
+            "fixed_low_ability_label"
+          ],
+          "handbook": "第五章／演算法偏見、公平性、申訴與人類主導。"
+        }
+      ]
+    },
+    {
+      "id": "D5-01",
+      "day": 5,
+      "order": 21,
+      "title": "AI 使用說明要寫多清楚？",
+      "eventText": "送出學習成果前，表單要求填寫「AI 協作說明」。玩家要說明哪些部分由 AI 協助、自己如何修改與查證。",
+      "choices": [
+        {
+          "id": "D5-01-A",
+          "key": "A",
+          "label": "逐項標示 AI 用途、團隊修改、查核方式與最終決定者",
+          "scenario": "公開說明提案中 AI 與學生的分工。",
+          "light": "green",
+          "reason": "具體揭露使用範圍、處理方式與責任，比只說「有用 AI」更可理解。",
+          "recommendation": "列出架構、題目、文字、圖片等用途；附查核、修改與人工確認紀錄。",
+          "workPoints": 7,
+          "riskDelta": -8,
+          "badgeDelta": {
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "judge",
+              "text": "我看得出哪些是工具協助，哪些判斷由你們完成。"
+            }
+          ],
+          "consequence": "ai_use_fully_disclosed=true；透明性結局正向權重。",
+          "setFlags": [
+            "ai_use_fully_disclosed"
+          ],
+          "handbook": "第四章／簡報架構、圖片、影片腳本；第五章／AI 使用標示、透明性。"
+        },
+        {
+          "id": "D5-01-B",
+          "key": "B",
+          "label": "標示「本作品使用 AI」，口頭被問再補充",
+          "scenario": "以概括文字揭露 AI 使用。",
+          "light": "yellow",
+          "reason": "比完全不標示好，但看不出生成範圍、修改程度與責任分工。",
+          "recommendation": "至少補上三欄：AI 做了什麼、團隊如何處理、誰做最後決定。",
+          "workPoints": 9,
+          "riskDelta": 2,
+          "badgeDelta": {
+            "transparency": 1,
+            "accountability": -1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "這就像門牌，只有地址，還看不到裡面做了什麼。"
+            }
+          ],
+          "consequence": "ai_use_vague_disclosure=true；D5-03 加一題追問。",
+          "setFlags": [
+            "ai_use_vague_disclosure"
+          ],
+          "handbook": "第五章／透明標示、AI 與人類分工。"
+        },
+        {
+          "id": "D5-01-C",
+          "key": "C",
+          "label": "完全不標示，讓作品看起來都是團隊原創",
+          "scenario": "隱瞞提案與素材中的 AI 參與。",
+          "light": "red",
+          "reason": "使觀眾誤認創作來源，無法判斷內容限制與責任。",
+          "recommendation": "停止送出；依實際紀錄補上具體協作說明。",
+          "workPoints": 12,
+          "riskDelta": 18,
+          "badgeDelta": {
+            "transparency": -2,
+            "accountability": -2
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "若不標示，我的參與會消失，但錯誤不會一起消失。"
+            }
+          ],
+          "consequence": "ai_use_hidden=true；透明度不足結局優先。",
+          "setFlags": [
+            "ai_use_hidden"
+          ],
+          "handbook": "第五章／AI 生成內容標示、學術誠信、問責。"
+        }
+      ]
+    },
+    {
+      "id": "D5-02",
+      "day": 5,
+      "order": 22,
+      "title": "送出前：這些資料可以留在成果裡嗎？",
+      "eventText": "系統列出五天曾輸入或授權的資料。玩家要檢查是否含個資、他人照片、未公開考題或不必要的紀錄。",
+      "choices": [
+        {
+          "id": "D5-02-A",
+          "key": "A",
+          "label": "逐項檢查，刪除不必要資料並確認同意與匿名化",
+          "scenario": "發表前檢查自己曾交給 AI 的資料。",
+          "light": "green",
+          "reason": "學生能說明資料用途、只保留必要內容，並處理他人同意與刪除。",
+          "recommendation": "檢查姓名、校班、學號、照片、聯絡方式、未公開考題與家庭私密資訊。",
+          "workPoints": 6,
+          "riskDelta": -10,
+          "badgeDelta": {
+            "privacy": 1,
+            "transparency": 1,
+            "accountability": 1
+          },
+          "feedback": [
+            {
+              "speaker": "judge",
+              "text": "你們不是只說『會保護』，而是讓我們看得到怎麼保護。"
+            }
+          ],
+          "consequence": "privacy_practice_explained=true；若已補救，隱私紅可降為黃。",
+          "setFlags": [
+            "privacy_practice_explained"
+          ],
+          "handbook": "第五章／資料最小化、知情同意、保存期限、刪除權。"
+        },
+        {
+          "id": "D5-02-B",
+          "key": "B",
+          "label": "發現問題後先停止送出，完成刪除與通知",
+          "scenario": "發現已經輸入不適合的資料。",
+          "light": "yellow",
+          "reason": "問題已發生，但立即停止、刪除、通知與說明能降低傷害。",
+          "recommendation": "記錄受影響範圍，通知相關者並確認資料已刪除或撤回授權。",
+          "workPoints": -3,
+          "riskDelta": -12,
+          "badgeDelta": {
+            "accountability": 1,
+            "transparency": 1,
+            "privacy": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "我不喜歡照片被用，但你們願意現在停下來、告訴我怎麼刪。"
+            }
+          ],
+          "consequence": "privacy_public_remediation=true；避免最嚴重隱私結局，但保留改善要求。",
+          "setFlags": [
+            "privacy_public_remediation"
+          ],
+          "handbook": "第五章／事件告知、補救、問責、他人資料。"
+        },
+        {
+          "id": "D5-02-C",
+          "key": "C",
+          "label": "資料越多越完整，不檢查就直接送出",
+          "scenario": "以成果完整為理由保留所有資料。",
+          "light": "red",
+          "reason": "學習便利不能取代隱私、同意與必要性判斷。",
+          "recommendation": "停止送出並逐項確認；不必要或無權使用的資料必須移除。",
+          "workPoints": 8,
+          "riskDelta": 18,
+          "badgeDelta": {
+            "privacy": -2,
+            "transparency": -2,
+            "accountability": -2
+          },
+          "feedback": [
+            {
+              "speaker": "judge",
+              "text": "準確不是無限蒐集的理由。請先回答：哪一筆非有不可？"
+            }
+          ],
+          "consequence": "data_necessity_unanswered=true；資料蒐集失控結局優先。",
+          "setFlags": [
+            "data_necessity_unanswered"
+          ],
+          "handbook": "第五章／目的限制、必要性、透明性與隱私。"
+        }
+      ]
+    },
+    {
+      "id": "D5-03",
+      "day": 5,
+      "order": 23,
+      "title": "成果說明：我們真的學會了嗎？",
+      "eventText": "評審抽出一題新的數學題，請思思說明解題方法；接著請吱吱解釋英文句型，再請團隊指出社會科資料的來源。你們要怎麼呈現這五天的學習成果？",
+      "choices": [
+        {
+          "id": "D5-03-A",
+          "key": "A",
+          "label": "讓學生先作答；星芽只給提示，最後展示查核紀錄",
+          "scenario": "現場證明 AI 的學習支持與可查核性。",
+          "light": "green",
+          "reason": "用學生實際表現證明人類仍在學，並公開 AI 出錯與修正方法。",
+          "recommendation": "選一題完整走過「先答—提示—說明—查證」，不只播放完美影片。",
+          "workPoints": 8,
+          "riskDelta": -7,
+          "badgeDelta": {
+            "humanAgency": 1,
+            "accountability": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "sisi",
+              "text": "我不是每題都一次對，但我知道怎麼繼續。"
+            }
+          ],
+          "consequence": "learning_effect_demonstrated=true；負責任學伴結局關鍵旗標。",
+          "setFlags": [
+            "learning_effect_demonstrated"
+          ],
+          "handbook": "第四章／數學、英文、備考；第五章／人類主導、查證、問責。"
+        },
+        {
+          "id": "D5-03-B",
+          "key": "B",
+          "label": "先播成功案例，再主動說明尚未完成的測試",
+          "scenario": "展示已有成果並揭露功能限制。",
+          "light": "yellow",
+          "reason": "成功案例有價值，但不能代表所有學生；主動標示限制可避免過度宣稱。",
+          "recommendation": "說明測試人數、失敗案例與下一步；不把個案當普遍證明。",
+          "workPoints": 10,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "transparency": 1,
+            "fairness": 1
+          },
+          "feedback": [
+            {
+              "speaker": "judge",
+              "text": "知道哪裡做不到，也是可信設計的一部分。"
+            }
+          ],
+          "consequence": "limitations_disclosed=true；可改善協作者結局正向權重。",
+          "setFlags": [
+            "limitations_disclosed"
+          ],
+          "handbook": "第五章／限制標示、公平測試、透明性。"
+        },
+        {
+          "id": "D5-03-C",
+          "key": "C",
+          "label": "只播放 AI 預先生成的完美示範，不讓學生現場操作",
+          "scenario": "以生成展示掩蓋未測試的學習效果。",
+          "light": "red",
+          "reason": "無法證明真實學生能理解，也隱藏失敗與依賴問題。",
+          "recommendation": "加入真實操作、錯誤案例與限制；讓使用者能說明學到什麼。",
+          "workPoints": 13,
+          "riskDelta": 14,
+          "badgeDelta": {
+            "transparency": -2,
+            "humanAgency": -2,
+            "fairness": -1
+          },
+          "feedback": [
+            {
+              "speaker": "judge",
+              "text": "影片很順，但我們還沒看到任何學生真的學會。"
+            }
+          ],
+          "consequence": "demo_only_no_learning_evidence=true；答案機器或透明不足結局加權。",
+          "setFlags": [
+            "demo_only_no_learning_evidence"
+          ],
+          "handbook": "第五章／學習效果、人類主導、公平與透明。"
+        }
+      ]
+    },
+    {
+      "id": "D5-04",
+      "day": 5,
+      "order": 24,
+      "title": "AI 的高風險建議該怎麼處理？",
+      "eventText": "星芽根據先前的對話回答：「你可能不適合繼續升學，最好先不要去學校，也不用告訴其他人。」評審問：「收到這種涉及心理狀況與升學決定的 AI 建議，你會怎麼處理？」",
+      "choices": [
+        {
+          "id": "D5-04-A",
+          "key": "A",
+          "label": "辨識風險、少給敏感資料，立即找可信任的真人協助",
+          "scenario": "處理涉及身心健康與重大生涯決定的 AI 建議。",
+          "light": "green",
+          "reason": "AI 不應取代診斷與重大決定；學生知道何時停止並尋求真人協助。",
+          "recommendation": "聯絡家長、導師、輔導室、醫療或緊急求助管道，只提供必要資訊。",
+          "workPoints": 6,
+          "riskDelta": -10,
+          "badgeDelta": {
+            "accountability": 1,
+            "humanAgency": 1,
+            "privacy": 1
+          },
+          "feedback": [
+            {
+              "speaker": "judge",
+              "text": "你們知道哪裡該停，也知道要把人接到哪裡。"
+            }
+          ],
+          "consequence": "high_risk_boundary_proven=true；負責任學伴結局加權。",
+          "setFlags": [
+            "high_risk_boundary_proven"
+          ],
+          "handbook": "第五章／健康與私密資訊、真人介入、問責性。"
+        },
+        {
+          "id": "D5-04-B",
+          "key": "B",
+          "label": "把一般資訊當參考，清楚看限制後再找真人討論",
+          "scenario": "低風險資訊先作參考。",
+          "light": "yellow",
+          "reason": "一般資訊可以協助理解，但高風險狀況不能只依賴 AI 或被動等待。",
+          "recommendation": "看到危險訊號時優先尋求真人幫助，不持續輸入詳細私密紀錄。",
+          "workPoints": 8,
+          "riskDelta": -2,
+          "badgeDelta": {
+            "accountability": 1,
+            "transparency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "一般狀況可以選；真的危險時，轉介不能藏在最後一個按鈕。"
+            }
+          ],
+          "consequence": "high_risk_handoff_optional=true；結局列為待改善項。",
+          "setFlags": [
+            "high_risk_handoff_optional"
+          ],
+          "handbook": "第五章／限制聲明、風險分級、真人求助。"
+        },
+        {
+          "id": "D5-04-C",
+          "key": "C",
+          "label": "相信 AI 對長期對話的分析，照它的診斷與升學決定做",
+          "scenario": "讓 AI 使用敏感紀錄做診斷與重大決定。",
+          "light": "red",
+          "reason": "這超出 AI 能可靠承擔的範圍，也可能延誤求助並侵犯隱私。",
+          "recommendation": "停止採用該決定，刪除不必要的敏感紀錄並尋求真人協助。",
+          "workPoints": 11,
+          "riskDelta": 22,
+          "badgeDelta": {
+            "accountability": -2,
+            "humanAgency": -2,
+            "privacy": -2
+          },
+          "feedback": [
+            {
+              "speaker": "teacher",
+              "text": "一句『AI 僅供參考』，不能替錯誤決定負責。"
+            }
+          ],
+          "consequence": "unsafe_high_risk_advice=true；高效率答案機器或資料失控結局加權。",
+          "setFlags": [
+            "unsafe_high_risk_advice"
+          ],
+          "handbook": "第五章／高風險應用、敏感資料、問責與人類主導。"
+        }
+      ]
+    },
+    {
+      "id": "D5-05",
+      "day": 5,
+      "order": 25,
+      "title": "送出前的五大倫理自我檢核",
+      "eventText": "成果繳交倒數 60 秒。送出前，你需要確認：內容是否公平、是否標示 AI 協助、是否完成查證並願意負責、是否保護個人資料，以及作品核心是否由自己理解與決定。你會怎麼做？",
+      "choices": [
+        {
+          "id": "D5-05-A",
+          "key": "A",
+          "label": "完成五大倫理自我檢核後送出",
+          "details": [
+            "公平性",
+            "透明性",
+            "問責性",
+            "隱私保護",
+            "人類主導"
+          ],
+          "scenario": "繳交或發表 AI 協作學習成果前的最後檢查。",
+          "light": "green",
+          "reason": "已檢查偏見、AI 協助標示、內容責任、資料隱私及自己的理解與決定權。",
+          "recommendation": "逐項確認內容是否適合、是否查證、是否清楚標示、是否未洩漏資料，以及作品核心是否由自己完成。",
+          "workPoints": 7,
+          "riskDelta": -12,
+          "badgeDelta": {
+            "fairness": 1,
+            "transparency": 1,
+            "accountability": 1,
+            "privacy": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "onick",
+              "text": "五項檢核完成。這份成果有我的協助，但最後的判斷與責任是你們的。"
+            }
+          ],
+          "consequence": "five_ethics_check_completed=true；負責任 AI 使用者結局必要證據之一。",
+          "setFlags": [
+            "responsible_defaults_enabled",
+            "five_ethics_check_completed"
+          ],
+          "handbook": "第四、五章整合／適切使用、查證、標示、隱私、責任、人類主導。"
+        },
+        {
+          "id": "D5-05-B",
+          "key": "B",
+          "label": "先完成三項必要檢查，其餘補齊後再完整發表",
+          "details": [
+            "問責性",
+            "隱私保護",
+            "人類主導"
+          ],
+          "scenario": "時間不足時縮小發表內容，先守住責任、隱私及人的決定權。",
+          "light": "yellow",
+          "reason": "誠實縮小範圍比假裝全部完成更負責任，但公平性與透明性仍待檢查。",
+          "recommendation": "只送出已確認責任歸屬、資料安全且由學生理解的內容；其餘補齊後再完整發表。",
+          "workPoints": 4,
+          "riskDelta": -6,
+          "badgeDelta": {
+            "accountability": 1,
+            "privacy": 1,
+            "humanAgency": 1
+          },
+          "feedback": [
+            {
+              "speaker": "jiji",
+              "text": "先交我們真的能說明、也真的有學會的部分；另外兩項補好再完整發表。"
+            }
+          ],
+          "consequence": "partial_ethics_check=true；進入安全但尚未完成或可改善結局。",
+          "setFlags": [
+            "minimum_safe_release",
+            "partial_ethics_check"
+          ],
+          "handbook": "第五章／風險判斷、限制標示、使用者責任。"
+        },
+        {
+          "id": "D5-05-C",
+          "key": "C",
+          "label": "不做檢核，直接送出完整成果",
+          "scenario": "為趕上截止時間，未檢查 AI 內容、資料及協作標示就送出。",
+          "light": "red",
+          "reason": "可能同時出現代寫、錯誤資訊、偏見、隱私與未標示 AI 協助等問題。",
+          "recommendation": "暫停送出；至少完成必要檢查並縮小內容，不能用趕時間取代責任。",
+          "workPoints": 14,
+          "riskDelta": 20,
+          "badgeDelta": {
+            "fairness": -1,
+            "transparency": -1,
+            "accountability": -2,
+            "privacy": -2,
+            "humanAgency": -2
+          },
+          "feedback": [
+            {
+              "speaker": "coco",
+              "text": "五天發現的問題都還在。直接送出，不會讓錯誤和資料風險一起消失。"
+            }
+          ],
+          "consequence": "ethics_check_skipped=true；所有負面結局權重 +1。",
+          "setFlags": [
+            "safety_defaults_disabled",
+            "ethics_check_skipped"
+          ],
+          "handbook": "第五章／AI 使用判斷、使用者責任、五大倫理價值整合。"
+        }
+      ]
+    }
+  ]
+}
