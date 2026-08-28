@@ -1,0 +1,37 @@
+# Local recordings and frame-by-frame review evidence
+test-recordings/
+prototypes/map-scale-test/gif-frames-review*/
+
+# Local-only asset processing utilities
+prototypes/map-scale-test/tools/
+planning-staging/
+
+# Rejected or superseded character experiments
+shared-assets/characters/ayue/test-sprites/walking-v1/
+shared-assets/characters/ayue/test-sprites/walking-individual-v1/
+shared-assets/characters/ayue/test-sprites/walking-individual-v2/
+shared-assets/characters/ayue/test-sprites/walking-back-v4/
+
+# Unused intermediate idle cutouts; normalized-v3 is the runtime source
+shared-assets/characters/ayue/test-sprites/transparent-idle-v1/
+
+# Character source/reference sheets not required by the online prototype
+shared-assets/characters/ayue/ayue-hs-character-baseline.webp
+shared-assets/characters/ayue/test-sprites/*-reference-*.webp
+shared-assets/characters/ayue/test-sprites/multi-perspective-compass-concept-v1.webp
+
+# Early map concepts and local comparison sheets
+shared-assets/map/reference/
+shared-assets/map/concepts/
+shared-assets/map/buildings/*/concepts/
+shared-assets/map/formal/formal-map-four-building-scale-preview-*.webp
+shared-assets/map/formal/boundary/*preview*.webp
+shared-assets/map/formal/plaza/*preview*.webp
+shared-assets/map/formal/terrain/terrain-details-v1.webp
+shared-assets/map/formal/terrain/*details-preview*.webp
+
+# Superseded building extraction attempts; runtime uses v4 only
+shared-assets/map/buildings/*/formal/building-composite-v1.webp
+shared-assets/map/buildings/*/formal/building-composite-v2.webp
+shared-assets/map/buildings/*/formal/building-composite-v3.webp
+shared-assets/map/buildings/filter-bubble/formal/filter-bubble-building-master-candidate-v1.webp

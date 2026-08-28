@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高中｜房間往返測試｜GAILearn</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100dvh; display: grid; place-items: center; padding: 1rem; font-family: system-ui, "Noto Sans TC", sans-serif; color: #18354a; background: linear-gradient(135deg,#d9efec,#e7e4f5); }
+    main { width: min(92vw, 620px); border: 3px solid #286b75; border-radius: 22px; padding: clamp(1.2rem,4vw,2rem); background: rgba(255,255,255,.96); box-shadow: 0 16px 45px rgba(27,66,77,.22); }
+    .eyebrow { margin: 0; color: #247983; font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+    h1 { margin: .35rem 0 .7rem; }
+    .notice { border-radius: 12px; padding: .8rem; background: #edf7f5; line-height: 1.65; }
+    .actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1rem; }
+    button { border: 0; border-radius: 10px; padding: .72rem 1rem; background: #176c76; color: #fff; font: inherit; font-weight: 800; cursor: pointer; }
+    button.secondary { background: #dce9e8; color: #234c53; }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">獨立房間技術橋接測試</p>
+    <h1 id="roomName">讀取房間資料中</h1>
+    <p>此頁只驗證「地圖 → 獨立房間 → 寫入進度 → 返回地圖」，不是四房正式內容或視覺設計。</p>
+    <p id="notice" class="notice" aria-live="polite"></p>
+    <div class="actions">
+      <button id="completeButton" type="button">模擬完成並返回地圖</button>
+      <button id="cancelButton" class="secondary" type="button">未完成，返回地圖</button>
+    </div>
+  </main>
+  <script src="../../shared-core/room-registry.js"></script>
+  <script src="../../shared-core/progress-store.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const room = window.GAILearnRooms.get(params.get('room_id'));
+    const entry = window.GAILearnRooms.get(params.get('entry'));
+    const notice = document.querySelector('#notice');
+    const completeButton = document.querySelector('#completeButton');
+
+    function mapUrl(includeReturn) {
+      const url = new URL('../map-scale-test/', window.location.href);
+      if (entry) url.searchParams.set('entry', entry.id);
+      if (includeReturn && room) url.searchParams.set('return', room.id);
+      return url.href;
+    }
+
+    if (!room) {
+      document.querySelector('#roomName').textContent = '無效的 room_id';
+      notice.textContent = '未找到正式房間登錄資料，不能寫入完成進度。';
+      completeButton.disabled = true;
+    } else {
+      document.title = room.roomTitle;
+      document.querySelector('#roomName').textContent = room.name;
+      const completed = window.GAILearnProgress.load().completedRooms[room.id]?.completed;
+      notice.textContent = completed ? '此房已有首次完成紀錄；再次完成只作回顧。' : '此房尚未完成，可用按鈕模擬房間完成條件。';
+    }
+
+    completeButton.addEventListener('click', () => {
+      if (!room) return;
+      window.GAILearnProgress.completeRoom(room.id);
+      window.location.href = mapUrl(true);
+    });
+    document.querySelector('#cancelButton').addEventListener('click', () => {
+      window.location.href = mapUrl(false);
+    });
+  </script>
+</body>
+</html>
