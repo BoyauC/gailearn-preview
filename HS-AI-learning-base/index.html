@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>高中｜互動地圖｜AI學習基地｜GAILearn</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">AI 學習基地</p>
+        <h1>AI 學習基地</h1>
+      </div>
+      <div class="status" aria-live="polite">
+        <span id="directionLabel">面向：正面</span>
+        <span id="progressLabel">完成：0／4</span>
+        <button id="resetButton" type="button">回到廣場</button>
+      </div>
+    </header>
+
+    <section class="viewport" id="viewport" aria-label="AI學習基地測試地圖">
+      <div class="world" id="world">
+        <div class="land" aria-hidden="true"></div>
+        <img class="plaza" src="shared-assets/map/formal/plaza/plaza-v1.webp" alt="" draggable="false">
+
+        <div class="boundary-props" aria-hidden="true">
+          <img class="prop prop-planter prop-planter-left" src="shared-assets/map/formal/boundary/props/boundary-planter-wall-v1.webp" alt="">
+          <img class="prop prop-tree prop-tree-left" src="shared-assets/map/formal/boundary/props/boundary-tree-medium-v1.webp" alt="">
+          <img class="prop prop-bench prop-bench-left" src="shared-assets/map/formal/boundary/props/boundary-bench-v1.webp" alt="">
+          <img class="prop prop-lamp prop-lamp-left" src="shared-assets/map/formal/boundary/props/boundary-lamp-v1.webp" alt="">
+          <img class="prop prop-planter prop-planter-right" src="shared-assets/map/formal/boundary/props/boundary-planter-wall-v1.webp" alt="">
+          <img class="prop prop-tree prop-tree-right" src="shared-assets/map/formal/boundary/props/boundary-tree-medium-v1.webp" alt="">
+          <img class="prop prop-bench prop-bench-right" src="shared-assets/map/formal/boundary/props/boundary-bench-v1.webp" alt="">
+          <img class="prop prop-lamp prop-lamp-right" src="shared-assets/map/formal/boundary/props/boundary-lamp-v1.webp" alt="">
+        </div>
+
+        <button class="building building-filter" data-building="filter" type="button">
+          <img src="shared-assets/map/buildings/filter-bubble/formal/building-composite-v4.webp" alt="">
+          <strong>逃離過濾氣泡</strong>
+        </button>
+        <button class="building building-sift" data-building="sift" type="button">
+          <img src="shared-assets/map/buildings/sift-detective/formal/building-composite-v4.webp" alt="">
+          <strong>SIFT 偵探</strong>
+        </button>
+        <button class="building building-collab" data-building="collab" type="button">
+          <img src="shared-assets/map/buildings/collaboration-director/formal/building-composite-v4.webp" alt="">
+          <strong>AI夥伴協作導演</strong>
+        </button>
+        <button class="building building-companion" data-building="companion" type="button">
+          <img src="shared-assets/map/buildings/companion-designer/formal/building-composite-v4.webp" alt="">
+          <strong>AI學伴設計師</strong>
+        </button>
+
+        <div class="character" id="character" aria-label="玩家角色阿岳">
+          <img id="characterSprite" alt="阿岳" draggable="false">
+          <span class="anchor-marker" aria-hidden="true"></span>
+        </div>
+        <div class="target-marker" id="targetMarker" aria-hidden="true"></div>
+      </div>
+
+      <aside class="help-panel">
+        <strong>操作方式</strong>
+        <span>點擊土地移動</span>
+        <span>方向鍵／WASD 移動</span>
+        <span>房門前按 Enter 確認</span>
+      </aside>
+
+      <div class="joystick" id="joystick" aria-label="虛擬方向控制">
+        <button data-dir="up" aria-label="向上">▲</button>
+        <button data-dir="left" aria-label="向左">◀</button>
+        <button data-dir="down" aria-label="向下">▼</button>
+        <button data-dir="right" aria-label="向右">▶</button>
+      </div>
+
+      <div class="door-action" id="doorAction" hidden>
+        <span id="doorHint">已到達房門</span>
+        <button id="enterButton" type="button">進入挑戰</button>
+      </div>
+    </section>
+
+  </main>
+
+  <dialog id="roomDialog" class="room-dialog">
+    <p class="eyebrow">房門互動</p>
+    <h2 id="dialogTitle">房間名稱</h2>
+    <p id="roomAvailability">確認後將進入獨立的房間挑戰。</p>
+    <p id="dialogProgress" class="dialog-progress" aria-live="polite"></p>
+    <div class="dialog-buttons">
+      <button id="enterRoom" type="button">進入房間</button>
+      <button id="closeDialog" class="secondary" type="button">返回地圖</button>
+    </div>
+  </dialog>
+  <dialog id="returnDialog" class="room-dialog reward-dialog">
+    <p class="eyebrow">返回 AI 學習基地</p>
+    <h2 id="returnTitle">完成紀錄</h2>
+    <p id="returnMessage"></p>
+    <button id="closeReturnDialog" type="button">查看地圖</button>
+  </dialog>
+  <script src="shared-core/room-registry.js"></script>
+  <script src="shared-core/progress-store.js"></script>
+  <script src="map-layout.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

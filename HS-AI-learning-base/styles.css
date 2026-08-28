@@ -1,0 +1,114 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, "Noto Sans TC", sans-serif;
+  --ink: #17324d;
+  --panel: rgba(255, 255, 255, .92);
+  --cyan: #00aeb8;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #d9eef0; color: var(--ink); }
+button, input { font: inherit; }
+button { touch-action: manipulation; }
+
+.app-shell { height: 100dvh; display: grid; grid-template-rows: auto 1fr; overflow: hidden; }
+.topbar {
+  z-index: 20; display: flex; align-items: center; gap: 1rem; padding: .7rem clamp(.8rem, 2vw, 1.4rem);
+  background: var(--panel); box-shadow: 0 2px 12px rgba(18, 54, 66, .14);
+}
+.status button { border: 0; border-radius: 999px; background: #176c76; color: white; padding: .4rem .7rem; font-size: .8rem; font-weight: 800; }
+.topbar { justify-content: space-between; }
+.eyebrow { margin: 0; color: #187c82; font-size: .76rem; font-weight: 800; letter-spacing: .12em; }
+h1 { margin: .1rem 0 0; font-size: clamp(1rem, 2.4vw, 1.45rem); }
+.status { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; }
+.status span { border-radius: 999px; background: #e7f7f6; padding: .35rem .65rem; font-size: .8rem; font-weight: 700; }
+
+.viewport { position: relative; overflow: hidden; min-height: 0; background: #83b95f; touch-action: none; }
+.world {
+  --world-scale: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  transform: translate(-50%, -50%) scale(var(--world-scale));
+  transform-origin: center;
+}
+.land {
+  position: absolute; inset: 0;
+  background: url("shared-assets/map/formal/terrain/terrain-base-v1.webp") center / cover no-repeat;
+}
+.plaza {
+  position: absolute; left: 4.7%; top: 30.5%; width: 10.9%; height: auto; z-index: 2;
+  user-select: none; pointer-events: none;
+}
+
+.boundary-props { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.prop { position: absolute; height: auto; user-select: none; }
+.prop-planter-left { left: 1.6%; top: 1.9%; width: 15.6%; }
+.prop-tree-left { left: 5.2%; top: -1.9%; width: auto; height: 20.4%; }
+.prop-bench-left { left: 20.7%; top: 11.5%; width: 5.6%; }
+.prop-lamp-left { left: 29.7%; top: 10.1%; width: auto; height: 6.9%; }
+.prop-planter-right { right: 7.8%; top: .9%; width: 16.7%; transform: scaleX(-1); }
+.prop-tree-right { right: 6.5%; top: -1.9%; width: auto; height: 20.8%; transform: scaleX(-1); }
+.prop-bench-right { right: 23.7%; top: 11%; width: 5.6%; transform: scaleX(-1); }
+.prop-lamp-right { right: 18.3%; top: 9.6%; width: auto; height: 6.9%; }
+
+.building {
+  position: absolute; border: 0; padding: 0; background: transparent; color: var(--ink); cursor: pointer; z-index: 3;
+}
+.building img { display: block; width: 100%; height: auto; filter: drop-shadow(0 10px 9px rgba(27, 48, 33, .13)); pointer-events: none; }
+.building strong { position: absolute; left: 50%; bottom: -.45rem; width: max-content; max-width: 190px; transform: translate(-50%, 100%); padding: .22rem .48rem; border-radius: 7px; background: rgba(255,255,255,.9); font-size: clamp(.62rem, 1.2vw, .8rem); }
+.building.is-completed strong::before { content: "✓"; display: inline-grid; place-items: center; width: 1.15rem; height: 1.15rem; margin-right: .25rem; border-radius: 50%; background: #23835f; color: white; }
+.building-filter { left: 10.8%; top: 50.5%; width: 25%; }
+.building-sift { left: 30.5%; top: 9%; width: 23.85%; }
+.building-collab { left: 63.5%; top: 55.5%; width: 24.2%; }
+.building-companion { left: 67.7%; top: 15.2%; width: 28.1%; }
+
+.character { --character-height: 21; --depth-scale: 1; position: absolute; left: 50%; top: 70%; width: 1px; height: 1px; z-index: 10; pointer-events: none; }
+.character img { position: absolute; left: 0; bottom: 0; height: calc(var(--character-height) * 10.8px); width: auto; object-fit: contain; object-position: center bottom; transform: translate3d(-50%, 0, 0) scale(var(--depth-scale)); transform-origin: center bottom; user-select: none; backface-visibility: hidden; }
+.character::before { content: ""; position: absolute; left: 0; top: -4px; width: 44px; height: 12px; transform: translate(-50%,-50%); border-radius: 50%; background: rgba(20,28,26,.22); filter: blur(4px); }
+.character::after { content: ""; position: absolute; left: 0; top: 0; width: 74px; height: 25px; transform: translate(-50%,-50%); border: 4px solid rgba(75,230,220,.85); border-radius: 50%; }
+.anchor-marker { display: none; }
+.target-marker { position: absolute; display: none; width: 26px; height: 13px; border: 3px solid rgba(0,118,128,.72); border-radius: 50%; transform: translate(-50%,-50%); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { transform: translate(-50%,-50%) scale(1.35); opacity: .5; } }
+
+.help-panel { position: absolute; left: .8rem; bottom: .8rem; z-index: 20; display: grid; gap: .18rem; padding: .6rem .75rem; border-radius: 10px; background: rgba(255,255,255,.88); font-size: .74rem; pointer-events: none; }
+.joystick { position: absolute; right: .4rem; bottom: .175rem; z-index: 20; display: none; grid-template: repeat(2, 42px) / repeat(3, 42px); gap: 3px; }
+.joystick button { border: 1px solid rgba(22,64,76,.35); border-radius: 10px; background: rgba(255,255,255,.86); color: var(--ink); }
+.joystick button[data-dir="up"] { grid-area: 1 / 2; }
+.joystick button[data-dir="left"] { grid-area: 2 / 1; }
+.joystick button[data-dir="down"] { grid-area: 2 / 2; }
+.joystick button[data-dir="right"] { grid-area: 2 / 3; }
+.door-action { position: absolute; left: 50%; top: 50%; z-index: 25; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: stretch; min-width: min(84vw, 270px); gap: .6rem; padding: .85rem; border: 3px solid #1a6f78; border-radius: 16px; background: rgba(255,255,255,.97); box-shadow: 0 10px 30px rgba(14,54,63,.28); }
+.door-action[hidden] { display: none; }
+.door-action span { text-align: center; font-size: .86rem; font-weight: 800; }
+.door-action button, .room-dialog button { border: 0; border-radius: 9px; padding: .55rem .75rem; background: #176c76; color: white; font-weight: 800; }
+.room-dialog button:disabled { cursor: not-allowed; background: #9aacab; color: #f5f8f8; }
+.room-dialog { width: min(90vw, 430px); border: 0; border-radius: 18px; padding: 1.3rem; color: var(--ink); box-shadow: 0 18px 60px rgba(11,42,49,.3); }
+.room-dialog::backdrop { background: rgba(12,35,44,.48); }
+.room-dialog h2 { margin: .25rem 0 .5rem; }
+.room-dialog p:not(.eyebrow) { line-height: 1.65; }
+.dialog-progress { min-height: 1.5rem; border-radius: 9px; background: #edf7f5; padding: .55rem .65rem; font-weight: 700; }
+.dialog-buttons { display: flex; flex-wrap: wrap; gap: .55rem; }
+.room-dialog button.secondary { background: #dce9e8; color: #234c53; }
+.reward-dialog { text-align: center; border: 4px solid #d0a843; background: linear-gradient(#fffef8, #fff8dd); }
+.reward-dialog h2 { color: #765812; }
+
+@media (pointer: coarse), (max-width: 760px) {
+  .joystick { display: grid; }
+  .help-panel { bottom: .55rem; }
+}
+@media (max-height: 500px) {
+  .topbar { padding-block: .38rem; }
+  .eyebrow { font-size: .64rem; }
+  h1 { font-size: 1rem; }
+  .building strong { bottom: -1.2rem; font-size: .65rem; }
+  .help-panel { padding: .42rem .55rem; font-size: .66rem; }
+  .door-action { top: 52%; min-width: 240px; padding: .65rem; }
+}
+@media (orientation: portrait) and (max-width: 760px) {
+  .viewport::after { content: "建議將裝置轉為橫向測試"; position: absolute; z-index: 30; left: 50%; top: .6rem; transform: translateX(-50%); padding: .4rem .7rem; border-radius: 999px; background: #fff4d6; color: #744e18; font-size: .75rem; font-weight: 800; }
+  .status { display: none; }
+}
